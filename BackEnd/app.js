@@ -15,6 +15,9 @@ const thuongHieuRouter = require("./app/routers/thuong_hieu.route");
 const loaiHangRouter = require("./app/routers/loai_hang.route");
 const phanQuyenRouter = require("./app/routers/phan_quyen.route");
 const cuaHangRouter = require("./app/routers/cua_hang.route");
+const nhaCungRouter = require("./app/routers/nha_cung_cap.router");
+const nhanVienRouter = require("./app/routers/nhan_vien.route");
+const phieuNhapRouter = require("./app/routers/phieu_nhap.route");
 
 
 // su dung thuvien-midd
@@ -34,6 +37,9 @@ app.use("/api/loai_hang", loaiHangRouter);
 app.use("/api/thuong_hieu", thuongHieuRouter);
 app.use("/api/phan_quyen", phanQuyenRouter);
 app.use("/api/cua_hang", cuaHangRouter);
+app.use("/api/nhan_vien", nhanVienRouter);
+app.use("/api/nha_cung_cap", nhaCungRouter);
+app.use("/api/phieu_nhap", phieuNhapRouter);
 
 
 

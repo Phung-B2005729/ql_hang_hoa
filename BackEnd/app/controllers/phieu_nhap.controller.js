@@ -1,47 +1,39 @@
 const ApiError = require("../config/api_error");
-const CuaHangService = require("../services/cua_hang.services");
+const PhieuNhapService = require("../services/phieu_nhap.services");
 const MongoDB = require("../utils/mongodb.util");
 const helper = require("../helper/index");
 const { sdtSchema } = require("../validation/index");
 
 
 exports.create = async (req, res, next) => {
-    if(req.body.ten_cua_hang==null || req.body.dia_chi==null || req.body.sdt==null){
+    if(req.body.ma_nha_cung_cap==null || req.body.ma_nhan_vien==null || req.body.ma_cua_hang==null){
         return next(new ApiError(400, "Data can not be empty"));
     }
     else{
         try{
-          const cuaHangService = new CuaHangService(MongoDB.client);
-          if(req.body.ma_cua_hang){
-            const exitsCuaHang2 = await cuaHangService.findOne({ma_cua_hang: req.body.ma_cua_hang});
-            if(exitsCuaHang2){
-                console.log(exitsCuaHang2);
-                return next(new ApiError(401, "Mã cửa hàng đã tồn tại"));
+          const phieuNhapService = new PhieuNhapService(MongoDB.client);
+          if(req.body.ma_phieu_nhap){
+            const exitsPhieuNhap2 = await phieuNhapService.findOne({ma_phieu_nhap: req.body.ma_phieu_nhap});
+            if(exitsPhieuNhap2){
+                console.log(exitsPhieuNhap2);
+                return next(new ApiError(401, "Mã phiếu nhập đã tồn tại"));
             }
           }
-          const exitsCuaHang = await cuaHangService.findOne({ten_cua_hang: req.body.ten_cua_hang});
-          if(exitsCuaHang){
-              console.log(exitsCuaHang);
-              return next(new ApiError(401, "Data đã tồn tại"));
-          }
-          const { error } = sdtSchema.validate(req.body.sdt);
-          if (error) {
-            return next(new ApiError(400, error.message));
-          }
          
-          if(!req.body.ma_cua_hang){
+     
+          if(!req.body.ma_phieu_nhap){
             // sinh mã
             
-            let countDocument = await cuaHangService.countDocument({});
-            let ma_cua_hang = "CN000001";
+            let countDocument = await phieuNhapService.countDocument({});
+            let ma_phieu_nhap = "NCC000001";
             if(countDocument && countDocument.length > 0){
                 console.log('có count');
                 
                 let count = countDocument[0].countDocument;
                 console.log(count);
                 let sl = null;
-                let exitsCuaHang3 = true;
-                  while(exitsCuaHang3){
+                let exitsPhieuNhap3 = true;
+                  while(exitsPhieuNhap3){
                    
                     // nếu tồn tại thì lặp tiếp
                     console.log(count);
@@ -50,19 +42,18 @@ exports.create = async (req, res, next) => {
                     sl = "000000" + count;
                     console.log("sl " + sl);
                     sl =  sl.slice(-6);
-                    ma_cua_hang = "CN" + sl;
-                    console.log('Lặp ' + ma_cua_hang);
+                    ma_phieu_nhap = "NCC" + sl;
+                    console.log('Lặp ' + ma_phieu_nhap);
                     // kiểm tra sự tồn tại
-                   exitsCuaHang3 = await cuaHangService.findOne({ma_cua_hang: ma_cua_hang});
+                   exitsPhieuNhap3 = await phieuNhapService.findOne({ma_phieu_nhap: ma_phieu_nhap});
                   }   
                 
             }
-            console.log("ma_cua_hang" + ma_cua_hang);
-            req.body.ma_cua_hang = ma_cua_hang;
+            console.log("ma_nha_cung_cap" + ma_phieu_nhap);
+            req.body.ma_phieu_nhap = ma_phieu_nhap;
           }
-            const document = await cuaHangService.create(req.body);
-            
-            return res.send(document.insertedId);
+            const document = await phieuNhapService.create(req.body); 
+            res.send(req.body.ma_phieu_nhap);
         }catch(e){
             return next(new ApiError(500, "Lỗi server trong quá trình thêm"));
         }
@@ -71,19 +62,19 @@ exports.create = async (req, res, next) => {
 exports.findALL = async (req, res, next) => {
     let documents = []
     try{
-        const cuaHangService = new CuaHangService(MongoDB.client);
-        const ten_cua_hang = req.query.ten_cua_hang;
+        const phieuNhapService = new PhieuNhapService(MongoDB.client);
+        const ngay_lap_phieu = req.query.ngay_lap_phieu;
         const filter = {};
-        if(ten_cua_hang){
-                    ten_cua_hang = helper.escapeStringRegexp(ten_cua_hang);
+        if(ngay_lap_phieu){
+            ngay_lap_phieu = helper.escapeStringRegexp(ngay_lap_phieu);
                         let t1 = {
-                            ten_cua_hang : {
-                            $regex: new RegExp(ten_cua_hang), $options: "i"
+                            ngay_lap_phieu : {
+                            $regex: new RegExp(ngay_lap_phieu), $options: "i"
                         }
                     }
             filter = {...filter, ...t1}
          }
-            documents = await cuaHangService.find(filter);
+            documents = await phieuNhapService.find(filter);
             return res.send(documents);
     }catch(e){
         return next(new ApiError(500, "Lỗi server trong quá trình lấy danh sách"));
@@ -92,8 +83,8 @@ exports.findALL = async (req, res, next) => {
 
 exports.findOne =  async (req, res, next) => {  // lấy tên loại hàng theo id
     try{
-        const cuaHangService = new CuaHangService(MongoDB.client);
-        const document = await cuaHangService.findById(req.params.id);
+        const phieuNhapService = new PhieuNhapService(MongoDB.client);
+        const document = await phieuNhapService.findById(req.params.id);
         if(!document){
             return next(new ApiError(404, "Không tìm thấy data"));
         }
@@ -107,14 +98,9 @@ exports.update = async (req,res, next) => {
      return next(new ApiError(400,"Data to update can not be empty"));
     }
     try{
-     const cuaHangService = new CuaHangService(MongoDB.client);
-     if(req.body.sdt){
-        const { error } = sdtSchema.validate(req.body.sdt);
-        if (error) {
-          return next(new ApiError(400, error.message));
-        }
-       }
-     const document = await cuaHangService.update(req.params.id, req.body);
+     const phieuNhapService = new PhieuNhapService(MongoDB.client);
+    
+     const document = await phieuNhapService.update(req.params.id, req.body);
      if(!document){
          return next(new ApiError(404,"not found"));
      }
@@ -129,8 +115,8 @@ exports.update = async (req,res, next) => {
  exports.delete = async (req,res, next) => {
    
      try{
-         const cuaHangService = new CuaHangService(MongoDB.client);
-         const document = await cuaHangService.delete(req.params.id);
+         const phieuNhapService = new PhieuNhapService(MongoDB.client);
+         const document = await phieuNhapService.delete(req.params.id);
          if(!document){
              return next(new ApiError(404, "not found"));
          }
