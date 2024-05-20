@@ -1,28 +1,26 @@
 // nhap them sua xoa
 // truy xuat id 
 const { ObjectId } = require("mongodb");
-class CuaHangService {
+class PhanQuyenService {
     constructor(client){
-        this.collectionCuaHang = client.db('qlhanghoa').collection("cua_hang");
+        this.collectionPhanQuyen = client.db('qlhanghoa').collection("phan_quyen");
     }
-    extractCuaHangData(payload){
+    extractPhanQuyenData(payload){
         // lay du lieu doi tuong loaihang va loai bo cac thuoc tinh undefined
-        const cua_hang = {
-            ten_cua_hang: payload.ten_cua_hang,
-            dia_chi : payload.dia_chi,
-            sdt: payload.sdt
+        const phan_quyen = {
+            ten_quyen: payload.ten_quyen
         }
-        Object.keys(cua_hang).forEach((key)=>{
-            cua_hang[key] === undefined && delete cua_hang[key]
+        Object.keys(phan_quyen).forEach((key)=>{
+            phan_quyen[key] === undefined && delete phan_quyen[key]
         });
-        return cua_hang;
+        return phan_quyen;
     }
     
     async create(payload){   
-        const cua_hang = this.extractCuaHangData(payload);
-        console.log("loaihang " + cua_hang.ten_cua_hang);
+        const phan_quyen = this.extractPhanQuyenData(payload);
+        console.log("loaihang " + phan_quyen.ten_quyen);
         try {
-         const ketqua = await this.collectionCuaHang.insertOne(cua_hang);
+         const ketqua = await this.collectionPhanQuyen.insertOne(phan_quyen);
          console.log('Insert thành công');
          return ketqua;
         }
@@ -33,17 +31,17 @@ class CuaHangService {
 
     }
     async find(filter){ // danh sách loại hàng 
-        const cursor = await this.collectionCuaHang.find(filter);
+        const cursor = await this.collectionPhanQuyen.find(filter);
         return await cursor.toArray();
     }
     async findById(id){ // tên loại hàng theo id 
         console.log("goi ham findById " +id);
-        return await this.collectionCuaHang.findOne({
+        return await this.collectionPhanQuyen.findOne({
             _id: ObjectId.isValid(id) ? new ObjectId(id): null
         });
     }
     async findOne(filter){ // danh sách loại hàng 
-       return await this.collectionCuaHang.findOne(filter);
+       return await this.collectionPhanQuyen.findOne(filter);
     }
     
     async update(id, payload){
@@ -52,9 +50,9 @@ class CuaHangService {
             _id: ObjectId.isValid(id) ? new ObjectId(id): null,
         };
         console.log("fileder" + filter);
-        const update = this.extractCuaHangData(payload);
+        const update = this.extractPhanQuyenData(payload);
         console.log(update);
-        const result = await this.collectionCuaHang.findOneAndUpdate(
+        const result = await this.collectionPhanQuyen.findOneAndUpdate(
             filter, 
             { $set: update}, 
             {returnDocument: "after"}
@@ -64,11 +62,11 @@ class CuaHangService {
     }
     async delete(id){
         console.log('goi ham delete conver  ' + id);
-       const result = await this.collectionCuaHang.findOneAndDelete({
+       const result = await this.collectionPhanQuyen.findOneAndDelete({
         _id: ObjectId.isValid(id) ? new ObjectId(id): null,
        });
        console.log("resu " +result);
        return result;
     }
 }
-module.exports = CuaHangService;
+module.exports = PhanQuyenService;

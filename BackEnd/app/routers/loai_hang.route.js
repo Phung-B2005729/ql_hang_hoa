@@ -1,10 +1,10 @@
 const express = require("express");
-const loaihang = require("../controllers/loaihang.controller");
+const loai_hang = require("../controllers/loai_hang.controller");
 
 const router = express.Router();
 
-router.route("/").get(loaihang.findALL).post(loaihang.create);
+router.route("/").get(loai_hang.findALL).post(loai_hang.create);
 
-router.route("/:id").get(loaihang.findOne).put(loaihang.update).delete(loaihang.delete);
+router.route("/:id").get(loai_hang.findOne).put(loai_hang.update).delete(loai_hang.delete);
 
 module.exports = router;

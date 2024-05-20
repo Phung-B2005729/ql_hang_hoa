@@ -2,7 +2,7 @@ const ApiError = require("../config/api_error");
 const UserService = require("../services/user.services");
 const MongoDB = require("../utils/mongodb.util"); 
 const helper = require("../helper/index");
-const { registerSchema, loginSchema } = require("../validation/user.validation");
+const { registerSchema, loginSchema } = require("../validation/index");
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt')
 

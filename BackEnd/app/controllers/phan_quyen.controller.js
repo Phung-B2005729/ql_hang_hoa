@@ -1,22 +1,22 @@
 const ApiError = require("../config/api_error");
-const ThuongHieuService = require("../services/thuong_hieu.services");
+const PhanQuyenService = require("../services/phan_quyen.services");
 const MongoDB = require("../utils/mongodb.util");
 const helper = require("../helper/index");
 
 
 exports.create = async (req, res, next) => {
-    if(req.body.ten_thuong_hieu==null){
+    if(req.body.ten_quyen==null){
         return next(new ApiError(400, "Data can not be empty"));
     }
     else{
         try{
-          const thuongHieuService = new ThuongHieuService(MongoDB.client);
-          const exitsThuongHieu = await thuongHieuService.findOne({ten_thuong_hieu: req.body.ten_thuong_hieu});
-          if(exitsThuongHieu){
-              console.log(exitsThuongHieu);
+          const phanQuyenService = new PhanQuyenService(MongoDB.client);
+          const exitsPhanQuyen = await phanQuyenService.findOne({ten_quyen: req.body.ten_quyen});
+          if(exitsPhanQuyen){
+              console.log(exitsPhanQuyen);
               return next(new ApiError(401, "Data đã tồn tại"));
           }
-            const document = await thuongHieuService.create(req.body);
+            const document = await phanQuyenService.create(req.body);
             return res.send(document.insertedId);
         }catch(e){
             return next(new ApiError(500, "Lỗi server trong quá trình thêm"));
@@ -26,19 +26,19 @@ exports.create = async (req, res, next) => {
 exports.findALL = async (req, res, next) => {
     let documents = []
     try{
-        const thuongHieuService = new ThuongHieuService(MongoDB.client);
-        const ten_thuong_hieu = req.query.ten_thuong_hieu;
+        const phanQuyenService = new PhanQuyenService(MongoDB.client);
+        const ten_quyen = req.query.ten_quyen;
         const filter = {};
-        if(ten_thuong_hieu){
-                    ten_thuong_hieu = helper.escapeStringRegexp(ten_thuong_hieu);
+        if(ten_quyen){
+                    ten_quyen = helper.escapeStringRegexp(ten_quyen);
                         let t1 = {
-                            ten_thuong_hieu : {
-                            $regex: new RegExp(ten_thuong_hieu), $options: "i"
+                            ten_quyen : {
+                            $regex: new RegExp(ten_quyen), $options: "i"
                         }
                     }
             filter = {...filter, ...t1}
          }
-            documents = await thuongHieuService.find(filter);
+            documents = await phanQuyenService.find(filter);
             return res.send(documents);
     }catch(e){
         return next(new ApiError(500, "Lỗi server trong quá trình lấy danh sách"));
@@ -47,8 +47,8 @@ exports.findALL = async (req, res, next) => {
 
 exports.findOne =  async (req, res, next) => {  // lấy tên loại hàng theo id
     try{
-        const thuongHieuService = new ThuongHieuService(MongoDB.client);
-        const document = await thuongHieuService.findById(req.params.id);
+        const phanQuyenService = new PhanQuyenService(MongoDB.client);
+        const document = await phanQuyenService.findById(req.params.id);
         if(!document){
             return next(new ApiError(404, "Không tìm thấy data"));
         }
@@ -62,8 +62,8 @@ exports.update = async (req,res, next) => {
      return next(new ApiError(400,"Data to update can not be empty"));
     }
     try{
-     const thuongHieuService = new ThuongHieuService(MongoDB.client);
-     const document = await thuongHieuService.update(req.params.id, req.body);
+     const phanQuyenService = new PhanQuyenService(MongoDB.client);
+     const document = await phanQuyenService.update(req.params.id, req.body);
      if(!document){
          return next(new ApiError(404,"not found"));
      }
@@ -78,8 +78,8 @@ exports.update = async (req,res, next) => {
  exports.delete = async (req,res, next) => {
    
      try{
-         const thuongHieuService = new ThuongHieuService(MongoDB.client);
-         const document = await thuongHieuService.delete(req.params.id);
+         const phanQuyenService = new PhanQuyenService(MongoDB.client);
+         const document = await phanQuyenService.delete(req.params.id);
          if(!document){
              return next(new ApiError(404, "not found"));
          }

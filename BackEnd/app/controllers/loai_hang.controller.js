@@ -1,4 +1,4 @@
-const ApiError = require("../api-error");
+const ApiError = require("../config/api_error");
 const LoaiHangService = require("../services/loai_hang.services");
 const MongoDB = require("../utils/mongodb.util");
 const helper = require("../helper/index");

@@ -11,6 +11,10 @@ const authenticationMiddleware = require('./app/middleware/authentication');
 
 // khai báo đường dẫn route
 const userRouter = require("./app/routers/user.route");
+const thuongHieuRouter = require("./app/routers/thuong_hieu.route");
+const loaiHangRouter = require("./app/routers/loai_hang.route");
+const phanQuyenRouter = require("./app/routers/phan_quyen.route");
+const cuaHangRouter = require("./app/routers/cua_hang.route");
 
 
 // su dung thuvien-midd
@@ -26,6 +30,10 @@ app.use(cookieParser());
 
 //
 app.use("/api/user", userRouter);
+app.use("/api/loai_hang", loaiHangRouter);
+app.use("/api/thuong_hieu", thuongHieuRouter);
+app.use("/api/phan_quyen", phanQuyenRouter);
+app.use("/api/cua_hang", cuaHangRouter);
 
 
 
