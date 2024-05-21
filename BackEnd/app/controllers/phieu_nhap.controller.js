@@ -66,7 +66,7 @@ exports.findALL = async (req, res, next) => {
         const ngay_lap_phieu = req.query.ngay_lap_phieu;
         const ma_cua_hang = req.query.ma_cua_hang;
         const ma_nha_cung_cap = req.query.ma_nha_cung_cap;
-        const filter = {};
+        let filter = {};
         if(ngay_lap_phieu){
          
                         let t1 = {

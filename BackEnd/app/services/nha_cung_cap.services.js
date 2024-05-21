@@ -8,7 +8,7 @@ class NhaCungCapService {
     extractNhaCungCapData(payload){
         // lay du lieu doi tuong loaihang va loai bo cac thuoc tinh undefined
         const nha_cung_cap = {
-             ma_nha_cung_cap: payload. ma_nha_cung_cap, // tự động
+             ma_nha_cung_cap: payload.ma_nha_cung_cap, // tự động
              ten_nha_cung_cap: payload.ten_nha_cung_cap,
             dia_chi: payload.dia_chi,
             sdt: payload.sdt,

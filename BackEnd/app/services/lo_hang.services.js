@@ -8,7 +8,7 @@ class LoHangService {
     extractLoHangData(payload){
         // lay du lieu doi tuong loaihang va loai bo cac thuoc tinh undefined
         const lo_hang = {
-             so_lo: payload. so_lo, 
+             so_lo: payload.so_lo, 
              ma_vach_lo_hang: payload.ma_vach_lo_hang,
              ma_hang_hoa: payload.ma_hang_hoa,
              ngay_san_xuat: payload.ngay_san_xuat, 

@@ -15,7 +15,7 @@ class GiaoDichService {
              so_luong_ton: payload.so_luong_ton,  // số lượng trong kho khi giao dịch xảy ra
              gia_von: payload.gia_von, // giá vốn hiện tại
              // fogin
-             so_lo: payload. so_lo, // lô hàng giao dịch
+             so_lo: payload.so_lo, // lô hàng giao dịch
              ma_hang_hoa: payload.ma_hang_hoa,
              ma_cua_hang: payload.ma_cua_hang,  // giao dịch tại cửa hàng
              ma_nhan_vien: payload.ma_nhan_vien, // nhân viên cập nhật thay đổi (nếu có)

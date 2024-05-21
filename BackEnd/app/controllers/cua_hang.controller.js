@@ -72,8 +72,8 @@ exports.findALL = async (req, res, next) => {
     let documents = []
     try{
         const cuaHangService = new CuaHangService(MongoDB.client);
-        const ten_cua_hang = req.query.ten_cua_hang;
-        const filter = {};
+        let ten_cua_hang = req.query.ten_cua_hang;
+        let filter = {};
         if(ten_cua_hang){
                     ten_cua_hang = helper.escapeStringRegexp(ten_cua_hang);
                         let t1 = {

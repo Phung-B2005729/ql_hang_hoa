@@ -32,7 +32,7 @@ exports.findALL = async (req, res, next) => {
         const chiTietNhapHangService = new ChiTietNhapHangService(MongoDB.client);
         const ma_phieu_nhap = req.query.ma_phieu_nhap; // tìm theo ma_phieu_nhap
         const so_lo = req.query.so_lo; // tìm theo số lô
-        const filter = {};
+        let filter = {};
         if(ma_phieu_nhap){
                         let t1 = {
                             ma_phieu_nhap : ma_phieu_nhap
@@ -56,7 +56,7 @@ exports.findOne =  async (req, res, next) => {  //
         const chiTietNhapHangService = new ChiTietNhapHangService(MongoDB.client);
         const ma_phieu_nhap = req.params.ma_phieu_nhap; // tìm theo ma_phieu_nhap
         const so_lo = req.params.so_lo; // tìm theo số lô
-        const filter = {};
+        let filter = {};
         if(ma_phieu_nhap){
                         let t1 = {
                             ma_phieu_nhap : ma_phieu_nhap

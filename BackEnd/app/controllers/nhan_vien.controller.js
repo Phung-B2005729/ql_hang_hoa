@@ -78,8 +78,8 @@ exports.findALL = async (req, res, next) => {
     let documents = []
     try{
         const nhanVienService = new NhanVienService(MongoDB.client);
-        const ten_nhan_vien = req.query.ten_nhan_vien;
-        const filter = {};
+        let ten_nhan_vien = req.query.ten_nhan_vien;
+        let filter = {};
         if(ten_nhan_vien){
                     ten_nhan_vien = helper.escapeStringRegexp(ten_nhan_vien);
                         let t1 = {

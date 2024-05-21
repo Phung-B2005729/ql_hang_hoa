@@ -32,7 +32,7 @@ exports.findALL = async (req, res, next) => {
         const loHangService = new LoHangService(MongoDB.client);
         const ma_hang_hoa = req.query.ma_hang_hoa; // tìm theo ma_hang_hoa
         const ma_vach_lo_hang = req.query.ma_vach_lo_hang;
-        const filter = {};
+        let filter = {};
         if(ma_hang_hoa){
                         let t1 = {
                             ma_hang_hoa : ma_hang_hoa

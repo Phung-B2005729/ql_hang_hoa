@@ -16,7 +16,7 @@ class NhaCungCapService {
             // forgi
             ma_nha_cung_cap: payload.ma_nha_cung_cap,
             ma_cua_hang: payload.ma_cua_hang,
-            ma_nhan_vien: payload. ma_nhan_vien,
+            ma_nhan_vien: payload.ma_nhan_vien,
         }
         Object.keys(phieu_nhap).forEach((key)=>{
             phieu_nhap[key] === undefined && delete phieu_nhap[key]

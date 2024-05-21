@@ -8,7 +8,7 @@ class ChiTietNhapHangService {
     extractChiTietNhapData(payload){
         // lay du lieu doi tuong loaihang va loai bo cac thuoc tinh undefined
         const chi_tiet_nhap_hang = {
-             so_lo: payload. so_lo,
+             so_lo: payload.so_lo,
              ma_phieu_nhap: payload.ma_phieu_nhap,
              so_luong : payload.so_luong,
              don_gia_nhap: payload.don_gia_nhap, 

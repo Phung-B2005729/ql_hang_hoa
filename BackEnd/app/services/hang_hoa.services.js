@@ -8,7 +8,7 @@ class HangHoaService {
     extractHangHoaData(payload){
         // lay du lieu doi tuong loaihang va loai bo cac thuoc tinh undefined
         const hang_hoa = {
-             ma_hang_hoa: payload. ma_hang_hoa, // tự động
+             ma_hang_hoa: payload.ma_hang_hoa, // tự động
              ten_hang_hoa: payload.ten_hang_hoa,
              don_gia_ban: payload.don_gia_ban, // giá bán chung tất cả cửa hàng
              don_vi_tinh: payload.don_vi_tinh, // đơn vị tính chung 

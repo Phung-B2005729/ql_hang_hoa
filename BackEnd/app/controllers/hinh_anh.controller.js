@@ -1,44 +1,44 @@
 const ApiError = require("../config/api_error");
-const ThuongHieuService = require("../services/thuong_hieu.services");
+const HinhAnhService = require("../services/hinh_anh.services");
 const MongoDB = require("../utils/mongodb.util");
 const helper = require("../helper/index");
 
 
 exports.create = async (req, res, next) => {
-    if(req.body.ten_thuong_hieu==null){
+    if(req.body.link_anh==null || req.body.ma_hang_hoa==null){
         return next(new ApiError(400, "Data can not be empty"));
     }
     else{
         try{
-          const thuongHieuService = new ThuongHieuService(MongoDB.client);
-          const exitsThuongHieu = await thuongHieuService.findOne({ten_thuong_hieu: req.body.ten_thuong_hieu});
-          if(exitsThuongHieu){
-              console.log(exitsThuongHieu);
-              return next(new ApiError(401, "Data đã tồn tại"));
+          const hinhAnhService = new HinhAnhService(MongoDB.client);
+          const exitsHinhAnh = await hinhAnhService.findOne({link_anh: req.body.link_anh});
+          if(exitsHinhAnh){
+              console.log(exitsHinhAnh);
+              return next(new ApiError(401, "link ảnh đã tồn tại"));
           }
-            const document = await thuongHieuService.create(req.body);
+            const document = await hinhAnhService.create(req.body);
             return res.send(document.insertedId);
         }catch(e){
-            return next(new ApiError(500, "Lỗi server trong quá trình thêm"));
+            return next(new ApiError(500, "Lỗi server trong quá trình thêm mới"));
         }
     }
 }
 exports.findALL = async (req, res, next) => {
     let documents = []
     try{
-        const thuongHieuService = new ThuongHieuService(MongoDB.client);
-        let ten_thuong_hieu = req.query.ten_thuong_hieu;
+        const hinhAnhService = new HinhAnhService(MongoDB.client);
+        const ma_hang_hoa = req.query.ma_hang_hoa;
         let filter = {};
-        if(ten_thuong_hieu){
-                    ten_thuong_hieu = helper.escapeStringRegexp(ten_thuong_hieu);
+        if(ma_hang_hoa){
+            console.log(ma_hang_hoa);
                         let t1 = {
-                            ten_thuong_hieu : {
-                            $regex: new RegExp(ten_thuong_hieu), $options: "i"
-                        }
+                            ma_hang_hoa : ma_hang_hoa
                     }
             filter = {...filter, ...t1}
+            console.log(filter);
          }
-            documents = await thuongHieuService.find(filter);
+      
+            documents = await hinhAnhService.find(filter);
             return res.send(documents);
     }catch(e){
         return next(new ApiError(500, "Lỗi server trong quá trình lấy danh sách"));
@@ -47,14 +47,14 @@ exports.findALL = async (req, res, next) => {
 
 exports.findOne =  async (req, res, next) => {  // 
     try{
-        const thuongHieuService = new ThuongHieuService(MongoDB.client);
-        const document = await thuongHieuService.findById(req.params.id);
+        const hinhAnhService = new HinhAnhService(MongoDB.client);
+        const document = await hinhAnhService.findById(req.params.id);
         if(!document){
-            return next(new ApiError(404, "Không tìm thấy data"));
+            return next(new ApiError(404, "Không tìm thấy loại hàng"));
         }
         return res.send(document);
     }catch(e){
-        return next(new ApiError(500, "Lỗi server trong quá trình lấy danh sách"));
+        return next(new ApiError(500, "Lỗi server trong quá trình lấy danh sách loại hàng"));
     }
 }
 exports.update = async (req,res, next) => {
@@ -62,8 +62,8 @@ exports.update = async (req,res, next) => {
      return next(new ApiError(400,"Data to update can not be empty"));
     }
     try{
-     const thuongHieuService = new ThuongHieuService(MongoDB.client);
-     const document = await thuongHieuService.update(req.params.id, req.body);
+     const hinhAnhService = new HinhAnhService(MongoDB.client);
+     const document = await hinhAnhService.update(req.params.id, req.body);
      if(!document){
          return next(new ApiError(404,"not found"));
      }
@@ -78,8 +78,8 @@ exports.update = async (req,res, next) => {
  exports.delete = async (req,res, next) => {
    
      try{
-         const thuongHieuService = new ThuongHieuService(MongoDB.client);
-         const document = await thuongHieuService.delete(req.params.id);
+         const hinhAnhService = new HinhAnhService(MongoDB.client);
+         const document = await hinhAnhService.delete(req.params.id);
          if(!document){
              return next(new ApiError(404, "not found"));
          }

@@ -72,8 +72,8 @@ exports.findALL = async (req, res, next) => {
     let documents = []
     try{
         const nhaCungCapService = new NhaCungCapService(MongoDB.client);
-        const ten_nha_cung_cap = req.query.ten_nha_cung_cap;
-        const filter = {};
+        let ten_nha_cung_cap = req.query.ten_nha_cung_cap;
+        let filter = {};
         if(ten_nha_cung_cap){
                     ten_nha_cung_cap = helper.escapeStringRegexp(ten_nha_cung_cap);
                         let t1 = {

@@ -32,7 +32,7 @@ exports.findALL = async (req, res, next) => {
         const tonKhoLoHangService = new TonKhoLoHangService(MongoDB.client);
         const ma_cua_hang = req.query.ma_cua_hang; // tìm theo ma_cua_hang
         const so_lo = req.query.so_lo; // tìm theo số lô
-        const filter = {};
+        let filter = {};
         if(ma_cua_hang){
                         let t1 = {
                             ma_cua_hang : ma_cua_hang
@@ -57,7 +57,7 @@ exports.findOne =  async (req, res, next) => {  //
         const tonKhoLoHangService = new TonKhoLoHangService(MongoDB.client);
         const ma_cua_hang = req.params.ma_cua_hang; // tìm theo ma_cua_hang
         const so_lo = req.params.so_lo; // tìm theo số lô
-        const filter = {};
+        let filter = {};
         if(ma_cua_hang){
                         let t1 = {
                             ma_cua_hang : ma_cua_hang

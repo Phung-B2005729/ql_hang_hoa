@@ -27,8 +27,8 @@ exports.findALL = async (req, res, next) => {
     let documents = []
     try{
         const loaiHangService = new LoaiHangService(MongoDB.client);
-        const ten_loai = req.query.ten_loai;
-        const filter = {};
+        let ten_loai = req.query.ten_loai;
+        let filter = {};
         if(ten_loai){
                     ten_loai = helper.escapeStringRegexp(ten_loai);
                         let t1 = {

@@ -17,6 +17,7 @@ const phanQuyenRouter = require("./app/routers/phan_quyen.route");
 const hangHoaRouter = require("./app/routers/hang_hoa.route");
 const thuongHieuRouter = require("./app/routers/thuong_hieu.route");
 const loaiHangRouter = require("./app/routers/loai_hang.route");
+const hinhAnhRouter = require("./app/routers/hinh_anh.route");
  // lô hàng
 const loHangRouter = require("./app/routers/lo_hang.route");
 const tongKhoLoHangRouter = require("./app/routers/ton_kho_lo_hang.route");
@@ -24,7 +25,6 @@ const giaoDichRouter = require("./app/routers/giao_dich.route");
   // cửa hàng
 const cuaHangRouter = require("./app/routers/cua_hang.route");
 const nhanVienRouter = require("./app/routers/nhan_vien.route");
-
  // nhập hàng
 const nhaCungRouter = require("./app/routers/nha_cung_cap.router");
 const phieuNhapRouter = require("./app/routers/phieu_nhap.route");
@@ -49,6 +49,7 @@ app.use("/api/phan_quyen", phanQuyenRouter);
 app.use("/api/hang_hoa", hangHoaRouter);
 app.use("/api/loai_hang", loaiHangRouter);
 app.use("/api/thuong_hieu", thuongHieuRouter);
+app.use("/api/hinh_anh", hinhAnhRouter);
 // lô hang
 app.use("/api/lo_hang", loHangRouter);
 app.use("/api/ton_kho_lo_hang", tongKhoLoHangRouter);

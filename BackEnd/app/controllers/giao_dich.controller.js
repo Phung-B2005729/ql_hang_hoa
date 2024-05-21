@@ -30,7 +30,7 @@ exports.findALL = async (req, res, next) => {
         const ma_cua_hang = req.query.ma_cua_hang;
         const ma_nhan_vien = req.query.ma_nhan_vien;
         const loai_giao_dich = req.query.loai_giao_dich;
-        const filter = {};
+        let filter = {};
         if(so_lo){
          
                         let t1 = {

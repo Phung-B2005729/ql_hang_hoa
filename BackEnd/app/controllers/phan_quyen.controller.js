@@ -27,8 +27,8 @@ exports.findALL = async (req, res, next) => {
     let documents = []
     try{
         const phanQuyenService = new PhanQuyenService(MongoDB.client);
-        const ten_quyen = req.query.ten_quyen;
-        const filter = {};
+        let ten_quyen = req.query.ten_quyen;
+        let filter = {};
         if(ten_quyen){
                     ten_quyen = helper.escapeStringRegexp(ten_quyen);
                         let t1 = {
