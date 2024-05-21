@@ -10,14 +10,21 @@ const authenticationMiddleware = require('./app/middleware/authentication');
 
 
 // khai báo đường dẫn route
+  // tài khoản
 const userRouter = require("./app/routers/user.route");
+const phanQuyenRouter = require("./app/routers/phan_quyen.route");
+  // hàng hoá
+const hangHoaRouter = require("./app/routers/hang_hoa.route");
+const loHangRouter = require("./app/routers/lo_hang.route");
 const thuongHieuRouter = require("./app/routers/thuong_hieu.route");
 const loaiHangRouter = require("./app/routers/loai_hang.route");
-const phanQuyenRouter = require("./app/routers/phan_quyen.route");
+  // cửa hàng
 const cuaHangRouter = require("./app/routers/cua_hang.route");
-const nhaCungRouter = require("./app/routers/nha_cung_cap.router");
 const nhanVienRouter = require("./app/routers/nhan_vien.route");
+ // nhập hàng
+const nhaCungRouter = require("./app/routers/nha_cung_cap.router");
 const phieuNhapRouter = require("./app/routers/phieu_nhap.route");
+const chiTietNhapHangRouter = require("./app/routers/chi_tiet_nhap_hang.route");
 
 
 // su dung thuvien-midd
@@ -31,15 +38,23 @@ app.use(cookieParser());
 
 
 
-//
+//tài khoản
 app.use("/api/user", userRouter);
+app.use("/api/phan_quyen", phanQuyenRouter);
+// hàng hoá
+app.use("/api/hang_hoa", hangHoaRouter);
+app.use("/api/lo_hang", loHangRouter);
 app.use("/api/loai_hang", loaiHangRouter);
 app.use("/api/thuong_hieu", thuongHieuRouter);
-app.use("/api/phan_quyen", phanQuyenRouter);
+// chi nhánh
 app.use("/api/cua_hang", cuaHangRouter);
 app.use("/api/nhan_vien", nhanVienRouter);
+// nhập hàng
 app.use("/api/nha_cung_cap", nhaCungRouter);
 app.use("/api/phieu_nhap", phieuNhapRouter);
+app.use("/api/chi_tiet_nhap_hang", chiTietNhapHangRouter);
+
+
 
 
 
