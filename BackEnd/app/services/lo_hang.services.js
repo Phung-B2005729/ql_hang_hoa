@@ -13,7 +13,8 @@ class LoHangService {
              ma_hang_hoa: payload.ma_hang_hoa,
              ngay_san_xuat: payload.ngay_san_xuat, 
              han_su_dung: payload.han_su_dung,  
-             ngay_tao: payload.ngay_tao, 
+             ngay_tao: payload.ngay_tao ?? new Date(), 
+             tong_so_luong: payload.tong_so_luong,
              trang_thai: payload.trang_thai,
         }
         Object.keys(lo_hang).forEach((key)=>{

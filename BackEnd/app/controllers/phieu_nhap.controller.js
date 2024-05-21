@@ -64,16 +64,30 @@ exports.findALL = async (req, res, next) => {
     try{
         const phieuNhapService = new PhieuNhapService(MongoDB.client);
         const ngay_lap_phieu = req.query.ngay_lap_phieu;
+        const ma_cua_hang = req.query.ma_cua_hang;
+        const ma_nha_cung_cap = req.query.ma_nha_cung_cap;
         const filter = {};
         if(ngay_lap_phieu){
-            ngay_lap_phieu = helper.escapeStringRegexp(ngay_lap_phieu);
+         
                         let t1 = {
-                            ngay_lap_phieu : {
-                            $regex: new RegExp(ngay_lap_phieu), $options: "i"
-                        }
+                            ngay_lap_phieu : ngay_lap_phieu
                     }
             filter = {...filter, ...t1}
          }
+         if(ma_cua_hang){
+         
+            let t1 = {
+                ma_cua_hang : ma_cua_hang
+        }
+        filter = {...filter, ...t1}
+        }
+        if(ma_nha_cung_cap){
+                
+            let t1 = {
+                ma_nha_cung_cap : ma_nha_cung_cap
+        }
+        filter = {...filter, ...t1}
+        }
             documents = await phieuNhapService.find(filter);
             return res.send(documents);
     }catch(e){

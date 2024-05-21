@@ -11,6 +11,7 @@ class CuaHangService {
             ma_cua_hang: payload.ma_cua_hang,
             ten_cua_hang: payload.ten_cua_hang,
             dia_chi : payload.dia_chi,
+            loai_cua_hang: payload.loai_cua_hang ?? "Chi nhánh",
             sdt: payload.sdt
         }
         Object.keys(cua_hang).forEach((key)=>{

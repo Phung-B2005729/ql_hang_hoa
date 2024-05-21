@@ -11,7 +11,6 @@ class HangHoaService {
              ma_hang_hoa: payload. ma_hang_hoa, // tự động
              ten_hang_hoa: payload.ten_hang_hoa,
              don_gia_ban: payload.don_gia_ban, // giá bán chung tất cả cửa hàng
-             so_luong: payload.so_luong,  // Array object [ {ma_cua_hang, ten_cua_hang, tong_so_luong} ]
              don_vi_tinh: payload.don_vi_tinh, // đơn vị tính chung 
              trang_thai: payload.trang_thai,
         }

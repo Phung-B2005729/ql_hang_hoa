@@ -53,10 +53,9 @@ class ChiTietNhapHangService {
     async update(id, payload){
         console.log(id);
         const filter = {
-           $or: [
-                { _id: ObjectId.isValid(id) ? new ObjectId(id) : null },
-                { so_lo: id }
-            ],
+          
+                _id: ObjectId.isValid(id) ? new ObjectId(id) : null ,
+            
         };
         console.log("fileder" + filter);
         const update = this.extractChiTietNhapData(payload);
@@ -72,10 +71,7 @@ class ChiTietNhapHangService {
     async delete(id){
         console.log('goi ham delete conver  ' + id);
        const result = await this.collectionChiTietNhapHang.findOneAndDelete({
-       $or: [
-                { _id: ObjectId.isValid(id) ? new ObjectId(id) : null },
-                { so_lo: id }
-            ],
+       _id: ObjectId.isValid(id) ? new ObjectId(id) : null 
        });
        console.log("resu " +result);
        return result;
