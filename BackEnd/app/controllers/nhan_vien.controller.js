@@ -96,7 +96,7 @@ exports.findALL = async (req, res, next) => {
     } 
 }
 
-exports.findOne =  async (req, res, next) => {  // lấy tên loại hàng theo id
+exports.findOne =  async (req, res, next) => {  // 
     try{
         const nhanVienService = new NhanVienService(MongoDB.client);
         const document = await nhanVienService.findById(req.params.id);
