@@ -64,8 +64,6 @@ app.use("/api/chi_tiet_nhap_hang", chiTietNhapHangRouter);
 
 
 
-
-
 //  loi truy cap dg link khac
 app.use((req, res, next) => {
     return next(new ApiError(404, "Resource not found"));

@@ -12,6 +12,7 @@ class HangHoaService {
              ten_hang_hoa: payload.ten_hang_hoa,
              don_gia_ban: payload.don_gia_ban, // giá bán chung tất cả cửa hàng
              don_vi_tinh: payload.don_vi_tinh, // đơn vị tính chung 
+             danh_sach_anh: payload.danh_sach_anh,
              trang_thai: payload.trang_thai,
         }
         Object.keys(hang_hoa).forEach((key)=>{

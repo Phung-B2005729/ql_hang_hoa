@@ -1,10 +1,11 @@
 const express = require("express");
+const { upload, uploadMultiple } = require('../middleware/multer')
 const hinh_anh = require("../controllers/hinh_anh.controller");
 
 const router = express.Router();
 
-router.route("/").get(hinh_anh.findALL).post(hinh_anh.create);
+router.post('/upload_sigle', upload, hinh_anh.uploadSigle);
+router.post('/upload_multiple', uploadMultiple, hinh_anh.uploadMultiple);
 
-router.route("/:id").get(hinh_anh.findOne).put(hinh_anh.update).delete(hinh_anh.delete);
 
 module.exports = router;
