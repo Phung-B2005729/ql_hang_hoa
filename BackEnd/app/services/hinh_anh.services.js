@@ -3,6 +3,7 @@
 const { getStorage, ref ,uploadBytesResumable, getDownloadURL } = require('firebase/storage')
 const { signInWithEmailAndPassword, createUserWithEmailAndPassword } = require("firebase/auth");
 const { auth } = require('../firebase/firebase');
+require('dotenv').config();
 
 
 async function uploadImage(file, quantity) {
