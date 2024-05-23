@@ -5,7 +5,7 @@ require('dotenv').config()
 const {uploadImage } = require("../services/hinh_anh.services");
 
 
-exports.uploadSigle = async (req, res, next) => {
+exports.uploadSingle = async (req, res, next) => {
     try {
       const buildImage = await uploadImage(req.file, 'single'); 
       res.send(buildImage)
@@ -19,7 +19,7 @@ exports.uploadMultiple = async (req, res, next) => {
   
     // Kiểm tra xem danh sách files có tồn tại không
     if (!files || files.length === 0) {
-        return res.status(400).json({ message: 'No files were uploaded.' });
+        return next(new ApiError(400, 'No file upload'));
     }
     try {
         const buildImage = await uploadImage(files, 'multiple'); 
