@@ -1,39 +1,39 @@
 const ApiError = require("../config/api_error");
-const PhieuNhapService = require("../services/phieu_nhap.services");
+const PhieuKiemKhoService = require("../services/phieu_kiem_kho.services");
 const MongoDB = require("../utils/mongodb.util");
 const helper = require("../helper/index");
 const { sdtSchema } = require("../validation/index");
 
 
 exports.create = async (req, res, next) => {
-    if(req.body.ma_nha_cung_cap==null || req.body.ma_nhan_vien==null || req.body.ma_cua_hang==null){
+    if(req.body.ma_nhan_vien==null || req.body.ma_cua_hang==null){
         return next(new ApiError(400, "Data can not be empty"));
     }
     else{
         try{
-          const phieuNhapService = new PhieuNhapService(MongoDB.client);
-          if(req.body.ma_phieu_nhap){
-            const exitsPhieuNhap2 = await phieuNhapService.findOne({ma_phieu_nhap: req.body.ma_phieu_nhap});
-            if(exitsPhieuNhap2){
-                console.log(exitsPhieuNhap2);
+          const phieuKiemKhoService = new PhieuKiemKhoService(MongoDB.client);
+          if(req.body.ma_phieu_kiem_kho){
+            const exitsphieuKiemKho2 = await phieuKiemKhoService.findOne({ma_phieu_kiem_kho: req.body.ma_phieu_kiem_kho});
+            if(exitsphieuKiemKho2){
+                console.log(exitsphieuKiemKho2);
                 return next(new ApiError(401, "Mã phiếu nhập đã tồn tại"));
             }
           }
          
      
-          if(!req.body.ma_phieu_nhap){
+          if(!req.body.ma_phieu_kiem_kho){
             // sinh mã
             
-            let countDocument = await phieuNhapService.countDocument({});
-            let ma_phieu_nhap = "NCC000001";
+            let countDocument = await phieuKiemKhoService.countDocument({});
+            let ma_phieu_kiem_kho = "KK000001";
             if(countDocument && countDocument.length > 0){
                 console.log('có count');
                 
                 let count = countDocument[0].countDocument;
                 console.log(count);
                 let sl = null;
-                let exitsPhieuNhap3 = true;
-                  while(exitsPhieuNhap3){
+                let exitsphieuKiemKho3 = true;
+                  while(exitsphieuKiemKho3){
                    
                     // nếu tồn tại thì lặp tiếp
                     console.log(count);
@@ -42,18 +42,18 @@ exports.create = async (req, res, next) => {
                     sl = "000000" + count;
                     console.log("sl " + sl);
                     sl =  sl.slice(-6);
-                    ma_phieu_nhap = "NCC" + sl;
-                    console.log('Lặp ' + ma_phieu_nhap);
+                    ma_phieu_kiem_kho = "KK" + sl;
+                    console.log('Lặp ' + ma_phieu_kiem_kho);
                     // kiểm tra sự tồn tại
-                   exitsPhieuNhap3 = await phieuNhapService.findOne({ma_phieu_nhap: ma_phieu_nhap});
+                   exitsphieuKiemKho3 = await phieuKiemKhoService.findOne({ma_phieu_kiem_kho: ma_phieu_kiem_kho});
                   }   
                 
             }
-            console.log("ma_nhap" + ma_phieu_nhap);
-            req.body.ma_phieu_nhap = ma_phieu_nhap;
+            console.log("ma_kiem_kho" + ma_phieu_kiem_kho);
+            req.body.ma_phieu_kiem_kho = ma_phieu_kiem_kho;
           }
-            const document = await phieuNhapService.create(req.body); 
-            res.send(req.body.ma_phieu_nhap);
+            const document = await phieuKiemKhoService.create(req.body); 
+            res.send(req.body.ma_phieu_kiem_kho);
         }catch(e){
             return next(new ApiError(500, "Lỗi server trong quá trình thêm"));
         }
@@ -62,10 +62,10 @@ exports.create = async (req, res, next) => {
 exports.findALL = async (req, res, next) => {
     let documents = []
     try{
-        const phieuNhapService = new PhieuNhapService(MongoDB.client);
+        const phieuKiemKhoService = new PhieuKiemKhoService(MongoDB.client);
         const ngay_lap_phieu = req.query.ngay_lap_phieu;
         const ma_cua_hang = req.query.ma_cua_hang;
-        const ma_nha_cung_cap = req.query.ma_nha_cung_cap;
+        const ma_kiem_kho = req.query.ma_kiem_kho;
         let filter = {};
         if(ngay_lap_phieu){
          
@@ -78,17 +78,11 @@ exports.findALL = async (req, res, next) => {
          
             let t1 = {
                 ma_cua_hang : ma_cua_hang
-        }
+            }
         filter = {...filter, ...t1}
         }
-        if(ma_nha_cung_cap){
-                
-            let t1 = {
-                ma_nha_cung_cap : ma_nha_cung_cap
-        }
-        filter = {...filter, ...t1}
-        }
-            documents = await phieuNhapService.find(filter);
+       
+            documents = await phieuKiemKhoService.find(filter);
             return res.send(documents);
     }catch(e){
         return next(new ApiError(500, "Lỗi server trong quá trình lấy danh sách"));
@@ -97,8 +91,8 @@ exports.findALL = async (req, res, next) => {
 
 exports.findOne =  async (req, res, next) => {  // 
     try{
-        const phieuNhapService = new PhieuNhapService(MongoDB.client);
-        const document = await phieuNhapService.findById(req.params.id);
+        const phieuKiemKhoService = new PhieuKiemKhoService(MongoDB.client);
+        const document = await phieuKiemKhoService.findById(req.params.id);
         if(!document){
             return next(new ApiError(404, "Không tìm thấy data"));
         }
@@ -112,9 +106,9 @@ exports.update = async (req,res, next) => {
      return next(new ApiError(400,"Data to update can not be empty"));
     }
     try{
-     const phieuNhapService = new PhieuNhapService(MongoDB.client);
+     const phieuKiemKhoService = new PhieuKiemKhoService(MongoDB.client);
     
-     const document = await phieuNhapService.update(req.params.id, req.body);
+     const document = await phieuKiemKhoService.update(req.params.id, req.body);
      if(!document){
          return next(new ApiError(404,"not found"));
      }
@@ -129,8 +123,8 @@ exports.update = async (req,res, next) => {
  exports.delete = async (req,res, next) => {
    
      try{
-         const phieuNhapService = new PhieuNhapService(MongoDB.client);
-         const document = await phieuNhapService.delete(req.params.id);
+         const phieuKiemKhoService = new PhieuKiemKhoService(MongoDB.client);
+         const document = await phieuKiemKhoService.delete(req.params.id);
          if(!document){
              return next(new ApiError(404, "not found"));
          }

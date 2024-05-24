@@ -29,7 +29,8 @@ const nhanVienRouter = require("./app/routers/nhan_vien.route");
 const nhaCungRouter = require("./app/routers/nha_cung_cap.router");
 const phieuNhapRouter = require("./app/routers/phieu_nhap.route");
 const chiTietNhapHangRouter = require("./app/routers/chi_tiet_nhap_hang.route");
-
+const phieuKiemKhoRouter = require("./app/routers/phieu_kiem_kho.route");
+const chiTietKiemKhoRouter = require("./app/routers/chi_tiet_kiem_kho.route");
 
 // su dung thuvien-midd
 const app = express();
@@ -61,6 +62,10 @@ app.use("/api/nhan_vien", nhanVienRouter);
 app.use("/api/nha_cung_cap", nhaCungRouter);
 app.use("/api/phieu_nhap", phieuNhapRouter);
 app.use("/api/chi_tiet_nhap_hang", chiTietNhapHangRouter);
+
+//
+app.use("/api/phieu_kiem_kho", phieuKiemKhoRouter);
+app.use("/api/chi_tiet_kiem_kho", chiTietKiemKhoRouter);
 
 
 

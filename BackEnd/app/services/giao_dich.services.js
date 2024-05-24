@@ -20,6 +20,7 @@ class GiaoDichService {
              ma_cua_hang: payload.ma_cua_hang,  // giao dịch tại cửa hàng
              ma_nhan_vien: payload.ma_nhan_vien, // nhân viên cập nhật thay đổi (nếu có)
              ma_phieu_nhap: payload.ma_phieu_nhap, // thông tin nhập hàng (nếu loại giao dịch là nhập)
+             ma_phieu_kiem_kho: payload.ma_phieu_kiem_kho, // thông tin nhập hàng (nếu loại giao dịch là nhập)
              ma_hoa_don: payload.ma_hoa_don, // thông tin hoá đơn (nếu loại giao dịch là bán ra/xuất phân phối)
         }
         Object.keys(giao_dich).forEach((key)=>{
