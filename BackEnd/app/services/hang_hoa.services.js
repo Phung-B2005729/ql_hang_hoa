@@ -11,9 +11,16 @@ class HangHoaService {
              ma_hang_hoa: payload.ma_hang_hoa, // tự động
              ten_hang_hoa: payload.ten_hang_hoa,
              don_gia_ban: payload.don_gia_ban, // giá bán chung tất cả cửa hàng
+             gia_von: payload.gia_von,
+             mo_ta: payload.mo_ta,
+             ton_kho: payload.ton_kho,
+             ton_nhieu_nhat: payload.ton_nhieu_nhat,
              don_vi_tinh: payload.don_vi_tinh, // đơn vị tính chung 
+             loai_hang: payload.loai_hang,
+             thuong_hieu: payload.thuong_hieu,
              danh_sach_anh: payload.danh_sach_anh,
              trang_thai: payload.trang_thai,
+             quan_ly_theo_lo: payload.quan_ly_theo_lo,
         }
         Object.keys(hang_hoa).forEach((key)=>{
             hang_hoa[key] === undefined && delete hang_hoa[key]

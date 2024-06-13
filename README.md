@@ -1,1 +1,3 @@
-# ql_hang_hoa
+# backend: Node, expressjs
+# DB: MongDB
+# Client: Flutter

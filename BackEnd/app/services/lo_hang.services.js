@@ -9,7 +9,7 @@ class LoHangService {
         // lay du lieu doi tuong loaihang va loai bo cac thuoc tinh undefined
         const lo_hang = {
              so_lo: payload.so_lo, 
-             ma_vach_lo_hang: payload.ma_vach_lo_hang,
+          
              ma_hang_hoa: payload.ma_hang_hoa,
              ngay_san_xuat: payload.ngay_san_xuat, 
              han_su_dung: payload.han_su_dung,  
@@ -25,7 +25,7 @@ class LoHangService {
     
     async create(payload){   
         const lo_hang = this.extractLoHangData(payload);
-        console.log("loaihang " + lo_hang.ma_vach_lo_hang);
+       
         try {
          const ketqua = await this.collectionLoHang.insertOne(lo_hang);
          console.log('Insert thành công');

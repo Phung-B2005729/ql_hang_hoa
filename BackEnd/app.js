@@ -10,9 +10,11 @@ const authenticationMiddleware = require('./app/middleware/authentication');
 
 
 // khai báo đường dẫn route
-  // tài khoản
-const userRouter = require("./app/routers/user.route");
-const phanQuyenRouter = require("./app/routers/phan_quyen.route");
+  // user đăng nhập
+const authRouter = require("./app/routers/auth.route");
+ // tài khoản
+const taiKhoanRouter = require("./app/routers/tai_khoan.route"); 
+
   // hàng hoá
 const hangHoaRouter = require("./app/routers/hang_hoa.route");
 const thuongHieuRouter = require("./app/routers/thuong_hieu.route");
@@ -44,8 +46,10 @@ app.use(cookieParser());
 
 
 //tài khoản
-app.use("/api/user", userRouter);
-app.use("/api/phan_quyen", phanQuyenRouter);
+app.use("/api/tai_khoan", taiKhoanRouter);
+//user đăng nhập
+app.use("/api", authRouter);
+
 // hàng hoá
 app.use("/api/hang_hoa", hangHoaRouter);
 app.use("/api/loai_hang", loaiHangRouter);

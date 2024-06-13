@@ -17,6 +17,7 @@ class NhanVienService {
              gioi_tinh: payload.gioi_tinh,
              chuc_vu: payload.chuc_vu,
              trang_thai: payload.trang_thai,
+             tai_khoan: payload.tai_khoan, // object tài khoản
              ma_cua_hang: payload.ma_cua_hang
         }
         Object.keys(nhan_vien).forEach((key)=>{

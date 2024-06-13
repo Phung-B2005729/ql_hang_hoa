@@ -31,7 +31,7 @@ exports.findALL = async (req, res, next) => {
     try{
         const loHangService = new LoHangService(MongoDB.client);
         const ma_hang_hoa = req.query.ma_hang_hoa; // tìm theo ma_hang_hoa
-        const ma_vach_lo_hang = req.query.ma_vach_lo_hang;
+      
         let filter = {};
         if(ma_hang_hoa){
                         let t1 = {
@@ -39,12 +39,7 @@ exports.findALL = async (req, res, next) => {
                     }
             filter = {...filter, ...t1}
          }
-         if(ma_vach_lo_hang){
-            let t1 = {
-                ma_vach_lo_hang : ma_vach_lo_hang
-            }
-            filter = {...filter, ...t1}
-        }
+         
             documents = await loHangService.find(filter);
             return res.send(documents);
     }catch(e){
