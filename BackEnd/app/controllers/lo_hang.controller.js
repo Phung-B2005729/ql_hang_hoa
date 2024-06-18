@@ -6,7 +6,7 @@ const helper = require("../helper/index");
 
 
 exports.create = async (req, res, next) => {
-    if(req.body.so_lo==null || req.body.ma_hang_hoa==null || req.body.ngay_san_xuat==null || req.body.han_su_dung==null){
+    if(req.body.so_lo==null || req.body.ma_hang_hoa==null){
         return next(new ApiError(400, "Data can not be empty"));
     }
     else{

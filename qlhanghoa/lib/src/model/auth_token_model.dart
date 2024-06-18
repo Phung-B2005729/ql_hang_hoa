@@ -4,10 +4,10 @@ class AuthToken {
 
   AuthToken({String? accessToken, String? refreshToken}) {
     if (accessToken != null) {
-      this._accessToken = accessToken;
+      _accessToken = accessToken;
     }
     if (refreshToken != null) {
-      this._refreshToken = refreshToken;
+      _refreshToken = refreshToken;
     }
   }
   //
@@ -17,10 +17,12 @@ class AuthToken {
         refreshToken: refreshToken ?? this.refreshToken);
   }
 
+  // ignore: unnecessary_getters_setters
   String? get accessToken => _accessToken;
   set accessToken(String? accessToken) => _accessToken = accessToken;
 
   //
+  // ignore: unnecessary_getters_setters
   String? get refreshToken => _refreshToken;
   set refreshToken(String? refreshToken) => _refreshToken = refreshToken;
 
@@ -31,8 +33,8 @@ class AuthToken {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['access_token'] = this._accessToken;
-    data['refresh_token'] = this._refreshToken;
+    data['access_token'] = _accessToken;
+    data['refresh_token'] = _refreshToken;
     return data;
   }
 }

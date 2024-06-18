@@ -9,13 +9,12 @@ class LoHangService {
         // lay du lieu doi tuong loaihang va loai bo cac thuoc tinh undefined
         const lo_hang = {
              so_lo: payload.so_lo, 
-          
              ma_hang_hoa: payload.ma_hang_hoa,
-             ngay_san_xuat: payload.ngay_san_xuat, 
+             ngay_san_xuat: payload.ngay_san_xuat, // không theo lô thì không có ngày sản xuất và hạn sử dụng
              han_su_dung: payload.han_su_dung,  
              ngay_tao: payload.ngay_tao ?? new Date(), 
              tong_so_luong: payload.tong_so_luong,
-             trang_thai: payload.trang_thai,
+             trang_thai: payload.trang_thai // 'còn hàng','đã trả hàng'
         }
         Object.keys(lo_hang).forEach((key)=>{
             lo_hang[key] === undefined && delete lo_hang[key]

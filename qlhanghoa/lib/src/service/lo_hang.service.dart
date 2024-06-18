@@ -1,12 +1,12 @@
 import 'package:get/get.dart';
 import 'package:qlhanghoa/src/config/app_config.dart';
-import 'package:qlhanghoa/src/model/hang_hoa_model.dart';
+import 'package:qlhanghoa/src/model/lo_hang.model.dart';
 import 'package:qlhanghoa/src/util/auth_util.dart';
 
-class HangHoaService extends GetConnect {
+class LoHangService extends GetConnect {
   // hàm create
-  HangHoaService() {
-    httpClient.baseUrl = "${AppConfig.urlApi}/hang_hoa";
+  LoHangService() {
+    httpClient.baseUrl = "${AppConfig.urlApi}/lo_hang";
     httpClient.addRequestModifier<void>((request) {
       String? token = AuthUtil.getAccessToken();
       if (token != null) {
@@ -16,9 +16,9 @@ class HangHoaService extends GetConnect {
     });
   }
   // hàm create
-  Future<Response> create(HangHoaModel hangHoa) async {
+  Future<Response> create(LoHangModel loHang) async {
     try {
-      var body = hangHoa.toJson();
+      var body = loHang.toJson();
       final response = await post(
         "/",
         body,
@@ -32,14 +32,14 @@ class HangHoaService extends GetConnect {
       print("Error: $e");
       return const Response(
         statusCode: 500,
-        body: {"message": "Server Error"},
+        statusText: "Server Error",
       );
     }
   }
 
   // refresh Token
   Future<Response> findAll(
-      {String? tenHangHoa,
+      {String? so_lo,
       String? maHangHoa,
       String? hanSuDung,
       String? ngayBatDau,
@@ -49,7 +49,7 @@ class HangHoaService extends GetConnect {
       final response = await get(
         "/",
         query: {
-          'ten_hang_hoa': tenHangHoa,
+          'so_lo': so_lo,
           'ma_hang_hoa': maHangHoa,
           'han_su_dung': hanSuDung,
           'ngay_bat_dau': ngayBatDau,
@@ -64,14 +64,14 @@ class HangHoaService extends GetConnect {
       print("Error: $e");
       return const Response(
         statusCode: 500,
-        body: {"message": "Server Error"},
+        statusText: "Server Error",
       );
     }
   }
 
   // deleteOne
   Future<Response> deleteOne({required String id}) async {
-    Response reponse = await delete("/$id");
+    var reponse = await delete("/$id");
     //
     return reponse;
   }
@@ -92,11 +92,9 @@ class HangHoaService extends GetConnect {
   }
 
   Future<Response> update(
-      {required String id, required HangHoaModel hangHoa}) async {
-    print(id);
-    var body = hangHoa.toJson();
-    print(id);
-    Response response = await put('/$id', body);
+      {required String id, required LoHangModel loHang}) async {
+    var body = loHang.toJson();
+    final response = await put('/$id', body);
     return response;
   }
   //

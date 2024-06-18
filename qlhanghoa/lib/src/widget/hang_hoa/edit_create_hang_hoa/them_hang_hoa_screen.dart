@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:qlhanghoa/src/controller/hang_hoa/them_hang_hoa_controller.dart';
 import 'package:qlhanghoa/src/controller/loai_hang/loai_hang_controller.dart';
 import 'package:qlhanghoa/src/controller/thuong_hieu/thuong_hieu.controller.dart';
@@ -37,7 +40,7 @@ class ThemHangHoaScreen extends GetView<ThemHangHoaController> {
                           itemCount: controller.listImage.length + 1,
                           itemBuilder: (BuildContext context, int index) {
                             return (controller.indexImage.value == index)
-                                ? _buildPickImage()
+                                ? _buildPickImage(context)
                                 : _buildImage(index);
                           }),
                     ),
@@ -123,7 +126,7 @@ class ThemHangHoaScreen extends GetView<ThemHangHoaController> {
       leading: IconButton(
           onPressed: () {
             // chuyển về trang hàng hoá
-            Get.back();
+            Get.dialog(_buildDiaLogBack());
           },
           icon: const Icon(
             Icons.close,
@@ -144,6 +147,41 @@ class ThemHangHoaScreen extends GetView<ThemHangHoaController> {
                 color: ColorClass.color_xanh_it_dam,
               ),
             ))
+      ],
+    );
+  }
+
+  AlertDialog _buildDiaLogBack() {
+    return AlertDialog(
+      title: const Text(
+        'Bạn có chắc chắn muốn thoát ?',
+        style: TextStyle(
+            color: Colors.black, fontSize: 18, fontWeight: FontWeight.w700),
+      ),
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(5))),
+      content: const Text('Lưu ý:  dữ liệu sẽ không được lưu nếu thoát',
+          style: TextStyle(color: Colors.black, fontSize: 16)),
+      actions: [
+        TextButton(
+          child: const Text(
+            'HUỶ',
+            style: TextStyle(color: ColorClass.color_cancel, fontSize: 18),
+          ),
+          onPressed: () {
+            Get.back();
+          },
+        ),
+        TextButton(
+          child: const Text(
+            'THOÁT',
+            style: TextStyle(color: ColorClass.color_button_nhat, fontSize: 18),
+          ),
+          onPressed: () async {
+            Get.back();
+            Get.back();
+          },
+        ),
       ],
     );
   }
@@ -478,12 +516,12 @@ class ThemHangHoaScreen extends GetView<ThemHangHoaController> {
 
   Widget _buildFieldLoaiHang() {
     return TextFormField(
-      /*  validator: (value) {
+      validator: (value) {
         if ((value == null || value.isEmpty)) {
           return 'Vui lòng chọn loại hàng';
         }
         return null;
-      }, */
+      },
       readOnly: true,
       controller: controller.loaiHangController,
       style:
@@ -848,11 +886,49 @@ class ThemHangHoaScreen extends GetView<ThemHangHoaController> {
     );
   }
 
-  GestureDetector _buildPickImage() {
+  Widget _buildPickImage(BuildContext context) {
     return GestureDetector(
-      onTap: () {
+      onTap: () async {
         // gọi
-        controller.pickImage();
+        showModalBottomSheet(
+            context: context,
+            builder: (BuildContext context) {
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ListTile(
+                    onTap: () {
+                      Get.back();
+                      controller.pickImage(ImageSource.camera);
+                      // Get.back();
+                    },
+                    leading: const Icon(Icons.camera, size: 28),
+                    title: const Text(
+                      'Chụp ảnh mới',
+                      style: TextStyle(color: Colors.black),
+                    ),
+                  ),
+                  const Divider(
+                    color: ColorClass.color_thanh_ke,
+                  ),
+                  ListTile(
+                    onTap: () {
+                      Get.back();
+                      controller.pickMulImage();
+                      //  Get.back();
+                    },
+                    leading: const Icon(Icons.photo, size: 28),
+                    title: const Text(
+                      'Thêm từ thư viện',
+                      style: TextStyle(color: Colors.black),
+                    ),
+                  ),
+                  const Divider(
+                    color: ColorClass.color_thanh_ke,
+                  ),
+                ],
+              );
+            });
       },
       child: const SizedBox(
         height: 90,
@@ -879,16 +955,21 @@ class ThemHangHoaScreen extends GetView<ThemHangHoaController> {
           child: Stack(
             children: [
               Positioned.fill(
-                child: Image.file(
-                  controller.listImage[index],
-                  fit: BoxFit.cover,
-                ),
+                child: (controller.listImage[index] is XFile)
+                    ? Image.file(
+                        File(controller.listImage[index].path),
+                        fit: BoxFit.cover,
+                      )
+                    : Image.network(
+                        controller.listImage[index].linkAnh,
+                        fit: BoxFit.cover,
+                      ),
               ),
               Positioned(
                 right: 0,
                 child: GestureDetector(
                   onTap: () {
-                    controller.deleteListImage(index);
+                    controller.deleteImage(index);
                   },
                   child: const SizedBox(
                     height: 25,

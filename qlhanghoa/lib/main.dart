@@ -7,6 +7,7 @@ import 'package:qlhanghoa/src/binding/all_binding.dart';
 import 'package:qlhanghoa/src/config/app_config.dart';
 import 'package:qlhanghoa/src/controller/account/auth_controller.dart';
 import 'package:qlhanghoa/src/helper/template/app_theme.dart';
+import 'package:qlhanghoa/src/widget/account/login/login.dart';
 import 'package:qlhanghoa/src/widget/home.dart';
 
 void main() async {
@@ -34,8 +35,6 @@ class MyApp extends StatelessWidget {
         title: "Quản Lý Hàng Hoá",
         initialBinding: AllBinding(),
         theme: AppTheme.light(),
-        home:
-            Home() /* Obx(() => controller.isLogon!.value ? Home() : const Login())*/
-        );
+        home: Obx(() => controller.isLogon!.value ? Home() : const Login()));
   }
 }

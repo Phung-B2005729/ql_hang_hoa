@@ -25,26 +25,44 @@ class ChonThuongHieuScreen extends StatelessWidget {
                     padding: const EdgeInsets.only(left: 10, right: 10),
                     child: Column(
                       children: [
-                        ListTile(
-                          onTap: () {
-                            // cập nhật controllerLoaiHang bên ThemHangHoaController và HangHoaModel.loaiHang = listLoaiHang[index]
-                            themHangHoaController
-                                .saveThuongHieu(controller.filteredList[index]);
-                            Get.back();
+                        Dismissible(
+                          key: Key(
+                              controller.filteredList[index].sId.toString()),
+                          direction: DismissDirection.endToStart,
+                          onDismissed: (direction) async {
+                            controller.delete(controller.filteredList[index]);
+                            controller.filteredList.removeAt(index);
                           },
-                          title: Text(
-                            controller.filteredList[index].tenThuongHieu!,
-                            style: const TextStyle(color: Colors.black),
+                          background: Container(
+                            color: Colors.red,
+                            alignment: Alignment.centerRight,
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: const Icon(
+                              Icons.delete,
+                              color: Colors.white,
+                            ),
                           ),
-                          selected: themHangHoaController.getIdThuongHieu() ==
-                              controller.filteredList[index].sId,
-                          trailing: themHangHoaController.getIdThuongHieu() ==
-                                  controller.filteredList[index].sId
-                              ? const Icon(
-                                  Icons.check,
-                                  color: ColorClass.color_button_nhat,
-                                )
-                              : null,
+                          child: ListTile(
+                            onTap: () {
+                              // cập nhật controllerLoaiHang bên ThemHangHoaController và HangHoaModel.loaiHang = listLoaiHang[index]
+                              themHangHoaController.saveThuongHieu(
+                                  controller.filteredList[index]);
+                              Get.back();
+                            },
+                            title: Text(
+                              controller.filteredList[index].tenThuongHieu!,
+                              style: const TextStyle(color: Colors.black),
+                            ),
+                            selected: themHangHoaController.getIdThuongHieu() ==
+                                controller.filteredList[index].sId,
+                            trailing: themHangHoaController.getIdThuongHieu() ==
+                                    controller.filteredList[index].sId
+                                ? const Icon(
+                                    Icons.check,
+                                    color: ColorClass.color_button_nhat,
+                                  )
+                                : null,
+                          ),
                         ),
                         const Divider(
                           color: ColorClass.color_thanh_ke,

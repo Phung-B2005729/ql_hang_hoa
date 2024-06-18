@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:qlhanghoa/src/controller/hang_hoa/them_hang_hoa_controller.dart';
 import 'package:qlhanghoa/src/model/loai_hang_model.dart';
 import 'package:qlhanghoa/src/service/loai_hang_service.dart';
+import 'package:qlhanghoa/src/widget/shared/error_dialog.dart';
 import 'package:qlhanghoa/src/widget/shared/show_snack_bar.dart';
 
 class LoaiHangController extends GetxController {
@@ -14,12 +15,7 @@ class LoaiHangController extends GetxController {
   RxList<LoaiHangModel> filteredList = <LoaiHangModel>[].obs;
 
   // list lấy từ service
-  List<LoaiHangModel> listLoaiHang = [
-    LoaiHangModel(sId: '1', tenLoai: 'GrennFix'),
-    LoaiHangModel(sId: '2', tenLoai: 'GrennFix2'),
-    LoaiHangModel(sId: '3', tenLoai: 'GrennFix3'),
-    LoaiHangModel(sId: '4', tenLoai: 'GrennFix4')
-  ];
+  List<LoaiHangModel> listLoaiHang = [];
 
   TextEditingController searchController = TextEditingController();
   TextEditingController themLoaiHangController = TextEditingController();
@@ -29,7 +25,7 @@ class LoaiHangController extends GetxController {
   @override
   void onInit() async {
     super.onInit();
-    getListLoaiHang();
+    await getListLoaiHang();
     filteredList.value = listLoaiHang;
     searchController.addListener(() {
       // lắng nghe sự thay đổi controller
@@ -57,40 +53,108 @@ class LoaiHangController extends GetxController {
   }
 
   Future<void> addLoaiHang(String tenloai) async {
-    // gọi service thêm loại hàng
     // nếu trả về 200 thì add vào list danh sách
     // lấy ra id
     if (tenloai.isNotEmpty) {
       loading.value = true;
-      var id = listLoaiHang.length + 1;
-      // ignore: unused_local_variable
-      LoaiHangModel loaiHang =
-          LoaiHangModel(sId: id.toString(), tenLoai: tenloai);
-      listLoaiHang.add(loaiHang);
-      filterListLoaiHang();
-      // update loại hàng cho hàng
-      ThemHangHoaController controller = Get.find();
-      controller.saveLoaiHang(loaiHang);
-      themLoaiHangController.text = '';
-      Get.back();
-      loading.value = false;
+      // gọi service thêm loại hàng
+      LoaiHangModel loaiHang = LoaiHangModel(tenLoai: tenloai);
+      Response res = await LoaiHangService().create(loaiHang);
+      if (res.statusCode == 200) {
+        print(res.body);
+        var id = res.body.toString();
+        // ignore: unused_local_variable
+        LoaiHangModel loaiHang =
+            LoaiHangModel(sId: id.toString(), tenLoai: tenloai);
+        print(id);
+        listLoaiHang.add(loaiHang);
+        filterListLoaiHang();
+        // update loại hàng cho hàng
+        ThemHangHoaController controller = Get.find();
+        controller.saveLoaiHang(loaiHang);
+        themLoaiHangController.text = '';
+        Get.back();
+        loading.value = false;
+      } else {
+        loading.value = false;
+        Get.dialog(
+            ErrorDialog(
+              callback: () {},
+              message: (res.body != null && res.body['message'] != null)
+                  ? res.body['message']
+                  : "Lỗi trong quá trình xử lý",
+            ),
+            // barrierDismissible có cho phép đóng hợp thoại bằng cách chạm ra ngoài hay không ?
+            barrierDismissible: false);
+      }
     } else {
       GetShowSnackBar.errorSnackBar('Vui lòng nhập vào tên loại hàng');
     }
   }
 
   Future<void> getListLoaiHang() async {
-    //lấy danh sách từ api
+    // Lấy danh sách từ API
     Response res = await LoaiHangService().findAll();
     if (res.statusCode == 200) {
-      List<dynamic> jsonList = jsonDecode(res.body);
-      listLoaiHang =
-          jsonList.map((json) => LoaiHangModel.fromJson(json)).toList();
+      // In ra body của response
+      List<dynamic> jsonList;
+      if (res.body is List) {
+        jsonList = res.body;
+      } else {
+        jsonList = jsonDecode(res.body);
+      }
+      print(jsonList);
+
+      // Chuyển đổi JSON list thành list of LoaiHangModel
+      listLoaiHang = await jsonList
+          .map((json) => LoaiHangModel.fromJson(json))
+          .toList()
+          .cast<LoaiHangModel>();
+
+      // Bạn có thể sử dụng listLoaiHang ở đây
     } else {
-      GetShowSnackBar.errorSnackBar(
-          (res.body != null && res.body['message'] != null)
-              ? res.body['message']
-              : "Lỗi trong quá trình xử lý");
+      // Hiển thị dialog lỗi
+      Get.dialog(
+          ErrorDialog(
+            callback: () {},
+            message: (res.body != null && res.body['message'] != null)
+                ? res.body['message']
+                : "Lỗi trong quá trình xử lý",
+          ),
+          // barrierDismissible có cho phép đóng hợp thoại bằng cách chạm ra ngoài hay không ?
+          barrierDismissible: false);
     }
+  }
+
+  Future<void> delete(LoaiHangModel loaiHang) async {
+    Response res = await LoaiHangService().deleteOne(id: loaiHang.sId!);
+    if (res.statusCode == 200) {
+      listLoaiHang.remove(loaiHang);
+      // update lại loaihang của list nếu nó bằng loại hàng này
+      ThemHangHoaController controller = Get.find();
+      if (controller.getIdLoaiHang() == loaiHang.sId!) {
+        controller.deleteLoaiHang();
+      }
+      filterListLoaiHang();
+      GetShowSnackBar.successSnackBar('${loaiHang.tenLoai} đã được xóa');
+      update();
+    } else {
+      getListLoaiHang();
+      filterListLoaiHang();
+      Get.dialog(
+          ErrorDialog(
+            callback: () {},
+            message: (res.body != null && res.body['message'] != null)
+                ? res.body['message']
+                : "Lỗi trong quá trình xử lý",
+          ),
+          // barrierDismissible có cho phép đóng hợp thoại bằng cách chạm ra ngoài hay không ?
+          barrierDismissible: false);
+    }
+  }
+
+  int findIndexById(String id) {
+    print(id);
+    return listLoaiHang.indexWhere((element) => element.sId == id);
   }
 }

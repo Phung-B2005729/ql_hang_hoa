@@ -11,7 +11,7 @@ class TonKhoLoHangService {
              so_lo: payload.so_lo,
              ma_cua_hang: payload.ma_cua_hang,
              so_luong_ton : payload.so_luong_ton,
-             ma_san_pham: payload.ma_san_pham,
+             ma_hang_hoa: payload.ma_hang_hoa,
         }
         Object.keys(ton_kho_lo_hang).forEach((key)=>{
             ton_kho_lo_hang[key] === undefined && delete ton_kho_lo_hang[key]

@@ -3,11 +3,13 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 
 class WarningDialog extends StatelessWidget {
-  const WarningDialog({Key? key, this.callback, required this.message})
+  const WarningDialog(
+      {Key? key, this.callback, required this.message, this.title})
       : super(key: key);
 
   final Function? callback;
   final String message;
+  final String? title;
 
   @override
   Widget build(BuildContext context) {

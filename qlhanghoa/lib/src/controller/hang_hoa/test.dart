@@ -238,6 +238,7 @@ class ThemHangHoaController extends GetxController {
         loading.value = true;
         formKey.currentState!.save();
         print(hangHoaModel.thuongHieu!.tenThuongHieu);
+        // save hình ảnh và upload
         print('gọi save ảnh');
         var res = await UpLoadService.uploadMultiple(listImage);
         var bool = checkResponHttp(res);
@@ -251,7 +252,10 @@ class ThemHangHoaController extends GetxController {
           var response = await HangHoaService().create(hangHoaModel);
           bool = checkResponGetConnect(response);
           if (bool == true) {
+            //hangHoaModel.copyWith(maHangHoa: res.body.toString());
             hangHoaModel.maHangHoa = res.body;
+            // gọi thêm hàng hoá
+            // gọi update
             print('gọi update');
             loading.value = false;
             GetShowSnackBar.successSnackBar('Đã thêm thành công!');
@@ -267,4 +271,59 @@ class ThemHangHoaController extends GetxController {
       GetShowSnackBar.errorSnackBar('Vui lòng thêm hình ảnh cho hàng hoá');
     }
   }
+
+  /*Future<void> save() async {
+    if (formKey.currentState!.validate()) {
+      print(maHangController.text);
+      print(tenHangController.text);
+      if (listImage.isNotEmpty) {
+        print('Gọi save');
+        loading.value = true;
+        formKey.currentState!.save();
+        print(hangHoaModel.thuongHieu!.tenThuongHieu);
+        // gọi thêm hàng hoá
+        var res = await HangHoaService().create(hangHoaModel);
+        var bool = checkResponGetConnect(res);
+        if (bool == true) {
+          print(res.body);
+          //hangHoaModel.copyWith(maHangHoa: res.body.toString());
+          hangHoaModel.maHangHoa = res.body;
+          // save hình ảnh và upload
+          print('gọi save ảnh');
+          var response = await UpLoadService.uploadMultiple(listImage);
+          bool = checkResponHttp(response);
+          if (bool == true) {
+            print('gọi save ảnh 2');
+            var data = jsonDecode(response.body);
+            hangHoaModel.hinhAnh = await data
+                .map((json) => HinhAnhModel.fromJson(json))
+                .toList()
+                .cast<HinhAnhModel>();
+            // gọi update
+            print('gọi update');
+            var response2 = await HangHoaService().update(
+                id: hangHoaModel.maHangHoa.toString(), hangHoa: hangHoaModel);
+            bool = checkResponGetConnect(response2);
+            if (bool == true) {
+              loading.value = false;
+              GetShowSnackBar.successSnackBar('Đã thêm thành công!');
+            } else {
+              await HangHoaService()
+                  .deleteOne(id: hangHoaModel.maHangHoa.toString());
+              await deleteListImage(hangHoaModel.hinhAnh!);
+              hangHoaModel.hinhAnh = [];
+            }
+          } else {
+            // ignore: unused_local_variable
+            var response2 = await HangHoaService()
+                .deleteOne(id: hangHoaModel.maHangHoa.toString());
+          }
+        }
+      }
+      loading.value = false;
+    } else {
+      loading.value = false;
+      GetShowSnackBar.errorSnackBar('Vui lòng thêm hình ảnh cho hàng hoá');
+    }
+  } */
 }

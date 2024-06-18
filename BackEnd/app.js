@@ -34,6 +34,7 @@ const chiTietNhapHangRouter = require("./app/routers/chi_tiet_nhap_hang.route");
 const phieuKiemKhoRouter = require("./app/routers/phieu_kiem_kho.route");
 const chiTietKiemKhoRouter = require("./app/routers/chi_tiet_kiem_kho.route");
 
+//const authenticationMiddleware = require('./app/middleware/authentication');
 // su dung thuvien-midd
 const app = express();
 
@@ -45,10 +46,13 @@ app.use(cookieParser());
 
 
 
-//tài khoản
-app.use("/api/tai_khoan", taiKhoanRouter);
+
 //user đăng nhập
 app.use("/api", authRouter);
+
+//app.use(authenticationMiddleware);
+//tài khoản
+app.use("/api/tai_khoan", taiKhoanRouter);
 
 // hàng hoá
 app.use("/api/hang_hoa", hangHoaRouter);

@@ -7,5 +7,7 @@ const router = express.Router();
 router.post('/upload_single', upload, hinh_anh.uploadSingle);
 router.post('/upload_multiple', uploadMultiple, hinh_anh.uploadMultiple);
 
+router.delete('/delete/:ten_anh', hinh_anh.deleteImag);
+
 
 module.exports = router;

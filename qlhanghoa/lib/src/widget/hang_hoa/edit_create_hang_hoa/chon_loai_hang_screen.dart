@@ -25,26 +25,44 @@ class ChonLoaiHangScreen extends StatelessWidget {
                     padding: const EdgeInsets.only(left: 10, right: 10),
                     child: Column(
                       children: [
-                        ListTile(
-                          onTap: () {
-                            // cập nhật controllerLoaiHang bên ThemHangHoaController và HangHoaModel.loaiHang = listLoaiHang[index]
-                            themHangHoaController
-                                .saveLoaiHang(controller.filteredList[index]);
-                            Get.back();
+                        Dismissible(
+                          key: Key(
+                              controller.filteredList[index].sId.toString()),
+                          direction: DismissDirection.endToStart,
+                          onDismissed: (direction) async {
+                            controller.delete(controller.filteredList[index]);
+                            controller.filteredList.removeAt(index);
                           },
-                          title: Text(
-                            controller.filteredList[index].tenLoai!,
-                            style: const TextStyle(color: Colors.black),
+                          background: Container(
+                            color: Colors.red,
+                            alignment: Alignment.centerRight,
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: const Icon(
+                              Icons.delete,
+                              color: Colors.white,
+                            ),
                           ),
-                          selected: themHangHoaController.getIdLoaiHang() ==
-                              controller.filteredList[index].sId,
-                          trailing: themHangHoaController.getIdLoaiHang() ==
-                                  controller.filteredList[index].sId
-                              ? const Icon(
-                                  Icons.check,
-                                  color: ColorClass.color_button_nhat,
-                                )
-                              : null,
+                          child: ListTile(
+                            onTap: () {
+                              // cập nhật controllerLoaiHang bên ThemHangHoaController và HangHoaModel.loaiHang = listLoaiHang[index]
+                              themHangHoaController
+                                  .saveLoaiHang(controller.filteredList[index]);
+                              Get.back();
+                            },
+                            title: Text(
+                              controller.filteredList[index].tenLoai!,
+                              style: const TextStyle(color: Colors.black),
+                            ),
+                            selected: themHangHoaController.getIdLoaiHang() ==
+                                controller.filteredList[index].sId,
+                            trailing: themHangHoaController.getIdLoaiHang() ==
+                                    controller.filteredList[index].sId
+                                ? const Icon(
+                                    Icons.check,
+                                    color: ColorClass.color_button_nhat,
+                                  )
+                                : null,
+                          ),
                         ),
                         const Divider(
                           color: ColorClass.color_thanh_ke,
@@ -86,58 +104,7 @@ class ChonLoaiHangScreen extends StatelessWidget {
           IconButton(
               onPressed: () {
                 // mo modal nhap ten loai hang va xu ly them
-                Get.dialog(AlertDialog(
-                  title: const Text(
-                    'Thêm loại hàng',
-                    style: TextStyle(color: Colors.black, fontSize: 18),
-                  ),
-                  shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(5))),
-                  content: TextField(
-                    controller: loaiHangController.themLoaiHangController,
-                    style: const TextStyle(fontSize: 16, color: Colors.black),
-                    cursorColor: Colors.black,
-                    decoration: const InputDecoration(
-                      focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(
-                            color: ColorClass.color_button_nhat, width: 1),
-                      ),
-                      enabledBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(
-                        color: Colors.black,
-                      )),
-                      hintText: 'Nhập tên loại hàng',
-                      hintStyle: TextStyle(
-                          fontSize: 14,
-                          color: Color.fromARGB(255, 170, 170, 170)),
-                    ),
-                  ),
-                  actions: [
-                    TextButton(
-                      child: const Text(
-                        'HUỶ',
-                        style: TextStyle(
-                            color: ColorClass.color_cancel, fontSize: 18),
-                      ),
-                      onPressed: () {
-                        loaiHangController.themLoaiHangController.text = '';
-                        Get.back();
-                      },
-                    ),
-                    TextButton(
-                      child: const Text(
-                        'LƯU',
-                        style: TextStyle(
-                            color: ColorClass.color_button_nhat, fontSize: 18),
-                      ),
-                      onPressed: () async {
-                        Get.back();
-                        await loaiHangController.addLoaiHang(
-                            loaiHangController.themLoaiHangController.text);
-                      },
-                    ),
-                  ],
-                ));
+                Get.dialog(_buildDiaLogThem());
               },
               icon: const Icon(
                 Icons.add,
@@ -146,6 +113,58 @@ class ChonLoaiHangScreen extends StatelessWidget {
               )),
         ],
         bottom: _buildBottomSearch());
+  }
+
+  AlertDialog _buildDiaLogThem() {
+    return AlertDialog(
+      title: const Text(
+        'Thêm loại hàng',
+        style: TextStyle(color: Colors.black, fontSize: 18),
+      ),
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(5))),
+      content: TextField(
+        controller: loaiHangController.themLoaiHangController,
+        style: const TextStyle(fontSize: 16, color: Colors.black),
+        cursorColor: Colors.black,
+        decoration: const InputDecoration(
+          focusedBorder: UnderlineInputBorder(
+            borderSide:
+                BorderSide(color: ColorClass.color_button_nhat, width: 1),
+          ),
+          enabledBorder: UnderlineInputBorder(
+              borderSide: BorderSide(
+            color: Colors.black,
+          )),
+          hintText: 'Nhập tên loại hàng',
+          hintStyle: TextStyle(
+              fontSize: 14, color: Color.fromARGB(255, 170, 170, 170)),
+        ),
+      ),
+      actions: [
+        TextButton(
+          child: const Text(
+            'HUỶ',
+            style: TextStyle(color: ColorClass.color_cancel, fontSize: 18),
+          ),
+          onPressed: () {
+            loaiHangController.themLoaiHangController.text = '';
+            Get.back();
+          },
+        ),
+        TextButton(
+          child: const Text(
+            'LƯU',
+            style: TextStyle(color: ColorClass.color_button_nhat, fontSize: 18),
+          ),
+          onPressed: () async {
+            Get.back();
+            await loaiHangController
+                .addLoaiHang(loaiHangController.themLoaiHangController.text);
+          },
+        ),
+      ],
+    );
   }
 
   PreferredSize _buildBottomSearch() {

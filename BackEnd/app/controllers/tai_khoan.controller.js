@@ -6,10 +6,12 @@ const MongoDB = require("../utils/mongodb.util");
 const bcrypt = require('bcrypt')
 
 exports.create = async (req, res, next) => {
- 
       try{
         if(!req.body.user_name || !req.body.password || !req.body.confirm_password){
           return next(new ApiError(400, "Data not empty"));
+        }
+        if((req.user.tai_khoan && req.user.tai_khoan.phan_quyen!=0) || !req.user || !req.user.tai_khoan){
+          return next(new ApiError(402, "Bạn không có quyền admin để cấp tài khoản cho người dùng khác"));
         }
         console.log(req.body.user_name);
         console.log('Insert controller');

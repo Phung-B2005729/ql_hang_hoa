@@ -1,7 +1,6 @@
 import 'package:qlhanghoa/src/model/tai_khoan_model.dart';
 
 class NhanVienModel {
-  String? sId;
   String? maNhanVien;
   String? tenNhanVien;
   String? diaChi;
@@ -15,8 +14,7 @@ class NhanVienModel {
   TaiKhoan? taiKhoan;
 
   NhanVienModel(
-      {this.sId,
-      this.maNhanVien,
+      {this.maNhanVien,
       this.tenNhanVien,
       this.diaChi,
       this.sdt,
@@ -29,7 +27,6 @@ class NhanVienModel {
       this.trangThai});
 
   NhanVienModel.fromJson(Map<String, dynamic> json) {
-    sId = json['_id'];
     maNhanVien = json['ma_nhan_vien'];
     tenNhanVien = json['ten_nhan_vien'];
     diaChi = json['dia_chi'];
@@ -45,7 +42,7 @@ class NhanVienModel {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['_id'] = sId;
+
     data['ma_nhan_vien'] = maNhanVien;
     data['ten_nhan_vien'] = tenNhanVien;
     data['dia_chi'] = diaChi;

@@ -25,7 +25,7 @@ class AuthService extends GetConnect {
       print("Error: $e");
       return const Response(
         statusCode: 500,
-        statusText: "Server Error",
+        body: {"message": "Server Error"},
       );
     }
   }

@@ -6,7 +6,7 @@ const { sdtSchema, emailSchema } = require("../validation/index");
 
 
 exports.create = async (req, res, next) => {
-    if(req.body.ten_hang_hoa==null || req.body.sdt==null){
+    if(req.body.ten_hang_hoa==null || req.body.loai_hang==null || req.body.thuong_hieu==null){
         return next(new ApiError(400, "Data can not be empty"));
     }
     else{
@@ -58,7 +58,7 @@ exports.create = async (req, res, next) => {
           }
             const document = await hangHoaService.create(req.body);
             
-            return res.send(document.insertedId);
+            return res.send(req.body.ma_hang_hoa);
         }catch(e){
             return next(new ApiError(500, "Lỗi server trong quá trình thêm"));
         }
@@ -104,7 +104,8 @@ exports.update = async (req,res, next) => {
     }
     try{
      const hangHoaService = new HangHoaService(MongoDB.client);
-     
+     console.log('update');
+     console.log(req.body);
      const document = await hangHoaService.update(req.params.id, req.body);
      if(!document){
          return next(new ApiError(404,"not found"));

@@ -33,7 +33,7 @@ class LoaiHangService extends GetConnect {
       print("Error: $e");
       return const Response(
         statusCode: 500,
-        statusText: "Server Error",
+        body: {"message": "Server Error"},
       );
     }
   }
@@ -52,7 +52,7 @@ class LoaiHangService extends GetConnect {
       print("Error: $e");
       return const Response(
         statusCode: 500,
-        statusText: "Server Error",
+        body: {"message": "Server Error"},
       );
     }
   }

@@ -5,7 +5,7 @@ const fs = require("fs");
 
 const uploadMultiple = multer({
   storage: multer.memoryStorage(),
-  limits: { fileSize: 1000000 },
+  limits: { fileSize: 10000000 },
   fileFilter: function (req, file, cb) {
     checkFileType(file, cb);
   }
@@ -13,7 +13,7 @@ const uploadMultiple = multer({
 
 const upload = multer({
   storage: multer.memoryStorage(),
-  limits: { fileSize: 1000000 },
+  limits: { fileSize: 10000000 },
   fileFilter: async function (req, file, cb) {
   checkFileType(file, cb);
   }
@@ -21,13 +21,17 @@ const upload = multer({
 
 // // Check file Type
 function checkFileType(file, cb) {
-
+   console.log('gọi check');
+   console.log(file);
   // Allowed ext
   const fileTypes = /jpeg|jpg|png|gif/;
   // Check ext
   const extName = fileTypes.test(path.extname(file.originalname).toLowerCase());
+  console.log(extName);
+  
   // Check mime
   const mimeType = fileTypes.test(file.mimetype);
+  console.log(mimeType);
 
   if (mimeType && extName) {
     return cb(null, true);
