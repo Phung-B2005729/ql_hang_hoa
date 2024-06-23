@@ -41,6 +41,7 @@ class LoHangService extends GetConnect {
   Future<Response> findAll(
       {String? so_lo,
       String? maHangHoa,
+      String? maCuaHang,
       String? hanSuDung,
       String? ngayBatDau,
       String? ngayKetThuc,
@@ -51,6 +52,7 @@ class LoHangService extends GetConnect {
         query: {
           'so_lo': so_lo,
           'ma_hang_hoa': maHangHoa,
+          'ma_cua_hang': maCuaHang,
           'han_su_dung': hanSuDung,
           'ngay_bat_dau': ngayBatDau,
           'ngay_ket_thuc': ngayKetThuc,

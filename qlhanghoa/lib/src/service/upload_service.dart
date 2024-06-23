@@ -103,6 +103,7 @@ class UpLoadService {
   static Future<http.Response> delete(HinhAnhModel hinhanh) async {
     try {
       var fileName = hinhanh.tenAnh;
+      print('gọi delete service ${fileName}');
       String? token = AuthUtil.getAccessToken();
       Map<String, String> headers = {
         "Content-type": "application/json",

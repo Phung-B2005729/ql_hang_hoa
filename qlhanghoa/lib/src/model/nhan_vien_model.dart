@@ -26,6 +26,33 @@ class NhanVienModel {
       this.taiKhoan,
       this.trangThai});
 
+  NhanVienModel copyWith({
+    String? maNhanVien,
+    String? tenNhanVien,
+    String? diaChi,
+    String? sdt,
+    String? email,
+    String? stk,
+    bool? gioiTinh,
+    String? chucVu,
+    String? trangThai,
+    String? maCuaHang,
+    TaiKhoan? taiKhoan,
+  }) {
+    return NhanVienModel(
+        tenNhanVien: tenNhanVien ?? this.tenNhanVien,
+        maNhanVien: maNhanVien ?? this.maNhanVien,
+        diaChi: diaChi ?? this.diaChi,
+        email: email ?? this.email,
+        sdt: sdt ?? this.sdt,
+        stk: stk ?? this.stk,
+        gioiTinh: gioiTinh ?? this.gioiTinh,
+        chucVu: chucVu ?? this.chucVu,
+        trangThai: trangThai ?? this.trangThai,
+        maCuaHang: maCuaHang ?? this.maCuaHang,
+        taiKhoan: taiKhoan ?? this.taiKhoan);
+  }
+
   NhanVienModel.fromJson(Map<String, dynamic> json) {
     maNhanVien = json['ma_nhan_vien'];
     tenNhanVien = json['ten_nhan_vien'];
@@ -36,7 +63,8 @@ class NhanVienModel {
     gioiTinh = json['gioi_tinh'];
     chucVu = json['chuc_vu'];
     trangThai = json['trang_thai'];
-    taiKhoan = json['tai_khoan'];
+    taiKhoan =
+        json['tai_khoan'] != null ? TaiKhoan.fromJson(json['tai_khoan']) : null;
     maCuaHang = json['ma_cua_hang'];
   }
 
@@ -51,7 +79,8 @@ class NhanVienModel {
     data['email'] = email;
     data['gioi_tinh'] = gioiTinh;
     data['chuc_vu'] = chucVu;
-    data['tai_khoan'] = taiKhoan;
+    data['tai_khoan'] =
+        taiKhoan != null ? taiKhoan!.toJson() : TaiKhoan().toJson();
     data['trang_thai'] = trangThai;
     data['ma_cua_hang'] = maCuaHang;
     return data;

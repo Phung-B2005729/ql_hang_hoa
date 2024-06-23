@@ -36,6 +36,26 @@ class LoHangService {
         }
 
     }
+    async sumTongSoLuong(filter){ // danh sách loại hàng 
+        const pipeline = [
+            {
+              $match: {
+                filter
+              }
+            },
+             {
+                  "$group": {
+                      "_id": null,
+                      "so_luong": {
+                          "$sum": "$tong_so_luong"
+                      }
+                  }
+              }
+          ]
+          
+        const cursor = await this.collectionLoHang.aggregate(pipeline);
+        return await cursor.toArray();
+    }
     async find(filter){ // danh sách loại hàng 
         const cursor = await this.collectionLoHang.find(filter);
         return await cursor.toArray();
@@ -48,6 +68,49 @@ class LoHangService {
                 { so_lo: id }
             ]
         });
+    }
+    async findLookUp(filter, project){ // danh sách loại hàng 
+        console.log('gọi');
+        console.log(filter);
+        const pipeline = [
+            {
+                $lookup: {
+                    from: 'ton_kho_lo_hang',
+                    //"$ma_hang_hoa": Định nghĩa biến maHangHoa và gán giá trị của nó là giá trị của trường ma_hang_hoa trong tài liệu hiện tại.
+                    //"$so_lo": Định nghĩa biến soLo và gán giá trị của nó là giá trị của trường so_lo trong tài liệu hiện tại.
+                    let: { maHangHoa: "$ma_hang_hoa", soLo: "$so_lo" },
+                    pipeline: [
+                        {
+                            $match: {
+                                $expr: {
+                                    $and: [
+                                        { $eq: ["$ma_hang_hoa", "$$maHangHoa"] },
+                                        { $eq: ["$so_lo", "$$soLo"] }
+                                    ]
+                                }
+                            }
+                        }
+                    ],
+                    as: "ton_kho"
+                }
+            },
+            {
+                $match: filter
+            },
+            {
+                $sort: {
+                    ma_hang_hoa: 1,
+                    lo_hang: 1
+                }
+            }
+          ]
+          if(project){
+            pipeline.push({
+                $project: project
+            })
+          }
+        const cursor = await this.collectionLoHang.aggregate(pipeline);
+        return await cursor.toArray();
     }
     async findOne(filter){ // danh sách loại hàng 
        return await this.collectionLoHang.findOne(filter);
@@ -77,11 +140,21 @@ class LoHangService {
        const result = await this.collectionLoHang.findOneAndDelete({
        $or: [
                 { _id: ObjectId.isValid(id) ? new ObjectId(id) : null },
-                { so_lo: id }
             ],
        });
        console.log("resu " +result);
        return result;
+    }
+    async deleteMany(filter) {
+        console.log('Calling deleteMany with filter: ', filter);
+        try {
+            const result = await this.collectionLoHang.deleteMany(filter);
+            console.log('Delete result: ', result);
+            return result;
+        } catch (error) {
+            console.error('Error in deleteMany: ', error);
+            throw error;
+        }
     }
     async countDocument(filter1){
         console.log('gọi count');

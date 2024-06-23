@@ -6,14 +6,14 @@ const helper = require("../helper/index");
 
 
 exports.create = async (req, res, next) => {
-    if(req.body.so_lo==null || req.body.ma_phieu_nhap==null || req.body.so_luong==null || req.body.don_gia_nhap==null){
+    if(req.body.so_lo==null || req.body.ma_phieu_nhap==null || req.body.so_luong==null || req.body.don_gia_nhap==null || req.body.ma_hang_hoa==null){
         return next(new ApiError(400, "Data can not be empty"));
     }
     else{
         try{
           const chiTietNhapHangService = new ChiTietNhapHangService(MongoDB.client);
-          if(req.body.so_lo && req.body.ma_phieu_nhap){
-            const exitsChiTiet2 = await chiTietNhapHangService.findOne({so_lo: req.body.so_lo, ma_phieu_nhap: req.body.ma_phieu_nhap});
+          if(req.body.so_lo && req.body.ma_phieu_nhap && req.body.ma_hang_hoa){
+            const exitsChiTiet2 = await chiTietNhapHangService.findOne({so_lo: req.body.so_lo, ma_phieu_nhap: req.body.ma_phieu_nhap, ma_hang_hoa: req.body.ma_hang_hoa});
             if(exitsChiTiet2){
                 console.log(exitsChiTiet2);
                 return next(new ApiError(401, "Mã phiếu nhập và số lô đã tồn tại"));
@@ -32,16 +32,23 @@ exports.findALL = async (req, res, next) => {
         const chiTietNhapHangService = new ChiTietNhapHangService(MongoDB.client);
         const ma_phieu_nhap = req.query.ma_phieu_nhap; // tìm theo ma_phieu_nhap
         const so_lo = req.query.so_lo; // tìm theo số lô
+        const ma_hang_hoa = req.query.ma_hang_hoa;
         let filter = {};
-        if(ma_phieu_nhap){
+        if(ma_phieu_nhap && ma_phieu_nhap!='' && ma_phieu_nhap!='Tất cả'){
                         let t1 = {
                             ma_phieu_nhap : ma_phieu_nhap
                     }
             filter = {...filter, ...t1}
          }
-         if(so_lo){
+         if(so_lo && so_lo!='' && so_lo!='Tất cả'){
             let t1 = {
                 so_lo : so_lo
+            }
+            filter = {...filter, ...t1}
+        }
+        if(ma_hang_hoa && ma_hang_hoa!='' && ma_hang_hoa!='Tất cả'){
+            let t1 = {
+                ma_hang_hoa : ma_hang_hoa
             }
             filter = {...filter, ...t1}
         }
@@ -56,6 +63,7 @@ exports.findOne =  async (req, res, next) => {  //
         const chiTietNhapHangService = new ChiTietNhapHangService(MongoDB.client);
         const ma_phieu_nhap = req.params.ma_phieu_nhap; // tìm theo ma_phieu_nhap
         const so_lo = req.params.so_lo; // tìm theo số lô
+        const ma_hang_hoa = req.params.ma_hang_hoa;
         let filter = {};
         if(ma_phieu_nhap){
                         let t1 = {
@@ -63,6 +71,12 @@ exports.findOne =  async (req, res, next) => {  //
                     }
             filter = {...filter, ...t1}
          }
+         if(ma_hang_hoa){
+            let t1 = {
+                ma_hang_hoa : ma_hang_hoa
+        }
+filter = {...filter, ...t1}
+}
          if(so_lo){
             let t1 = {
                 so_lo : so_lo

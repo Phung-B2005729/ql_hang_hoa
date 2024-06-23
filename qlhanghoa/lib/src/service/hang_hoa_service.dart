@@ -38,23 +38,12 @@ class HangHoaService extends GetConnect {
   }
 
   // refresh Token
-  Future<Response> findAll(
-      {String? tenHangHoa,
-      String? maHangHoa,
-      String? hanSuDung,
-      String? ngayBatDau,
-      String? ngayKetThuc,
-      String? trangThai}) async {
+  Future<Response> findAll({String? maCuaHang}) async {
     try {
       final response = await get(
         "/",
         query: {
-          'ten_hang_hoa': tenHangHoa,
-          'ma_hang_hoa': maHangHoa,
-          'han_su_dung': hanSuDung,
-          'ngay_bat_dau': ngayBatDau,
-          'ngay_ket_thuc': ngayKetThuc,
-          'trang_thai': trangThai
+          'ma_cua_hang': maCuaHang,
         },
         contentType: AppConfig.contentTypeJson,
       );

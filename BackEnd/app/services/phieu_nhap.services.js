@@ -42,6 +42,83 @@ class NhaCungCapService {
         const cursor = await this.collectionPhieuNhap.find(filter);
         return await cursor.toArray();
     }
+    async findLooUp(filter, project, findOne){ // danh sách loại hàng 
+        const pipeline = [
+            {
+                $lookup: {
+                  from: 'nha_cung_cap',
+                  localField: "ma_nha_cung_cap",
+                  foreignField: "ma_nha_cung_cap",
+                  as: "nha_cung_cap_info"
+                }
+              },
+             
+              {
+                $lookup: {
+                  from: 'chi_tiet_nhap_hang',
+                  localField: "ma_phieu_nhap",
+                  foreignField: "ma_phieu_nhap",
+                  as: "chi_tiet_phieu_nhap_info",
+                  pipeline: [
+                    {
+                        $lookup: {
+                            from: 'hang_hoa',
+                            //"$ma_hang_hoa": Định nghĩa biến maHangHoa và gán giá trị của nó là giá trị của trường ma_hang_hoa trong tài liệu hiện tại.
+                            //"$so_lo": Định nghĩa biến soLo và gán giá trị của nó là giá trị của trường so_lo trong tài liệu hiện tại.
+                            let: { maHangHoa: "$ma_hang_hoa"},
+                            pipeline: [
+                                {
+                                    $match: {
+                                        $expr: {
+                                            $and: [
+                                                { $eq: ["$ma_hang_hoa", "$$maHangHoa"] },
+                                            ]
+                                        }
+                                    }
+                                }
+                            ],
+                            as: "hang_hoa_info"
+                        }
+                    },
+                  ]
+                }
+              },
+              
+        ]
+        if(findOne==true){
+            pipeline.push({
+                $lookup: {
+                    from: 'nhan_vien',
+                    localField: "ma_nhan_vien",
+                    foreignField: "ma_nhan_vien",
+                    as: "nhan_vien_info"
+                  }
+            })
+            pipeline.push({
+                $lookup: {
+                    from: 'cua_hang',
+                    localField: "ma_cua_hang",
+                    foreignField: "ma_cua_hang",
+                    as: "cua_hang_info"
+                  }
+            })
+        }
+        if(filter){
+            pipeline.push({
+                $match: filter
+            })
+        }
+        if(project){
+            pipeline.push({
+                $project: project
+            })
+        }
+        pipeline.push({
+            $sort: {ngay_lap_phieu: -1, ma_phieu_nhap: 1}
+        })
+        const cursor = await this.collectionPhieuNhap.aggregate(pipeline);
+        return await cursor.toArray();
+    }
     async findById(id){ // tên loại hàng theo id 
         console.log("goi ham findById " +id);
         return await this.collectionPhieuNhap.findOne({

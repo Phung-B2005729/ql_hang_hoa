@@ -46,12 +46,12 @@ class ErrorDialogTryAgain extends StatelessWidget {
                     child: const Text(
                       "ĐÓNG",
                       style: TextStyle(
-                        fontWeight: FontWeight.w500,
-                      ),
+                          fontWeight: FontWeight.w500,
+                          color: Color.fromARGB(255, 0, 0, 0)),
                     ),
                   ),
                 ),
-                const SizedBox(width: 8),
+                const SizedBox(width: 10),
                 ConstrainedBox(
                   constraints:
                       const BoxConstraints(minWidth: 90, maxWidth: 100),
@@ -63,7 +63,7 @@ class ErrorDialogTryAgain extends StatelessWidget {
                     child: const Text(
                       "Thử lại",
                       style: TextStyle(
-                        color: Colors.white,
+                        color: Color.fromARGB(255, 255, 255, 255),
                         fontWeight: FontWeight.w500,
                       ),
                     ),

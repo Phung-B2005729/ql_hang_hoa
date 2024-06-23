@@ -1,6 +1,9 @@
 const ApiError = require("../config/api_error");
 const HangHoaService = require("../services/hang_hoa.services");
+const ChiTietNhapHangService = require("../services/chi_tiet_nhap_hang.services");
 const MongoDB = require("../utils/mongodb.util");
+const GiaoDichSerivce = require("../services/giao_dich.services");
+const LoHangService = require("../services/lo_hang.services");
 const helper = require("../helper/index");
 const { sdtSchema, emailSchema } = require("../validation/index");
 
@@ -65,35 +68,73 @@ exports.create = async (req, res, next) => {
     }
 }
 exports.findALL = async (req, res, next) => {
-    let documents = []
-    try{
+    let documents = [];
+    try {
+        console.log('gọi');
+        let project = {
+            ten_hang_hoa: 1,
+            ma_hang_hoa: 1,
+            don_gia_ban: 1,
+            gia_von: 1,
+            hinh_anh: 1,
+           // lo_hang: 1,
+            don_vi_tinh: 1,
+            'loai_hang.ten_loai': 1,
+            'thuong_hieu.ten_thuong_hieu': 1,
+           // ton_kho: 1,
+           "lo_hang.so_lo": 1,
+           "lo_hang.ngay_san_xuat": 1,
+           "lo_hang.han_su_dung": 1,
+           "lo_hang.trang_thai": 1,
+           "lo_hang.ton_kho.ma_cua_hang": 1,
+           "lo_hang.ton_kho.so_luong_ton": 1,
+           "lo_hang.tong_so_luong": 1
+        };
+        console.log(project);
+
         const hangHoaService = new HangHoaService(MongoDB.client);
-        let ten_hang_hoa = req.query.ten_hang_hoa;
+        let ma_cua_hang = req.query.ma_cua_hang;
         let filter = {};
-        if(ten_hang_hoa){
-                    ten_hang_hoa = helper.escapeStringRegexp(ten_hang_hoa);
-                        let t1 = {
-                            ten_hang_hoa : {
-                            $regex: new RegExp(ten_hang_hoa), $options: "i"
-                        }
+
+       /* if (ma_cua_hang && ma_cua_hang !== 'Tất cả') {
+            console.log('gọi 2');
+          /*  let t1 = {
+                ton_kho: {
+                    $filter: {
+                        input: "$ton_kho",
+                        as: "tk",
+                        cond: { $eq: ["$$tk.ma_cua_hang", ma_cua_hang] }
                     }
-            filter = {...filter, ...t1}
-         }
-            documents = await hangHoaService.find(filter);
-            return res.send(documents);
-    }catch(e){
+                }
+            };
+            project = { ...project, ...t1 }; 
+            let t2 = {
+                "lo_hang.ton_kho.ma_cua_hang": ma_cua_hang
+            };
+            filter = { ...filter, ...t2 };
+            console.log(filter); // Check filter content
+        } */
+
+      
+
+        console.log(project); // Check project content
+        documents = await hangHoaService.findLookUp(filter, project);
+        return res.send(documents);
+    } catch (e) {
         return next(new ApiError(500, "Lỗi server trong quá trình lấy danh sách"));
-    } 
-}
+    }
+};
 
 exports.findOne =  async (req, res, next) => {  // 
     try{
         const hangHoaService = new HangHoaService(MongoDB.client);
-        const document = await hangHoaService.findById(req.params.id);
+        const document = await hangHoaService.findLookUp({
+            ma_hang_hoa: req.params.id
+        })
         if(!document){
             return next(new ApiError(404, "Không tìm thấy data"));
         }
-        return res.send(document);
+        return res.send(document[0]);
     }catch(e){
         return next(new ApiError(500, "Lỗi server trong quá trình lấy danh sách"));
     }
@@ -122,13 +163,32 @@ exports.update = async (req,res, next) => {
    
      try{
          const hangHoaService = new HangHoaService(MongoDB.client);
-         const document = await hangHoaService.delete(req.params.id);
-         if(!document){
-             return next(new ApiError(404, "not found"));
+         const chiTietNhapHangService = new ChiTietNhapHangService(MongoDB.client);
+         const nhapHang =  await chiTietNhapHangService.findOne({
+            ma_hang_hoa: req.params.id
+         });
+         if(nhapHang){
+            console.log(nhapHang);
+            return next(new ApiError(402, "Hàng hoá đã có dữ liệu phiếu nhập bạn không thể xoá"));
          }
+        let document = await hangHoaService.delete(req.params.id);
+         if(!document){
+             return next(new ApiError(404, "Không tìm thấy mã hàng hoá"));
+         }
+         const loHangService = new LoHangService(MongoDB.client);
+         const giaoDichSerivce = new GiaoDichSerivce(MongoDB.client);
+         // xoá các giao dịch, xoá các lô hàng
+         document = await loHangService.deleteMany({
+            ma_hang_hoa: req.params.id
+         });
+         document = await giaoDichSerivce.deleteMany({
+            ma_hang_hoa: req.params.id
+         });
+
          return res.send({
              message: " deleted succesfully"
          });
+
      }catch(err){
          return next(new ApiError(500, `Could not delete with id=${req.params.id}`));
      }

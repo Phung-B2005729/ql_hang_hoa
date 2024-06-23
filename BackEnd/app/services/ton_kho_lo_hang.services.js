@@ -9,6 +9,7 @@ class TonKhoLoHangService {
         // lay du lieu doi tuong loaihang va loai bo cac thuoc tinh undefined
         const ton_kho_lo_hang = {
              so_lo: payload.so_lo,
+             han_su_dung: payload.han_su_dung,
              ma_cua_hang: payload.ma_cua_hang,
              so_luong_ton : payload.so_luong_ton,
              ma_hang_hoa: payload.ma_hang_hoa,
@@ -35,6 +36,26 @@ class TonKhoLoHangService {
     }
     async find(filter){ // danh sách loại hàng 
         const cursor = await this.collectionTonKhoLoHangHang.find(filter);
+        return await cursor.toArray();
+    }
+    async sumSoLuongTonKho(filter){ // danh sách loại hàng 
+        const pipeline = [
+            {
+              $match: {
+                filter
+              }
+            },
+             {
+                  "$group": {
+                      "_id": null,
+                      "so_luong": {
+                          "$sum": "$so_luong_ton"
+                      }
+                  }
+              }
+          ]
+          
+        const cursor = await this.collectionTonKhoLoHangHang.aggregate(pipeline);
         return await cursor.toArray();
     }
     async findById(id){ // tên loại hàng theo id 

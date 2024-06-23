@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:qlhanghoa/src/controller/hang_hoa/them_hang_hoa_controller.dart';
+import 'package:qlhanghoa/src/controller/hang_hoa/them_and_edit_hang_hoa_controller.dart';
 import 'package:qlhanghoa/src/controller/thuong_hieu/thuong_hieu.controller.dart';
 import 'package:qlhanghoa/src/helper/template/color.dart';
 import 'package:qlhanghoa/src/widget/shared/loading_circular_fullscreen.dart';

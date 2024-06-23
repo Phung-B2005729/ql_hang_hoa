@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:qlhanghoa/src/controller/hang_hoa/them_hang_hoa_controller.dart';
+import 'package:qlhanghoa/src/controller/hang_hoa/them_and_edit_hang_hoa_controller.dart';
 import 'package:qlhanghoa/src/model/loai_hang_model.dart';
 import 'package:qlhanghoa/src/service/loai_hang_service.dart';
 import 'package:qlhanghoa/src/widget/shared/error_dialog.dart';
@@ -25,6 +25,7 @@ class LoaiHangController extends GetxController {
   @override
   void onInit() async {
     super.onInit();
+
     await getListLoaiHang();
     filteredList.value = listLoaiHang;
     searchController.addListener(() {
@@ -94,6 +95,8 @@ class LoaiHangController extends GetxController {
 
   Future<void> getListLoaiHang() async {
     // Lấy danh sách từ API
+    ThemHangHoaController controller = Get.find();
+    controller.loading.value = true;
     Response res = await LoaiHangService().findAll();
     if (res.statusCode == 200) {
       // In ra body của response
@@ -110,19 +113,15 @@ class LoaiHangController extends GetxController {
           .map((json) => LoaiHangModel.fromJson(json))
           .toList()
           .cast<LoaiHangModel>();
-
+      controller.loading.value = false;
       // Bạn có thể sử dụng listLoaiHang ở đây
     } else {
+      controller.loading.value = false;
       // Hiển thị dialog lỗi
-      Get.dialog(
-          ErrorDialog(
-            callback: () {},
-            message: (res.body != null && res.body['message'] != null)
-                ? res.body['message']
-                : "Lỗi trong quá trình xử lý",
-          ),
-          // barrierDismissible có cho phép đóng hợp thoại bằng cách chạm ra ngoài hay không ?
-          barrierDismissible: false);
+      GetShowSnackBar.errorSnackBar((res.body != null &&
+              res.body['message'] != null)
+          ? res.body['message']
+          : "Lỗi trong quá trình xử lý hoặc kết nối internet không ổn định");
     }
   }
 
@@ -141,19 +140,15 @@ class LoaiHangController extends GetxController {
     } else {
       getListLoaiHang();
       filterListLoaiHang();
-      Get.dialog(
-          ErrorDialog(
-            callback: () {},
-            message: (res.body != null && res.body['message'] != null)
-                ? res.body['message']
-                : "Lỗi trong quá trình xử lý",
-          ),
-          // barrierDismissible có cho phép đóng hợp thoại bằng cách chạm ra ngoài hay không ?
-          barrierDismissible: false);
+      GetShowSnackBar.errorSnackBar((res.body != null &&
+              res.body['message'] != null)
+          ? res.body['message']
+          : "Lỗi trong quá trình xử lý hoặc kết nối internet không ổn định");
     }
   }
 
   int findIndexById(String id) {
+    // ignore: avoid_print
     print(id);
     return listLoaiHang.indexWhere((element) => element.sId == id);
   }

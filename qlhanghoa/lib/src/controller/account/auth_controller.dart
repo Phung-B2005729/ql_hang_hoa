@@ -91,7 +91,9 @@ class AuthController extends GetxController {
   }
 
   void getMaCuaHang() {
+    print('gọi get auth mã cửa hàng');
     maCuaHang.value = AuthUtil.getMaCuaHang();
+    print(maCuaHang.value);
   }
 
   void logout() async {

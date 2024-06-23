@@ -12,6 +12,8 @@ class ChiTietNhapHangService {
              ma_phieu_nhap: payload.ma_phieu_nhap,
              so_luong : payload.so_luong,
              don_gia_nhap: payload.don_gia_nhap, 
+             ma_hang_hoa: payload.ma_hang_hoa,
+             han_su_dung: payload.han_su_dung,
         }
         Object.keys(chi_tiet_nhap_hang).forEach((key)=>{
             chi_tiet_nhap_hang[key] === undefined && delete chi_tiet_nhap_hang[key]
@@ -75,6 +77,17 @@ class ChiTietNhapHangService {
        });
        console.log("resu " +result);
        return result;
+    }
+    async deleteMany(filter) {
+        console.log('Calling deleteMany with filter: ', filter);
+        try {
+            const result = await this.collectionChiTietNhapHang.deleteMany(filter);
+            console.log('Delete result: ', result);
+            return result;
+        } catch (error) {
+            console.error('Error in deleteMany: ', error);
+            throw error;
+        }
     }
     async countDocument(filter1){
         console.log('gọi count');

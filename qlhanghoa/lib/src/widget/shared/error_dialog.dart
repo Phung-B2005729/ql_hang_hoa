@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 
+// ignore: must_be_immutable
 class ErrorDialog extends StatelessWidget {
-  const ErrorDialog({Key? key, required this.callback, required this.message})
+  ErrorDialog(
+      {Key? key, required this.callback, required this.message, this.taiLai})
       : super(key: key);
 
   final Function callback;
   final String message;
+  bool? taiLai;
 
   @override
   Widget build(BuildContext context) {
@@ -37,9 +39,9 @@ class ErrorDialog extends StatelessWidget {
                   Get.back();
                   callback();
                 },
-                child: const Text(
-                  "ĐÓNG",
-                  style: TextStyle(
+                child: Text(
+                  (taiLai == true) ? 'Thử lại' : "ĐÓNG",
+                  style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.w500,
                   ),

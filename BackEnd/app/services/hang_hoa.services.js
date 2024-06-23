@@ -13,7 +13,7 @@ class HangHoaService {
              don_gia_ban: payload.don_gia_ban, // giá bán chung tất cả cửa hàng
              gia_von: payload.gia_von,
              mo_ta: payload.mo_ta,
-             ton_kho: payload.ton_kho,
+         
              ton_nhieu_nhat: payload.ton_nhieu_nhat,
              don_vi_tinh: payload.don_vi_tinh, // đơn vị tính chung 
              loai_hang: payload.loai_hang,
@@ -43,8 +43,128 @@ class HangHoaService {
         }
 
     }
-    async find(filter){ // danh sách loại hàng 
-        const cursor = await this.collectionHangHoa.find(filter);
+    async find(filter, project){ // danh sách loại hàng 
+        const cursor = await this.collectionHangHoa.find(filter).project(project);
+        return await cursor.toArray();
+    }
+    async findLookUp(filter, project){ // danh sách loại hàng 
+        console.log('gọi');
+        console.log(filter);
+        const pipeline = [
+            /*{
+                $lookup: {
+                  from: 'ton_kho_lo_hang',
+                  localField: "ma_hang_hoa",
+                  foreignField: "ma_hang_hoa",
+                  as: "ton_kho"
+                }
+              }, */
+              {
+                $lookup: {
+                  from: 'lo_hang',
+                  localField: "ma_hang_hoa",
+                  foreignField: "ma_hang_hoa",
+                  as: "lo_hang",
+                  pipeline: [
+                    {
+                        $lookup: {
+                            from: 'ton_kho_lo_hang',
+                            //"$ma_hang_hoa": Định nghĩa biến maHangHoa và gán giá trị của nó là giá trị của trường ma_hang_hoa trong tài liệu hiện tại.
+                            //"$so_lo": Định nghĩa biến soLo và gán giá trị của nó là giá trị của trường so_lo trong tài liệu hiện tại.
+                            let: { maHangHoa: "$ma_hang_hoa", soLo: "$so_lo" },
+                            pipeline: [
+                                {
+                                    $match: {
+                                        $expr: {
+                                            $and: [
+                                                { $eq: ["$ma_hang_hoa", "$$maHangHoa"] },
+                                                { $eq: ["$so_lo", "$$soLo"] }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ],
+                            as: "ton_kho"
+                        }
+                    }
+                  ]
+                }
+              },
+              
+
+            {
+                $match: filter
+            },
+            {
+                $sort: {
+                    ma_hang_hoa: 1,
+                    "ton_kho.ma_cua_hang": 1,
+                    "ton_kho.so_luong_ton": 1
+                }
+            }
+          ]
+          if(project){
+            pipeline.push({
+                $project: project
+            })
+          }
+        const cursor = await this.collectionHangHoa.aggregate(pipeline);
+        return await cursor.toArray();
+    }
+    async findOneLookUp(filter, project){ // danh sách loại hàng 
+        console.log('gọi');
+        console.log(filter);
+        const pipeline = [
+              {
+                $lookup: {
+                  from: 'lo_hang',
+                  localField: "ma_hang_hoa",
+                  foreignField: "ma_hang_hoa",
+                  as: "lo_hang",
+                  pipeline: [
+                    {
+                        $lookup: {
+                            from: 'ton_kho_lo_hang',
+                            //"$ma_hang_hoa": Định nghĩa biến maHangHoa và gán giá trị của nó là giá trị của trường ma_hang_hoa trong tài liệu hiện tại.
+                            //"$so_lo": Định nghĩa biến soLo và gán giá trị của nó là giá trị của trường so_lo trong tài liệu hiện tại.
+                            let: { maHangHoa: "$ma_hang_hoa", soLo: "$so_lo" },
+                            pipeline: [
+                                {
+                                    $match: {
+                                        $expr: {
+                                            $and: [
+                                                { $eq: ["$ma_hang_hoa", "$$maHangHoa"] },
+                                                { $eq: ["$so_lo", "$$soLo"] }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ],
+                            as: "ton_kho"
+                        }
+                    }
+                  ]
+                }
+              },
+              
+
+            {
+                $match: filter
+            },
+            {
+                $sort: {
+                    ma_hang_hoa: 1,
+                    "ton_kho.ma_cua_hang": 1,
+                    "ton_kho.so_luong_ton": 1
+                }
+            }
+          ]
+          if(project){
+            pipeline.push({
+                $project: project
+            })
+          }
+        const cursor = await this.collectionHangHoa.aggregate(pipeline);
         return await cursor.toArray();
     }
     async findById(id){ // tên loại hàng theo id 

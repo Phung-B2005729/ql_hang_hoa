@@ -6,14 +6,14 @@ const helper = require("../helper/index");
 
 
 exports.create = async (req, res, next) => {
-    if(req.body.so_lo==null || req.body.ma_cua_hang==null || req.body.so_luong_ton==null){
+    if(req.body.so_lo==null || req.body.ma_cua_hang==null || req.body.so_luong_ton==null || req.body.ma_hang_hoa==null){
         return next(new ApiError(400, "Data can not be empty"));
     }
     else{
         try{
           const tonKhoLoHangService = new TonKhoLoHangService(MongoDB.client);
-          if(req.body.so_lo && req.body.ma_cua_hang){
-            const exitsTonKho = await tonKhoLoHangService.findOne({so_lo: req.body.so_lo, ma_cua_hang: req.body.ma_cua_hang});
+          if(req.body.so_lo && req.body.ma_cua_hang && req.body.ma_hang_hoa){
+            const exitsTonKho = await tonKhoLoHangService.findOne({so_lo: req.body.so_lo, ma_cua_hang: req.body.ma_cua_hang, ma_hang_hoa: req.body.ma_hang_hoa});
             if(exitsTonKho){
                 console.log(exitsTonKho);
                 return next(new ApiError(401, "Kho lô hàng tại cửa hàng đã tồn tại"));
@@ -32,16 +32,23 @@ exports.findALL = async (req, res, next) => {
         const tonKhoLoHangService = new TonKhoLoHangService(MongoDB.client);
         const ma_cua_hang = req.query.ma_cua_hang; // tìm theo ma_cua_hang
         const so_lo = req.query.so_lo; // tìm theo số lô
+        const ma_hang_hoa = req.query.ma_hang_hoa;
         let filter = {};
-        if(ma_cua_hang){
+        if(ma_cua_hang && so_lo!='' && so_lo!='Tất cả'){
                         let t1 = {
                             ma_cua_hang : ma_cua_hang
                     }
             filter = {...filter, ...t1}
          }
-         if(so_lo){
+         if(so_lo && so_lo!='' && so_lo!='Tất cả'){
             let t1 = {
                 so_lo : so_lo
+            }
+            filter = {...filter, ...t1}
+        }
+        if(ma_hang_hoa && ma_hang_hoa!='' && ma_hang_hoa!='Tất cả'){
+            let t1 = {
+                ma_hang_hoa: ma_hang_hoa
             }
             filter = {...filter, ...t1}
         }

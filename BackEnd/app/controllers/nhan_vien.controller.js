@@ -68,7 +68,7 @@ exports.create = async (req, res, next) => {
           }
             const document = await nhanVienService.create(req.body);
             
-            return res.send(document.insertedId);
+            return res.send(req.body.ma_nhan_vien);
         }catch(e){
             return next(new ApiError(500, "Lỗi server trong quá trình thêm"));
         }

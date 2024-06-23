@@ -1,3 +1,6 @@
+import 'package:qlhanghoa/src/model/hang_hoa_model.dart';
+import 'package:qlhanghoa/src/model/ton_kho_model.dart';
+
 class LoHangModel {
   String? sId;
   String? soLo;
@@ -7,6 +10,8 @@ class LoHangModel {
   String? trangThai;
   double? tongSoLuong;
   String? ngayTaoLo;
+  List<TonKhoModel>? tonKho;
+  HangHoaModel? hangHoa;
 
   LoHangModel({
     this.sId,
@@ -15,29 +20,34 @@ class LoHangModel {
     this.ngaySanXuat,
     this.ngayTaoLo,
     this.tongSoLuong,
+    this.tonKho,
     this.hanSuDung,
     this.trangThai,
+    this.hangHoa,
   });
 
-  LoHangModel copyWith({
-    String? sId,
-    String? soLo,
-    String? maHangHoa,
-    String? ngaySanXuat,
-    String? ngayTaoLo,
-    double? tongSoLuong,
-    String? hanSuDung,
-    String? trangThai,
-  }) {
+  LoHangModel copyWith(
+      {String? sId,
+      String? soLo,
+      String? maHangHoa,
+      String? ngaySanXuat,
+      List<TonKhoModel>? tonKho,
+      String? ngayTaoLo,
+      double? tongSoLuong,
+      String? hanSuDung,
+      String? trangThai,
+      HangHoaModel? hangHoa}) {
     return LoHangModel(
       sId: sId ?? this.sId,
       soLo: soLo ?? this.soLo,
+      tonKho: tonKho ?? this.tonKho,
       maHangHoa: maHangHoa ?? this.maHangHoa,
       ngaySanXuat: ngaySanXuat ?? this.ngaySanXuat,
       ngayTaoLo: ngayTaoLo ?? this.ngayTaoLo,
       tongSoLuong: tongSoLuong ?? this.tongSoLuong,
       hanSuDung: hanSuDung ?? this.hanSuDung,
       trangThai: trangThai ?? this.trangThai,
+      hangHoa: hangHoa ?? this.hangHoa,
     );
   }
 
@@ -45,17 +55,27 @@ class LoHangModel {
     sId = json['_id'];
     maHangHoa = json['ma_hang_hoa'];
     soLo = json['so_lo'];
+    tonKho = json['ton_kho'] != null
+        ? List<TonKhoModel>.from(
+            json['ton_kho'].map((x) => TonKhoModel.fromJson(x)))
+        : null;
     ngaySanXuat = json['ngay_san_xuat'];
-    tongSoLuong = json['tong_so_luong'];
+    tongSoLuong = double.parse(json['tong_so_luong'].toString());
     ngayTaoLo = json['ngay_tao_lo'];
     hanSuDung = json['han_su_dung'];
     trangThai = json['trang_thai'];
+    hangHoa = json['hang_hoa_info'] != null && json['hang_hoa_info'].isNotEmpty
+        ? HangHoaModel.fromJson(json['hang_hoa_info'][0])
+        : null;
   }
 
   Map<String, dynamic> toJson() {
     // ignore: prefer_collection_literals
     final Map<String, dynamic> data = Map<String, dynamic>();
     data['_id'] = sId;
+    data['ton_kho'] = tonKho != null
+        ? List<dynamic>.from(tonKho!.map((x) => x.toJson()))
+        : null;
     data['ma_hang_hoa'] = maHangHoa;
     data['so_lo'] = soLo;
     data['tong_so_luong'] = tongSoLuong;

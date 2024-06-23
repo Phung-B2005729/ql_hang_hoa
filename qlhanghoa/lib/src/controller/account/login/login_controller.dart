@@ -88,13 +88,16 @@ class LoginController extends GetxController {
             await AuthService().getInfoUser(accessToken: auth.accessToken!);
         if (res_user.statusCode == 200) {
           // lưu token, refresh
-          AuthUtil.setAccessToken(auth.accessToken!, auth.refreshToken);
-          AuthUtil.setName(res_user.body['ho_ten']);
-          AuthUtil.setUserId(res_user.body['tai_khoan']["_id"]);
-          AuthUtil.setQuyen(res_user.body['tai_khoan']["phan_quyen"]);
-          AuthUtil.setUserName(res_user.body['tai_khoan']["user_name"]);
-          AuthUtil.setMaCuaHang(res_user.body['ma_cua_hang'] ?? '');
-          AuthUtil.setIsLogon(true);
+          await AuthUtil.setAccessToken(auth.accessToken!, auth.refreshToken);
+          await AuthUtil.setName(res_user.body['ho_ten']);
+          await AuthUtil.setUserId(res_user.body['tai_khoan']["_id"]);
+          await AuthUtil.setQuyen(res_user.body['tai_khoan']["phan_quyen"]);
+          await AuthUtil.setUserName(res_user.body['tai_khoan']["user_name"]);
+          print(res_user.body['ma_cua_hang']);
+          await AuthUtil.setMaCuaHang(res_user.body['ma_cua_hang'] ?? '');
+          // lưu
+
+          await AuthUtil.setIsLogon(true);
           // lưu vào userController
           AuthController controller = Get.find();
 
@@ -113,7 +116,8 @@ class LoginController extends GetxController {
         Get.dialog(
             ErrorDialog(
               callback: () {},
-              message: "Lỗi trong quá trình xử lý",
+              message:
+                  "Lỗi trong quá trình xử lý hoặc kết nối interner không ổn định",
             ),
             barrierDismissible: false);
       } else {
@@ -122,7 +126,7 @@ class LoginController extends GetxController {
               callback: () {},
               message: (res.body != null && res.body['message'] != null)
                   ? res.body['message']
-                  : "Lỗi trong quá trình xử lý",
+                  : "Lỗi trong quá trình xử lý hoặc kết nối interner không ổn định",
             ),
             // barrierDismissible có cho phép đóng hợp thoại bằng cách chạm ra ngoài hay không ?
             barrierDismissible: false);

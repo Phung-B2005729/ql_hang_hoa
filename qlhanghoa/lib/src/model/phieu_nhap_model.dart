@@ -1,3 +1,8 @@
+import 'package:qlhanghoa/src/model/chi_tiet_phieu_nhap_model.dart';
+import 'package:qlhanghoa/src/model/nhan_vien_model.dart';
+import 'package:qlhanghoa/src/model/nha_cung_cap_model.dart';
+import 'package:qlhanghoa/src/model/cua_hang_model.dart';
+
 class PhieuNhapModel {
   String? maPhieuNhap;
   String? ngayLapPhieu;
@@ -7,6 +12,10 @@ class PhieuNhapModel {
   String? maNhaCungCap;
   String? maCuaHang;
   String? maNhanVien;
+  CuaHangModel? cuaHang;
+  NhaCungCapModel? nhaCungCap;
+  NhanVienModel? nhanVien;
+  List<ChiTietPhieuNhapModel>? chiTietPhieuNhap;
 
   PhieuNhapModel({
     this.maPhieuNhap,
@@ -15,6 +24,10 @@ class PhieuNhapModel {
     this.giaGiam,
     this.maNhanVien,
     this.tongTien,
+    this.nhaCungCap,
+    this.cuaHang,
+    this.nhanVien,
+    this.chiTietPhieuNhap,
     this.maCuaHang,
     this.trangThai,
   });
@@ -25,6 +38,10 @@ class PhieuNhapModel {
     String? maNhaCungCap,
     int? giaGiam,
     String? maNhanVien,
+    CuaHangModel? cuaHang,
+    NhaCungCapModel? nhaCungCap,
+    NhanVienModel? nhanVien,
+    List<ChiTietPhieuNhapModel>? chiTietPhieuNhap,
     int? tongTien,
     String? maCuaHang,
     String? trangThai,
@@ -34,34 +51,54 @@ class PhieuNhapModel {
       ngayLapPhieu: ngayLapPhieu ?? this.ngayLapPhieu,
       maNhaCungCap: maNhaCungCap ?? this.maNhaCungCap,
       giaGiam: giaGiam ?? this.giaGiam,
+      chiTietPhieuNhap: chiTietPhieuNhap ?? this.chiTietPhieuNhap,
       maNhanVien: maNhanVien ?? this.maNhanVien,
       tongTien: tongTien ?? this.tongTien,
       maCuaHang: maCuaHang ?? this.maCuaHang,
       trangThai: trangThai ?? this.trangThai,
+      cuaHang: cuaHang ?? this.cuaHang,
+      nhaCungCap: nhaCungCap ?? this.nhaCungCap,
+      nhanVien: nhanVien ?? this.nhanVien,
     );
   }
 
   PhieuNhapModel.fromJson(Map<String, dynamic> json) {
-    ngayLapPhieu = json['ngay_lap_phieu'];
     maPhieuNhap = json['ma_phieu_nhap'];
-    maNhaCungCap = json['ma_nha_cung_cap'];
+    ngayLapPhieu = json['ngay_lap_phieu'];
     giaGiam = json['gia_giam'];
-    maNhanVien = json['ma_nhan_vien'];
     tongTien = json['tong_tien'];
-    maCuaHang = json['ma_cua_hang'];
     trangThai = json['trang_thai'];
+    maNhaCungCap = json['ma_nha_cung_cap'];
+    maCuaHang = json['ma_cua_hang'];
+    maNhanVien = json['ma_nhan_vien'];
+    cuaHang = json['cua_hang_info'] != null && json['cua_hang_info'].isNotEmpty
+        ? CuaHangModel.fromJson(json['cua_hang_info'][0])
+        : null;
+    nhaCungCap = json['nha_cung_cap_info'] != null &&
+            json['nha_cung_cap_info'].isNotEmpty
+        ? NhaCungCapModel.fromJson(json['nha_cung_cap_info'][0])
+        : null;
+    nhanVien =
+        json['nhan_vien_info'] != null && json['nhan_vien_info'].isNotEmpty
+            ? NhanVienModel.fromJson(json['nhan_vien_info'][0])
+            : null;
+    chiTietPhieuNhap = json['chi_tiet_phieu_nhap_info'] != null
+        ? List<ChiTietPhieuNhapModel>.from(json['chi_tiet_phieu_nhap_info']
+            .map((x) => ChiTietPhieuNhapModel.fromJson(x)))
+        : null;
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = Map<String, dynamic>();
-    data['ten_hang_hoa'] = ngayLapPhieu;
     data['ma_phieu_nhap'] = maPhieuNhap;
-    data['ma_nha_cung_cap'] = maNhaCungCap;
+    data['ngay_lap_phieu'] = ngayLapPhieu;
     data['gia_giam'] = giaGiam;
-    data['ma_nhan_vien'] = maNhanVien;
     data['tong_tien'] = tongTien;
-    data['ma_cua_hang'] = maCuaHang;
     data['trang_thai'] = trangThai;
+    data['ma_nha_cung_cap'] = maNhaCungCap;
+    data['ma_cua_hang'] = maCuaHang;
+    data['ma_nhan_vien'] = maNhanVien;
+
     return data;
   }
 }

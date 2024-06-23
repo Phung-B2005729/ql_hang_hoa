@@ -2,10 +2,9 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:qlhanghoa/src/controller/hang_hoa/them_hang_hoa_controller.dart';
+import 'package:qlhanghoa/src/controller/hang_hoa/them_and_edit_hang_hoa_controller.dart';
 import 'package:qlhanghoa/src/model/thuong_hieu_model.dart';
 import 'package:qlhanghoa/src/service/thuong_hieu_service.dart';
-import 'package:qlhanghoa/src/widget/shared/error_dialog.dart';
 import 'package:qlhanghoa/src/widget/shared/show_snack_bar.dart';
 
 class ThuongHieuController extends GetxController {
@@ -79,15 +78,10 @@ class ThuongHieuController extends GetxController {
         loading.value = false;
       } else {
         loading.value = false;
-        Get.dialog(
-            ErrorDialog(
-              callback: () {},
-              message: (res.body != null && res.body['message'] != null)
-                  ? res.body['message']
-                  : "Lỗi trong quá trình xử lý",
-            ),
-            // barrierDismissible có cho phép đóng hợp thoại bằng cách chạm ra ngoài hay không ?
-            barrierDismissible: false);
+        GetShowSnackBar.errorSnackBar((res.body != null &&
+                res.body['message'] != null)
+            ? res.body['message']
+            : "Lỗi trong quá trình xử lý hoặc kết nối internet không ổn định");
       }
     } else {
       GetShowSnackBar.errorSnackBar('Vui lòng nhập vào tên thương hiệu');
@@ -96,6 +90,7 @@ class ThuongHieuController extends GetxController {
 
   Future<void> getlistThuongHieu() async {
     // Lấy danh sách từ API
+    ThemHangHoaController controller = Get.find();
     Response res = await ThuongHieuService().findAll();
     if (res.statusCode == 200) {
       // In ra body của response
@@ -112,19 +107,15 @@ class ThuongHieuController extends GetxController {
           .map((json) => ThuongHieuModel.fromJson(json))
           .toList()
           .cast<ThuongHieuModel>();
-
+      controller.loading.value = false;
       // Bạn có thể sử dụng listThuongHieu ở đây
     } else {
+      controller.loading.value = false;
       // Hiển thị dialog lỗi
-      Get.dialog(
-          ErrorDialog(
-            callback: () {},
-            message: (res.body != null && res.body['message'] != null)
-                ? res.body['message']
-                : "Lỗi trong quá trình xử lý",
-          ),
-          // barrierDismissible có cho phép đóng hợp thoại bằng cách chạm ra ngoài hay không ?
-          barrierDismissible: false);
+      GetShowSnackBar.errorSnackBar((res.body != null &&
+              res.body['message'] != null)
+          ? res.body['message']
+          : "Lỗi trong quá trình xử lý hoặc kết nối internet không ổn định");
     }
   }
 
@@ -144,15 +135,10 @@ class ThuongHieuController extends GetxController {
     } else {
       getlistThuongHieu();
       filterlistThuongHieu();
-      Get.dialog(
-          ErrorDialog(
-            callback: () {},
-            message: (res.body != null && res.body['message'] != null)
-                ? res.body['message']
-                : "Lỗi trong quá trình xử lý",
-          ),
-          // barrierDismissible có cho phép đóng hợp thoại bằng cách chạm ra ngoài hay không ?
-          barrierDismissible: false);
+      GetShowSnackBar.errorSnackBar((res.body != null &&
+              res.body['message'] != null)
+          ? res.body['message']
+          : "Lỗi trong quá trình xử lý hoặc kết nối internet không ổn định");
     }
   }
 

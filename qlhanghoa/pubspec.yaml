@@ -39,9 +39,11 @@ flutter:
 
   uses-material-design: true
   assets:
+      - assets/images/empty.jpg
       - assets/images/error.png
       - assets/images/success.png
       - assets/images/warning.png
+      - assets/images/hang_hoa_mac_dinh.png
       - assets/logo/logo_store_x2.png
       - assets/logo/logo_store.png
       - assets/logo/logo_thu_y_x2.png

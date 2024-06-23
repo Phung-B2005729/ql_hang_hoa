@@ -3,6 +3,7 @@ const MongoDB = require("../utils/mongodb.util");
 require('dotenv').config()
 
 const {uploadImage, deleteImage } = require("../services/hinh_anh.services");
+const HangHoaService = require("../services/hang_hoa.services");
 
 
 exports.uploadSingle = async (req, res, next) => {
@@ -39,12 +40,23 @@ exports.deleteImag = async (req, res, next) => {
         console.log('chưa thêm vào tên ảnh');
         return next(new ApiError(400, 'No find name image'));
     }
+    const hangHoaService = new HangHoaService(MongoDB.client);
+    // kiểm tra
+    let hang_hoa = await hangHoaService.findOne({
+        'hinh_anh.ten_anh': req.params.ten_anh
+    });
+    if(hang_hoa!=null){
+        console.log('Ảnh được sử dụng cho 1 hơn nhiều sản phẩm')
+       // tồn tại và không xoá
+       res.send('Ảnh được sử dụng cho 1 hơn nhiều sản phẩm');
+    }else{
     try {
          await deleteImage(req.params.ten_anh);
         res.send('deleted');
     } catch (err) {
         return next(new ApiError(500, err));
     }
+}
 }
 
 

@@ -62,7 +62,7 @@ exports.create = async (req, res, next) => {
           }
             const document = await cuaHangService.create(req.body);
             
-            return res.send(document.insertedId);
+            return res.send(req.body.ma_cua_hang);
         }catch(e){
             return next(new ApiError(500, "Lỗi server trong quá trình thêm"));
         }

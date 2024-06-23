@@ -9,19 +9,22 @@ class GiaoDichService {
         // lay du lieu doi tuong loaihang va loai bo cac thuoc tinh undefined
         const giao_dich = {
         //     ma_giao_dich: payload.ma_giao_dich, // dùng object ID
-             thoi_gian_giao_dich: payload.thoi_gian_giao_dich ?? new Date(), 
-             loai_giao_dich: payload.loai_giao_dich,
+             thoi_gian_giao_dich: payload.thoi_gian_giao_dich ?? new Date(),  // bằng thời gian tạo các đơn
+             loai_giao_dich: payload.loai_giao_dich, // 'Nhập hàng', 'Bán hàng', 'Kiểm kho', 'Cập nhật', 'Xuất kho'
              so_luong_giao_dich: payload.so_luong_giao_dich,  // + thêm vào, - bán ra/phân phối ra
-             so_luong_ton: payload.so_luong_ton,  // số lượng trong kho khi giao dịch xảy ra
+             so_luong_ton: payload.so_luong_ton,  // số lượng trong kho hiê tại khi đã xảy giao dịch
              gia_von: payload.gia_von, // giá vốn hiện tại
              // fogin
              so_lo: payload.so_lo, // lô hàng giao dịch
              ma_hang_hoa: payload.ma_hang_hoa,
              ma_cua_hang: payload.ma_cua_hang,  // giao dịch tại cửa hàng
+             ma_cua_hang_chuyen_den: payload.ma_cua_hang_chuyen_den, // xuất kho mã cửa hàng mà hàng được được đến
              ma_nhan_vien: payload.ma_nhan_vien, // nhân viên cập nhật thay đổi (nếu có)
              ma_phieu_nhap: payload.ma_phieu_nhap, // thông tin nhập hàng (nếu loại giao dịch là nhập)
              ma_phieu_kiem_kho: payload.ma_phieu_kiem_kho, // thông tin nhập hàng (nếu loại giao dịch là nhập)
              ma_hoa_don: payload.ma_hoa_don, // thông tin hoá đơn (nếu loại giao dịch là bán ra/xuất phân phối)
+             ma_cap_nhat: payload.ma_cap_nhat,
+             ma_xuat_kho: payload.ma_xuat_kho,
         }
         Object.keys(giao_dich).forEach((key)=>{
             giao_dich[key] === undefined && delete giao_dich[key]
@@ -43,8 +46,19 @@ class GiaoDichService {
         }
 
     }
+    async deleteMany(filter) {
+        console.log('Calling deleteMany with filter: ', filter);
+        try {
+            const result = await this.collectionGiaoDich.deleteMany(filter);
+            console.log('Delete result: ', result);
+            return result;
+        } catch (error) {
+            console.error('Error in deleteMany: ', error);
+            throw error;
+        }
+    }
     async find(filter){ // danh sách loại hàng 
-        const cursor = await this.collectionGiaoDich.find(filter);
+        const cursor = await this.collectionGiaoDich.find(filter).sort({ thoi_gian_giao_dich: -1 });;
         return await cursor.toArray();
     }
     async findById(id){ // tên loại hàng theo id 

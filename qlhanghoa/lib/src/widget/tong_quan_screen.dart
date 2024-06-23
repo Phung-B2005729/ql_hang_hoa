@@ -10,7 +10,7 @@ class TongQuanScreen extends StatelessWidget {
   TongQuanScreen({super.key});
 
   @override
-  Widget build(Object context) {
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
