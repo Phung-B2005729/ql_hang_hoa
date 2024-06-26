@@ -3,8 +3,10 @@ import 'package:get/get.dart';
 import 'package:qlhanghoa/src/controller/cua_hang/cua_hang_controller.dart';
 import 'package:qlhanghoa/src/controller/giao_dich/giao_dich_controller.dart';
 import 'package:qlhanghoa/src/controller/hang_hoa/them_and_edit_hang_hoa_controller.dart';
+import 'package:qlhanghoa/src/controller/nhap_hang/xem_chi_tiet/chi_tiet_phieu_nhap_controller.dart';
 import 'package:qlhanghoa/src/helper/function_helper.dart';
 import 'package:qlhanghoa/src/helper/template/color.dart';
+import 'package:qlhanghoa/src/widget/nhap_hang/chi_tiet_phieu_nhap_screen.dart';
 import 'package:qlhanghoa/src/widget/shared/loading_circular_fullscreen.dart';
 
 // ignore: must_be_immutable
@@ -87,8 +89,8 @@ class XemGiaoDichScreen extends GetView<GiaoDichController> {
                                 itemCount: controller.filteredList.length + 1,
                                 itemBuilder: (BuildContext context, int index) {
                                   return Container(
-                                    padding:
-                                        EdgeInsets.only(top: 10, bottom: 10),
+                                    padding: const EdgeInsets.only(
+                                        top: 10, bottom: 10),
                                     decoration: const BoxDecoration(
                                       border: Border(
                                           bottom: BorderSide(
@@ -151,111 +153,132 @@ class XemGiaoDichScreen extends GetView<GiaoDichController> {
                                               ),
                                             ],
                                           )
-                                        : Column(
-                                            children: [
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  Expanded(
-                                                    flex: 2,
-                                                    child: Text(
-                                                      controller
+                                        : GestureDetector(
+                                            onTap: () async {
+                                              if (controller
+                                                      .filteredList[index - 1]
+                                                      .loaiGiaoDich ==
+                                                  'Nhập hàng') {
+                                                ChiTietPhieuNhapController
+                                                    chiTietPhieuNhapController =
+                                                    Get.find();
+                                                await chiTietPhieuNhapController
+                                                    .getOnePhieuNhap(controller
+                                                        .filteredList[index - 1]
+                                                        .maPhieuNhap
+                                                        .toString());
+                                                Get.to(() =>
+                                                    const ChiTietPhieuNhapScreen());
+                                              }
+                                            },
+                                            child: Column(
+                                              children: [
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Expanded(
+                                                      flex: 2,
+                                                      child: Text(
+                                                        controller
+                                                                .filteredList[
+                                                                    index - 1]
+                                                                .maPhieuNhap ??
+                                                            (controller
+                                                                    .filteredList[
+                                                                        index -
+                                                                            1]
+                                                                    .maHoaDon ??
+                                                                (controller
+                                                                        .filteredList[
+                                                                            index -
+                                                                                1]
+                                                                        .maPhieuKiemKho ??
+                                                                    (controller
+                                                                            .filteredList[index -
+                                                                                1]
+                                                                            .maCapNhat ??
+                                                                        (controller.filteredList[index - 1].maXuatKho ??
+                                                                            '')))),
+                                                        style: const TextStyle(
+                                                          fontSize: 16,
+                                                          fontWeight:
+                                                              FontWeight.w700,
+                                                          color: Colors.black,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    Expanded(
+                                                      flex: 2,
+                                                      child: Text(
+                                                        FunctionHelper.formNum(
+                                                          controller
                                                               .filteredList[
                                                                   index - 1]
-                                                              .maPhieuNhap ??
-                                                          (controller
-                                                                  .filteredList[
-                                                                      index - 1]
-                                                                  .maHoaDon ??
-                                                              (controller
-                                                                      .filteredList[
-                                                                          index -
-                                                                              1]
-                                                                      .maPhieuKiemKho ??
-                                                                  (controller
-                                                                          .filteredList[index -
-                                                                              1]
-                                                                          .maCapNhat ??
-                                                                      (controller
-                                                                              .filteredList[index - 1]
-                                                                              .maXuatKho ??
-                                                                          '')))),
-                                                      style: const TextStyle(
-                                                        fontSize: 16,
-                                                        fontWeight:
-                                                            FontWeight.w700,
-                                                        color: Colors.black,
+                                                              .giaVon
+                                                              .toString(),
+                                                        ),
+                                                        style: const TextStyle(
+                                                          fontSize: 16,
+                                                          color: Colors.black,
+                                                        ),
                                                       ),
                                                     ),
-                                                  ),
-                                                  Expanded(
-                                                    flex: 2,
-                                                    child: Text(
-                                                      FunctionHelper.formNum(
-                                                        controller
-                                                            .filteredList[
-                                                                index - 1]
-                                                            .giaVon
-                                                            .toString(),
-                                                      ),
-                                                      style: const TextStyle(
-                                                        fontSize: 16,
-                                                        color: Colors.black,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  Expanded(
-                                                    flex: 1,
-                                                    child: Text(
-                                                      FunctionHelper.formNum(
-                                                        controller
-                                                            .filteredList[
-                                                                index - 1]
-                                                            .soLuongGiaoDich
-                                                            .toString(),
-                                                      ),
-                                                      style: const TextStyle(
-                                                        fontSize: 16,
-                                                        color: ColorClass
-                                                            .color_xanh_it_dam,
+                                                    Expanded(
+                                                      flex: 1,
+                                                      child: Text(
+                                                        FunctionHelper.formNum(
+                                                          controller
+                                                              .filteredList[
+                                                                  index - 1]
+                                                              .soLuongGiaoDich
+                                                              .toString(),
+                                                        ),
+                                                        style: const TextStyle(
+                                                          fontSize: 16,
+                                                          color: ColorClass
+                                                              .color_xanh_it_dam,
+                                                        ),
                                                       ),
                                                     ),
-                                                  ),
-                                                  Expanded(
-                                                    flex: 1,
-                                                    child: Text(
-                                                      FunctionHelper.formNum(
-                                                        controller
-                                                            .filteredList[
-                                                                index - 1]
-                                                            .soLuongTon
-                                                            .toString(),
-                                                      ),
-                                                      style: const TextStyle(
-                                                        fontSize: 16,
-                                                        color: Colors.red,
+                                                    Expanded(
+                                                      flex: 1,
+                                                      child: Text(
+                                                        FunctionHelper.formNum(
+                                                          controller
+                                                              .filteredList[
+                                                                  index - 1]
+                                                              .soLuongTon
+                                                              .toString(),
+                                                        ),
+                                                        style: const TextStyle(
+                                                          fontSize: 16,
+                                                          color: Colors.red,
+                                                        ),
                                                       ),
                                                     ),
-                                                  ),
-                                                ],
-                                              ),
-                                              const SizedBox(
-                                                height: 5,
-                                              ),
-                                              Align(
-                                                alignment: Alignment.topLeft,
-                                                child: Text(
-                                                    "${controller.filteredList[index - 1].loaiGiaoDich} vào ${FunctionHelper.formatDateTimeString(controller.filteredList[index - 1].thoiGianGiaoDich.toString())}",
-                                                    style: const TextStyle(
-                                                        fontSize: 13,
-                                                        fontWeight:
-                                                            FontWeight.w500,
-                                                        color: Color.fromARGB(
-                                                            255, 49, 49, 49))),
-                                              )
-                                            ],
+                                                  ],
+                                                ),
+                                                const SizedBox(
+                                                  height: 5,
+                                                ),
+                                                Align(
+                                                  alignment: Alignment.topLeft,
+                                                  child: Text(
+                                                      "${controller.filteredList[index - 1].loaiGiaoDich} vào ${FunctionHelper.formatDateTimeString(controller.filteredList[index - 1].thoiGianGiaoDich.toString())}",
+                                                      style: const TextStyle(
+                                                          fontSize: 13,
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                          color: Color.fromARGB(
+                                                              255,
+                                                              49,
+                                                              49,
+                                                              49))),
+                                                )
+                                              ],
+                                            ),
                                           ),
                                   );
                                 });

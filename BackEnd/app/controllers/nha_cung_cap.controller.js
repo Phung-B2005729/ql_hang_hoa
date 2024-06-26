@@ -1,5 +1,6 @@
 const ApiError = require("../config/api_error");
 const NhaCungCapService = require("../services/nha_cung_cap.services");
+const PhieuNhapService = require("../services/phieu_nhap.services");
 const MongoDB = require("../utils/mongodb.util");
 const helper = require("../helper/index");
 const { sdtSchema } = require("../validation/index");
@@ -130,6 +131,14 @@ exports.update = async (req,res, next) => {
    
      try{
          const nhaCungCapService = new NhaCungCapService(MongoDB.client);
+         // nhà cung cấp đã có dữ liệu phiếu nhập không thể xoá
+         const phieuNhapService = new PhieuNhapService(MongoDB.client);
+         const phieNhap = phieuNhapService.findOne({
+            ma_nha_cung_cap: req.params.id
+         });
+         if(phieNhap!=null){
+            return next(new ApiError(401, "Nhà cung cấp đã có dữ liệu phiếu nhập không thể xoá"));
+         }
          const document = await nhaCungCapService.delete(req.params.id);
          if(!document){
              return next(new ApiError(404, "not found"));

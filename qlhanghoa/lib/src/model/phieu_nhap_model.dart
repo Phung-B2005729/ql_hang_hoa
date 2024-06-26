@@ -8,6 +8,7 @@ class PhieuNhapModel {
   String? ngayLapPhieu;
   int? giaGiam;
   int? tongTien;
+  int? daTraNCC;
   String? trangThai;
   String? maNhaCungCap;
   String? maCuaHang;
@@ -23,6 +24,7 @@ class PhieuNhapModel {
     this.maNhaCungCap,
     this.giaGiam,
     this.maNhanVien,
+    this.daTraNCC,
     this.tongTien,
     this.nhaCungCap,
     this.cuaHang,
@@ -37,6 +39,7 @@ class PhieuNhapModel {
     String? ngayLapPhieu,
     String? maNhaCungCap,
     int? giaGiam,
+    int? daTraNCC,
     String? maNhanVien,
     CuaHangModel? cuaHang,
     NhaCungCapModel? nhaCungCap,
@@ -51,6 +54,7 @@ class PhieuNhapModel {
       ngayLapPhieu: ngayLapPhieu ?? this.ngayLapPhieu,
       maNhaCungCap: maNhaCungCap ?? this.maNhaCungCap,
       giaGiam: giaGiam ?? this.giaGiam,
+      daTraNCC: daTraNCC ?? this.daTraNCC,
       chiTietPhieuNhap: chiTietPhieuNhap ?? this.chiTietPhieuNhap,
       maNhanVien: maNhanVien ?? this.maNhanVien,
       tongTien: tongTien ?? this.tongTien,
@@ -68,6 +72,7 @@ class PhieuNhapModel {
     giaGiam = json['gia_giam'];
     tongTien = json['tong_tien'];
     trangThai = json['trang_thai'];
+    daTraNCC = json['da_tra_nha_cung_cap'];
     maNhaCungCap = json['ma_nha_cung_cap'];
     maCuaHang = json['ma_cua_hang'];
     maNhanVien = json['ma_nhan_vien'];
@@ -98,6 +103,7 @@ class PhieuNhapModel {
     data['ma_nha_cung_cap'] = maNhaCungCap;
     data['ma_cua_hang'] = maCuaHang;
     data['ma_nhan_vien'] = maNhanVien;
+    data['da_tra_nha_cung_cap'] = daTraNCC;
 
     return data;
   }

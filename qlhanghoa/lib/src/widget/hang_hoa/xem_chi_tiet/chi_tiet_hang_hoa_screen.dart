@@ -72,7 +72,10 @@ class ChiTietHangHoaScreen extends StatelessWidget {
                       _buildRowTonKho(),
                       _buildRowDonViTinh(),
                       _buildRowTheKho(),
-                      _buildRowLoHSD(),
+                      // ignore: prefer_const_constructors
+                      controller.hangHoaModel.value.quanLyTheoLo == true
+                          ? _buildRowLoHSD()
+                          : SizedBox(),
                       _buildRowQuanLyTonKho()
                     ],
                   ),

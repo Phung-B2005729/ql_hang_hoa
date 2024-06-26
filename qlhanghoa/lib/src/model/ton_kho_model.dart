@@ -34,7 +34,9 @@ class TonKhoModel {
     maHangHoa = json['ma_hang_hoa'];
     soLo = json['so_lo'];
     maCuaHang = json['ma_cua_hang'];
-    soLuongTon = double.parse(json['so_luong_ton'].toString());
+    soLuongTon = json['so_luong_ton'] != null
+        ? double.parse(json['so_luong_ton'].toString())
+        : null;
   }
 
   Map<String, dynamic> toJson() {

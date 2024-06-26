@@ -8,13 +8,16 @@ class ChiTietNhapHangService {
     extractChiTietNhapData(payload){
         // lay du lieu doi tuong loaihang va loai bo cac thuoc tinh undefined
         const chi_tiet_nhap_hang = {
+             so_lo: payload.so_lo,
              ma_phieu_nhap: payload.ma_phieu_nhap,
-             so_luong : payload.so_luong, 
+             so_luong : payload.so_luong, // tong_so_luong
              don_gia_nhap: payload.don_gia_nhap, 
              ma_hang_hoa: payload.ma_hang_hoa,
-             ghi_chu: payload.ghi_chu,
+             han_su_dung: payload.han_su_dung,
              gia_giam: payload.gia_giam,
-             lo_nhap: payload.lo_nhap,
+             //lo_nhap: [ // có thể rỗng
+             //so_lo, han_su_dung, so_luong_nhap
+             //]
         }
         Object.keys(chi_tiet_nhap_hang).forEach((key)=>{
             chi_tiet_nhap_hang[key] === undefined && delete chi_tiet_nhap_hang[key]

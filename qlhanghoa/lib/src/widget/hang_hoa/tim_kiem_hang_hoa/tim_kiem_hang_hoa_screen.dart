@@ -3,17 +3,24 @@ import 'package:get/get.dart';
 import 'package:qlhanghoa/src/controller/bottom_navigation_controller.dart';
 import 'package:qlhanghoa/src/controller/cua_hang/cua_hang_controller.dart';
 import 'package:qlhanghoa/src/controller/hang_hoa/hang_hoa_controller.dart';
+import 'package:qlhanghoa/src/controller/nhap_hang/them_phieu_nhap/nhap_lo_controller.dart';
+import 'package:qlhanghoa/src/controller/nhap_hang/them_phieu_nhap/them_phieu_nhap_controller.dart';
 import 'package:qlhanghoa/src/helper/function_helper.dart';
 import 'package:qlhanghoa/src/helper/template/app_theme.dart';
 import 'package:qlhanghoa/src/helper/template/color.dart';
+import 'package:qlhanghoa/src/model/chi_tiet_phieu_nhap_model.dart';
 import 'package:qlhanghoa/src/model/cua_hang_model.dart';
 import 'package:qlhanghoa/src/model/hang_hoa_model.dart';
+import 'package:qlhanghoa/src/model/lo_hang.model.dart';
 import 'package:qlhanghoa/src/widget/hang_hoa/xem_chi_tiet/chi_tiet_hang_hoa_screen.dart';
+import 'package:qlhanghoa/src/widget/nhap_hang/them_phieu_nhap/nhap_hang_tung_hang_hoa_screen.dart';
+import 'package:qlhanghoa/src/widget/nhap_hang/them_phieu_nhap/nhap_lo_screen.dart';
 
 class TimKiemHangHoaScreen extends GetView<HangHoaController> {
+  TimKiemHangHoaScreen({super.key, this.themPhieuNhap});
+  final bool? themPhieuNhap;
   final BottomNavigationController bottomController = Get.find();
 
-  TimKiemHangHoaScreen({super.key});
   @override
   Widget build(Object context) {
     return Scaffold(
@@ -33,145 +40,192 @@ class TimKiemHangHoaScreen extends GetView<HangHoaController> {
             ],
           ),
           child: GetBuilder<HangHoaController>(
-              builder: (controller) => (controller
-                      .searchController.text.isNotEmpty)
-                  ? (controller.filteredList.length == 0)
-                      ? Center(child: Text('Không tìm thấy kết quả phù hợp'))
-                      : ListView.builder(
-                          padding: const EdgeInsets.only(
-                              left: 20, right: 20, bottom: 30),
-                          itemCount: controller.filteredList.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            return Dismissible(
-                              background: Container(
-                                color: Colors.red,
-                                alignment: Alignment.centerRight,
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 20),
-                                child: const Icon(
-                                  Icons.delete,
-                                  color: Colors.white,
-                                ),
-                              ),
-                              key: Key(controller.filteredList[index].maHangHoa
-                                  .toString()),
-                              confirmDismiss: (direction) async {
-                                // Hiển thị hộp thoại xác nhận trước khi xóa
-                                return Get.dialog(_builDiaLogDelete(
-                                    controller.filteredList[index]));
-                              },
-                              direction: DismissDirection.endToStart,
-                              child: GestureDetector(
-                                onTap: () async {
-                                  // chuyển đến trang thêm + edit
-
-                                  // gọi findOne data
-                                  await controller.getFindOne(controller
-                                      .filteredList[index].maHangHoa!);
-                                  Get.to(() => ChiTietHangHoaScreen());
-                                },
-                                child: Container(
-                                  decoration: const BoxDecoration(
-                                    border: Border(
-                                        bottom: BorderSide(
-                                            color: ColorClass.color_thanh_ke)),
-                                  ),
-                                  height: 60,
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Container(
-                                        height: 45,
-                                        width: 45,
-                                        decoration: const BoxDecoration(
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(5))),
-                                        child: (controller.filteredList[index]
-                                                        .hinhAnh !=
-                                                    null &&
-                                                controller.filteredList[index]
-                                                    .hinhAnh!.isNotEmpty)
-                                            ? Image.network(
-                                                controller.filteredList[index]
-                                                    .hinhAnh![0].linkAnh!,
-                                                fit: BoxFit.contain)
-                                            : Image.asset(
-                                                'assets/images/hang_hoa_mac_dinh.png',
-                                                fit: BoxFit.contain,
-                                              ),
-                                      ),
-                                      const SizedBox(
-                                        width: 10,
-                                      ),
-                                      Expanded(
-                                        flex: 5,
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Text(
-                                                  controller.filteredList[index]
-                                                      .tenHangHoa!,
-                                                  style: AppTheme
-                                                      .lightTextTheme.bodyLarge,
-                                                ),
-                                                Obx(
-                                                  () => Text(
-                                                    FunctionHelper.formNum(
-                                                        (controller.giaBan
-                                                                    .value !=
-                                                                true)
-                                                            ? controller
-                                                                .filteredList[
-                                                                    index]
-                                                                .giaVon
-                                                            : controller
-                                                                .filteredList[
-                                                                    index]
-                                                                .donGiaBan),
-                                                    style: AppTheme
-                                                        .lightTextTheme
-                                                        .bodyMedium,
-                                                  ),
-                                                )
-                                              ],
-                                            ),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Text(
-                                                  controller.filteredList[index]
-                                                      .maHangHoa!,
-                                                  style: AppTheme.lightTextTheme
-                                                      .displaySmall,
-                                                ),
-                                                Obx(
-                                                  () => Text(
-                                                    "${FunctionHelper.formNum(controller.tongsoLuongTonKhoTrongListLoHang(hangHoa: controller.filteredList[index]).toString())} ${controller.filteredList[index].donViTinh!}",
-                                                    style: AppTheme
-                                                        .lightTextTheme
-                                                        .titleSmall,
-                                                  ),
-                                                )
-                                              ],
-                                            ),
-                                          ],
+              builder: (controller) =>
+                  (controller.searchController.text.isNotEmpty)
+                      ? (controller.filteredList.isEmpty)
+                          ? const Center(
+                              child: Text('Không tìm thấy kết quả phù hợp'))
+                          : ListView.builder(
+                              padding: const EdgeInsets.only(
+                                  left: 20, right: 20, bottom: 30),
+                              itemCount: controller.filteredList.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                return (themPhieuNhap != null &&
+                                        themPhieuNhap == true)
+                                    ? _buildContainerHangHoa(controller, index)
+                                    : Dismissible(
+                                        background: Container(
+                                          color: Colors.red,
+                                          alignment: Alignment.centerRight,
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 20),
+                                          child: const Icon(
+                                            Icons.delete,
+                                            color: Colors.white,
+                                          ),
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            );
-                          })
-                  : const SizedBox())),
+                                        key: Key(controller
+                                            .filteredList[index].maHangHoa
+                                            .toString()),
+                                        confirmDismiss: (direction) async {
+                                          // Hiển thị hộp thoại xác nhận trước khi xóa
+                                          return Get.dialog(_builDiaLogDelete(
+                                              controller.filteredList[index]));
+                                        },
+                                        direction: DismissDirection.endToStart,
+                                        child: _buildContainerHangHoa(
+                                            controller, index));
+                              })
+                      : const SizedBox())),
+    );
+  }
+
+  GestureDetector _buildContainerHangHoa(
+      HangHoaController controller, int index) {
+    return GestureDetector(
+      onTap: () async {
+        if (themPhieuNhap != null && themPhieuNhap == true) {
+          // tìm xem hàng hoá này có trong list chi tiêt  hay chưa
+          ThemPhieuNhapController themPhieuNhapController = Get.find();
+          int indexChiTiet =
+              themPhieuNhapController.getIndexHangHoaTrongChiTiet(
+                  controller.filteredList[index].maHangHoa!);
+          NhapLoController nhapLoController = Get.find();
+          if (indexChiTiet >= 0) {
+            // đã có trong list chi tiết, không cần thêm hàng hoá chỉ cần chuyển trang
+
+            nhapLoController.setUpData(
+                chiTiet:
+                    themPhieuNhapController.listChiTietPhieuNhap[indexChiTiet],
+                hangHoa: controller.filteredList[index],
+                indext: indexChiTiet);
+            Get.to(() => const NhapHangTheoTungHangHoa(
+                  chuyenTuTimKiem: true,
+                ));
+          } else {
+            // thêm mới vào chi tiết và chuyển trang
+            nhapLoController.setUpData(
+                chiTiet: ChiTietPhieuNhapModel(
+                    maHangHoa: controller.filteredList[index].maHangHoa,
+                    soLuong: 0),
+                hangHoa: controller.filteredList[index],
+                indext: -1);
+            if (controller.filteredList[index].quanLyTheoLo != true) {
+              // chuyển đến thêm số lượng khôgn quản lý theo lô
+              Get.to(() => const NhapHangTheoTungHangHoa(
+                    chuyenTuTimKiem: true,
+                  ));
+            } else {
+              // chuyển đến thêm lô mới
+              nhapLoController.setUpDataThemLo(LoHangModel(
+                maHangHoa: controller.filteredList[index].maHangHoa,
+              ));
+
+              Get.to(() => const ThemLoScreen(
+                    themMoi: true,
+                  ));
+            }
+          }
+        } else {
+          // gọi findOne chi tiết hàng hoá data
+          await controller
+              .getFindOne(controller.filteredList[index].maHangHoa!);
+          Get.to(() => ChiTietHangHoaScreen());
+        }
+      },
+      child: Container(
+        decoration: const BoxDecoration(
+          border: Border(bottom: BorderSide(color: ColorClass.color_thanh_ke)),
+        ),
+        height: 60,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Container(
+              height: 45,
+              width: 45,
+              decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(5))),
+              child: (controller.filteredList[index].hinhAnh != null &&
+                      controller.filteredList[index].hinhAnh!.isNotEmpty)
+                  ? Image.network(
+                      controller.filteredList[index].hinhAnh![0].linkAnh!,
+                      fit: BoxFit.contain,
+                      errorBuilder: (BuildContext context, Object exception,
+                          StackTrace? stackTrace) {
+                        return Image.asset(
+                            'assets/images/hang_hoa_mac_dinh.png',
+                            fit: BoxFit.contain);
+                      },
+                      loadingBuilder: (BuildContext context, Widget child,
+                          ImageChunkEvent? loadingProgress) {
+                        if (loadingProgress == null) {
+                          return child;
+                        } else {
+                          return Center(
+                            child: CircularProgressIndicator(
+                              color: const Color.fromARGB(255, 185, 185, 185),
+                              value: loadingProgress.expectedTotalBytes != null
+                                  ? loadingProgress.cumulativeBytesLoaded /
+                                      loadingProgress.expectedTotalBytes!
+                                  : null,
+                            ),
+                          );
+                        }
+                      },
+                    )
+                  : Image.asset(
+                      'assets/images/hang_hoa_mac_dinh.png',
+                      fit: BoxFit.contain,
+                    ),
+            ),
+            const SizedBox(
+              width: 10,
+            ),
+            Expanded(
+              flex: 5,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        controller.filteredList[index].tenHangHoa!,
+                        style: AppTheme.lightTextTheme.bodyLarge,
+                      ),
+                      Obx(
+                        () => Text(
+                          FunctionHelper.formNum(
+                              (controller.giaBan.value != true)
+                                  ? controller.filteredList[index].giaVon
+                                  : controller.filteredList[index].donGiaBan),
+                          style: AppTheme.lightTextTheme.bodyMedium,
+                        ),
+                      )
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        controller.filteredList[index].maHangHoa!,
+                        style: AppTheme.lightTextTheme.displaySmall,
+                      ),
+                      Obx(
+                        () => Text(
+                          "${FunctionHelper.formNum(controller.tongsoLuongTonKhoTrongListLoHang(hangHoa: controller.filteredList[index]).toString())} ${controller.filteredList[index].donViTinh!}",
+                          style: AppTheme.lightTextTheme.titleSmall,
+                        ),
+                      )
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -311,7 +365,7 @@ class TimKiemHangHoaScreen extends GetView<HangHoaController> {
                             color: Color.fromARGB(255, 64, 64, 64), width: 1),
                         borderRadius: BorderRadius.circular(11),
                       ),
-                      fillColor: Color.fromARGB(255, 246, 246, 246),
+                      fillColor: const Color.fromARGB(255, 246, 246, 246),
                       filled: true,
                       border: OutlineInputBorder(
                           borderSide: const BorderSide(

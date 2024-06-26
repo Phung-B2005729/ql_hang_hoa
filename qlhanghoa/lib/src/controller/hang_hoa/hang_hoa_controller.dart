@@ -34,9 +34,10 @@ class HangHoaController extends GetxController {
     // await getlistHangHoa();
 
     thuLai.value = false;
-    searchController.addListener(() {
+    searchController.addListener(() async {
       // lắng nghe sự thay đổi controller
       iconClose.value = searchController.text.isNotEmpty;
+
       filterListHangHoa();
     });
     AuthController auth = Get.find();
@@ -53,6 +54,13 @@ class HangHoaController extends GetxController {
   void changeHienThiGia(bool gia) {
     print(gia);
     giaBan.value = gia;
+  }
+
+  HangHoaModel findMaHangHoa(String maHangHoa) {
+    return listHangHoa.firstWhere(
+      (element) => element.maHangHoa == maHangHoa,
+      orElse: () => HangHoaModel(),
+    );
   }
 
   Future<void> getlistHangHoa(

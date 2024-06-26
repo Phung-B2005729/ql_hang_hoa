@@ -54,7 +54,6 @@ class GiaoDichController extends GetxController {
       print('gọi lộc giao dịch');
       filteredList.value = listGiaoDich
           .where((element) =>
-              element.soLo!.toLowerCase().contains(query.toLowerCase()) ||
               element.thoiGianGiaoDich!
                   .toLowerCase()
                   .contains(query.toLowerCase()) ||

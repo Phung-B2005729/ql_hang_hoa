@@ -2,14 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:qlhanghoa/src/controller/bottom_navigation_controller.dart';
+import 'package:qlhanghoa/src/controller/hang_hoa/hang_hoa_controller.dart';
 import 'package:qlhanghoa/src/controller/nhan_vien/nhan_vien_controller.dart';
-import 'package:qlhanghoa/src/controller/nhap_hang/chi_tiet_phieu_nhap_controller.dart';
+import 'package:qlhanghoa/src/controller/nhap_hang/them_phieu_nhap/them_phieu_nhap_controller.dart';
+import 'package:qlhanghoa/src/controller/nhap_hang/xem_chi_tiet/chi_tiet_phieu_nhap_controller.dart';
 import 'package:qlhanghoa/src/controller/nhap_hang/phieu_nhap_controller.dart';
 import 'package:qlhanghoa/src/helper/function_helper.dart';
 import 'package:qlhanghoa/src/helper/template/app_theme.dart';
 import 'package:qlhanghoa/src/helper/template/color.dart';
 import 'package:qlhanghoa/src/model/hang_hoa_model.dart';
 import 'package:qlhanghoa/src/widget/nhap_hang/chi_tiet_phieu_nhap_screen.dart';
+import 'package:qlhanghoa/src/widget/nhap_hang/them_phieu_nhap/them_phieu_nhap_screen.dart';
 import 'package:qlhanghoa/src/widget/nhap_hang/tim_kiem_phieu_nhap_screen.dart';
 
 import 'package:qlhanghoa/src/widget/shared/loading_circular_fullscreen.dart';
@@ -194,6 +197,7 @@ class PhieuNhapScreen extends GetView<PhieuNhapController> {
                                   // chuyển đến xem chi tiết
                                   ChiTietPhieuNhapController
                                       chiTietPhieuNhapController = Get.find();
+                                  print('gọi find');
                                   await chiTietPhieuNhapController
                                       .getOnePhieuNhap(controller
                                               .listPhieuNhap[index]
@@ -333,7 +337,15 @@ class PhieuNhapScreen extends GetView<PhieuNhapController> {
               thongTinLoHang: controller.thongTinLoHang.text,
               thongTinPhieuNhap: controller.thongTinPhieuNhap.text,
               thongTinNhaCungCap: controller.thongTinNhaCungCap.text);
+          HangHoaController hangHoaController = Get.find();
+          if (hangHoaController.listHangHoa.isEmpty) {
+            await hangHoaController.getlistHangHoa();
+          }
           // chuyển đến thêm phiếu nhập
+          ThemPhieuNhapController themPhieuNhapController = Get.find();
+          themPhieuNhapController.reSetData();
+
+          Get.to(() => ThemPhieuNhapScreen());
         },
         child: const Icon(
           Icons.add,

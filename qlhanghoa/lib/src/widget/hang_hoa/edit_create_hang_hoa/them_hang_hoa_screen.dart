@@ -17,7 +17,8 @@ import 'package:qlhanghoa/src/widget/shared/loading_circular_fullscreen.dart';
 class ThemHangHoaScreen extends GetView<ThemHangHoaController> {
   LoaiHangController loaiHangController = Get.find();
   ThuongHieuController thuongHieuController = Get.find();
-  ThemHangHoaScreen({super.key});
+  ThemHangHoaScreen({super.key, this.themPhieuNhap});
+  final bool? themPhieuNhap;
 
   @override
   Widget build(Object context) {
@@ -136,7 +137,7 @@ class ThemHangHoaScreen extends GetView<ThemHangHoaController> {
               print('gọi');
               controller.edit.value == true
                   ? await controller.upDate()
-                  : await controller.save();
+                  : await controller.save(themPhieuNhap: themPhieuNhap);
               // xử lý thêm  hàng hoá
             },
             child: const Text(
@@ -868,8 +869,31 @@ class ThemHangHoaScreen extends GetView<ThemHangHoaController> {
                         fit: BoxFit.cover,
                       )
                     : Image.network(
-                        controller.listImage[index].linkAnh,
-                        fit: BoxFit.cover,
+                        controller.listImage[index].linkAnh!,
+                        fit: BoxFit.contain,
+                        errorBuilder: (BuildContext context, Object exception,
+                            StackTrace? stackTrace) {
+                          return Image.asset(
+                              'assets/images/hang_hoa_mac_dinh.png',
+                              fit: BoxFit.contain);
+                        },
+                        loadingBuilder: (BuildContext context, Widget child,
+                            ImageChunkEvent? loadingProgress) {
+                          if (loadingProgress == null) {
+                            return child;
+                          } else {
+                            return Center(
+                              child: CircularProgressIndicator(
+                                color: const Color.fromARGB(255, 185, 185, 185),
+                                value: loadingProgress.expectedTotalBytes !=
+                                        null
+                                    ? loadingProgress.cumulativeBytesLoaded /
+                                        loadingProgress.expectedTotalBytes!
+                                    : null,
+                              ),
+                            );
+                          }
+                        },
                       ),
               ),
               Positioned(

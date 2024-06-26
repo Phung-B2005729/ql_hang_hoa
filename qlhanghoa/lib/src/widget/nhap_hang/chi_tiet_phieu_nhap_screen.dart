@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 
 import 'package:qlhanghoa/src/controller/hang_hoa/hang_hoa_controller.dart';
 
-import 'package:qlhanghoa/src/controller/nhap_hang/chi_tiet_phieu_nhap_controller.dart';
+import 'package:qlhanghoa/src/controller/nhap_hang/xem_chi_tiet/chi_tiet_phieu_nhap_controller.dart';
 import 'package:qlhanghoa/src/helper/function_helper.dart';
 
 import 'package:qlhanghoa/src/helper/template/color.dart';
@@ -46,8 +46,8 @@ class ChiTietPhieuNhapScreen extends GetView<ChiTietPhieuNhapController> {
                   ),
                   child: Column(
                     children: [
-                      Obx(
-                        () => Row(
+                      GetBuilder<ChiTietPhieuNhapController>(
+                        builder: (controller) => Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Row(children: [
@@ -59,9 +59,11 @@ class ChiTietPhieuNhapScreen extends GetView<ChiTietPhieuNhapController> {
                                 width: 4,
                               ),
                               Text(
-                                controller
-                                    .phieuNhap.value.nhaCungCap!.tenNhaCungCap
-                                    .toString(),
+                                controller.phieuNhap.value.nhaCungCap != null
+                                    ? controller.phieuNhap.value.nhaCungCap!
+                                        .tenNhaCungCap
+                                        .toString()
+                                    : '',
                                 style: const TextStyle(
                                     fontSize: 15,
                                     color: Colors.black,
@@ -69,8 +71,11 @@ class ChiTietPhieuNhapScreen extends GetView<ChiTietPhieuNhapController> {
                               ),
                             ]),
                             Text(
-                                controller.phieuNhap.value.nhanVien!.tenNhanVien
-                                    .toString(),
+                                controller.phieuNhap.value.nhanVien != null
+                                    ? controller
+                                        .phieuNhap.value.nhanVien!.tenNhanVien
+                                        .toString()
+                                    : '',
                                 style: const TextStyle(
                                     fontSize: 15, color: Colors.black))
                           ],
@@ -81,12 +86,15 @@ class ChiTietPhieuNhapScreen extends GetView<ChiTietPhieuNhapController> {
                       ),
                       Align(
                         alignment: Alignment.topRight,
-                        child: Obx(
-                          () => Text(
-                              FunctionHelper.formatDateTimeString(controller
-                                      .phieuNhap.value.ngayLapPhieu
-                                      .toString())
-                                  .toString(),
+                        child: GetBuilder<ChiTietPhieuNhapController>(
+                          builder: (controller) => Text(
+                              controller.phieuNhap.value.ngayLapPhieu != null
+                                  ? FunctionHelper.formatDateTimeString(
+                                          controller
+                                              .phieuNhap.value.ngayLapPhieu
+                                              .toString())
+                                      .toString()
+                                  : '',
                               style: const TextStyle(
                                   fontSize: 15, color: Colors.black)),
                         ),
@@ -113,11 +121,11 @@ class ChiTietPhieuNhapScreen extends GetView<ChiTietPhieuNhapController> {
                       ),
                     ],
                   ),
-                  child: Obx(
-                    () => Column(
+                  child: GetBuilder<ChiTietPhieuNhapController>(
+                    builder: (controller) => Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        for (var chitiet in controller.listChiTietPhieuNhap!)
+                        for (var chitiet in controller.listChiTietPhieuNhap)
                           GestureDetector(
                             onTap: () async {
                               // chuyển đến trang thêm + edit
@@ -149,7 +157,8 @@ class ChiTietPhieuNhapScreen extends GetView<ChiTietPhieuNhapController> {
                                         Text(
                                             FunctionHelper.formNum(
                                                 ((chitiet.donGiaNhap!) *
-                                                        (chitiet.soLuong!))
+                                                            (chitiet.soLuong!) -
+                                                        (chitiet.giaGiam ?? 0))
                                                     .toString()),
                                             style: const TextStyle(
                                                 fontSize: 16,
@@ -191,41 +200,111 @@ class ChiTietPhieuNhapScreen extends GetView<ChiTietPhieuNhapController> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.start,
                                       children: [
-                                        Container(
-                                          height: 20,
-                                          width: 20,
-                                          decoration: const BoxDecoration(
-                                              color:
-                                                  ColorClass.color_button_nhat,
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(5))),
-                                          child: const Center(
-                                            child: Text(
-                                              'Lô',
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 13),
-                                            ),
-                                          ),
-                                        ),
+                                        const Text('Giá giảm: ',
+                                            style: TextStyle(
+                                                fontSize: 15,
+                                                color: Colors.black)),
                                         const SizedBox(
-                                          width: 5,
+                                          width: 10,
                                         ),
-                                        Text(chitiet.soLo.toString(),
-                                            style:
-                                                const TextStyle(fontSize: 14)),
-                                        const SizedBox(
-                                          width: 15,
-                                        ),
-                                        chitiet.hanSuDung != null
-                                            ? Text(
-                                                "HSD ${FunctionHelper.formatDateString(chitiet.hanSuDung.toString())}",
-                                                style: const TextStyle(
-                                                    fontSize: 14,
-                                                    color: Colors.black))
-                                            : const SizedBox(),
+                                        Text(
+                                            chitiet.giaGiam != null
+                                                ? FunctionHelper.formNum(
+                                                    chitiet.giaGiam!.toString())
+                                                : '0',
+                                            style: const TextStyle(
+                                                fontSize: 15,
+                                                color: Colors.black)),
                                       ],
                                     ),
+                                    const SizedBox(
+                                      height: 5,
+                                    ),
+                                    // ignore: unused_local_variable
+                                    GetBuilder<ChiTietPhieuNhapController>(
+                                        builder:
+                                            (controller) =>
+                                                (chitiet.loNhap != null &&
+                                                        chitiet
+                                                            .loNhap!.isNotEmpty)
+                                                    ? Column(
+                                                        children: [
+                                                          for (var loHang
+                                                              in chitiet
+                                                                  .loNhap!)
+                                                            Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .only(
+                                                                      left: 5,
+                                                                      top: 5),
+                                                              child: Row(
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .start,
+                                                                children: [
+                                                                  Container(
+                                                                    height: 20,
+                                                                    width: 20,
+                                                                    decoration: const BoxDecoration(
+                                                                        color: ColorClass
+                                                                            .color_button_nhat,
+                                                                        borderRadius:
+                                                                            BorderRadius.all(Radius.circular(5))),
+                                                                    child:
+                                                                        const Center(
+                                                                      child:
+                                                                          Text(
+                                                                        'Lô',
+                                                                        style: TextStyle(
+                                                                            color:
+                                                                                Colors.white,
+                                                                            fontSize: 13),
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                  const SizedBox(
+                                                                    width: 5,
+                                                                  ),
+                                                                  Text(
+                                                                      loHang
+                                                                          .soLo
+                                                                          .toString(),
+                                                                      style: const TextStyle(
+                                                                          fontSize:
+                                                                              13)),
+                                                                  const SizedBox(
+                                                                    width: 10,
+                                                                  ),
+                                                                  loHang.hanSuDung !=
+                                                                          null
+                                                                      ? Text(
+                                                                          "HSD ${FunctionHelper.formatDateString(loHang.hanSuDung.toString())}",
+                                                                          style: const TextStyle(
+                                                                              fontSize: 13,
+                                                                              color: Colors.black))
+                                                                      : const SizedBox(),
+                                                                  const SizedBox(
+                                                                    width: 5,
+                                                                  ),
+                                                                  Text(
+                                                                      "x ${FunctionHelper.formNum(loHang.soLuongNhap.toString())}",
+                                                                      style:
+                                                                          const TextStyle(
+                                                                        fontSize:
+                                                                            13,
+                                                                        color: ColorClass
+                                                                            .color_button_nhat,
+                                                                      ))
+                                                                ],
+                                                              ),
+                                                            ),
+                                                        ],
+                                                      )
+                                                    : const SizedBox(
+                                                        child: Text('lô rỗng'),
+                                                      )),
+
                                     const Divider(
                                       color: ColorClass.color_thanh_ke,
                                     ),
@@ -265,8 +344,8 @@ class ChiTietPhieuNhapScreen extends GetView<ChiTietPhieuNhapController> {
                                 fontWeight: FontWeight.w600,
                                 color: Colors.black),
                           ),
-                          Obx(
-                            () => Text(
+                          GetBuilder<ChiTietPhieuNhapController>(
+                            builder: (controller) => Text(
                                 FunctionHelper.formNum(controller
                                     .phieuNhap.value.tongTien
                                     .toString()),
@@ -290,8 +369,8 @@ class ChiTietPhieuNhapScreen extends GetView<ChiTietPhieuNhapController> {
                                 fontWeight: FontWeight.w600,
                                 color: Colors.black),
                           ),
-                          Obx(
-                            () => Text(
+                          GetBuilder<ChiTietPhieuNhapController>(
+                            builder: (controller) => Text(
                                 FunctionHelper.formNum(controller
                                     .phieuNhap.value.giaGiam
                                     .toString()),
@@ -313,8 +392,8 @@ class ChiTietPhieuNhapScreen extends GetView<ChiTietPhieuNhapController> {
                                 fontWeight: FontWeight.w600,
                                 color: Colors.black),
                           ),
-                          Obx(
-                            () => Text(
+                          GetBuilder<ChiTietPhieuNhapController>(
+                            builder: (controller) => Text(
                                 FunctionHelper.formNum(controller
                                     .phieuNhap.value.tongTien
                                     .toString()),
@@ -358,8 +437,8 @@ class ChiTietPhieuNhapScreen extends GetView<ChiTietPhieuNhapController> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          Obx(
-                            () => Text(
+                          GetBuilder<ChiTietPhieuNhapController>(
+                            builder: (controller) => Text(
                               controller.listChiTietPhieuNhap.length.toString(),
                               style: const TextStyle(
                                   fontSize: 16,
@@ -375,8 +454,8 @@ class ChiTietPhieuNhapScreen extends GetView<ChiTietPhieuNhapController> {
                           ),
                         ],
                       ),
-                      Obx(
-                        () => Text(
+                      GetBuilder<ChiTietPhieuNhapController>(
+                        builder: (controller) => Text(
                           FunctionHelper.formNum(
                               controller.phieuNhap.value.tongTien.toString()),
                           style: const TextStyle(
@@ -415,27 +494,32 @@ class ChiTietPhieuNhapScreen extends GetView<ChiTietPhieuNhapController> {
                         children: [
                           const Text(
                             'Người tạo:',
-                            style: TextStyle(fontSize: 14, color: Colors.black),
+                            style: TextStyle(fontSize: 13, color: Colors.black),
                           ),
                           const SizedBox(
-                            width: 5,
+                            width: 3,
                           ),
-                          Obx(
-                            () => Text(
-                              controller.phieuNhap.value.nhanVien!.tenNhanVien
-                                  .toString(),
+                          GetBuilder<ChiTietPhieuNhapController>(
+                            builder: (controller) => Text(
+                              controller.phieuNhap.value.nhanVien != null
+                                  ? controller
+                                      .phieuNhap.value.nhanVien!.tenNhanVien
+                                      .toString()
+                                  : '',
                               style: const TextStyle(
-                                  fontSize: 14, color: Colors.black),
+                                  fontSize: 13, color: Colors.black),
                             ),
                           ),
                         ],
                       ),
-                      Obx(
-                        () => Text(
-                          controller.phieuNhap.value.cuaHang!.tenCuaHang
-                              .toString(),
+                      GetBuilder<ChiTietPhieuNhapController>(
+                        builder: (controller) => Text(
+                          controller.phieuNhap.value.cuaHang != null
+                              ? controller.phieuNhap.value.cuaHang!.tenCuaHang
+                                  .toString()
+                              : '',
                           style: const TextStyle(
-                              fontSize: 14, color: Colors.black),
+                              fontSize: 13, color: Colors.black),
                         ),
                       ),
                     ],
@@ -458,8 +542,8 @@ class ChiTietPhieuNhapScreen extends GetView<ChiTietPhieuNhapController> {
   AppBar _builddAppBar() {
     return AppBar(
       titleSpacing: 3,
-      title: Obx(
-        () => Column(
+      title: GetBuilder<ChiTietPhieuNhapController>(
+        builder: (controller) => Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(

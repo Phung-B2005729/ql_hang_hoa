@@ -136,6 +136,7 @@ exports.update = async (req,res, next) => {
    
      try{
          const nhanVienService = new NhanVienService(MongoDB.client);
+         
          const document = await nhanVienService.delete(req.params.id);
          if(!document){
              return next(new ApiError(404, "not found"));

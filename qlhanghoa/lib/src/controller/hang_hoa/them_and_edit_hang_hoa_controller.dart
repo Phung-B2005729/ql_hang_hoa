@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:qlhanghoa/src/controller/hang_hoa/hang_hoa_controller.dart';
+import 'package:qlhanghoa/src/controller/nhap_hang/them_phieu_nhap/them_phieu_nhap_controller.dart';
 import 'package:qlhanghoa/src/helper/function_helper.dart';
 import 'package:qlhanghoa/src/model/hang_hoa_model.dart';
 import 'package:qlhanghoa/src/model/hinh_anh_model.dart';
@@ -23,7 +24,6 @@ class ThemHangHoaController extends GetxController {
   TextEditingController thuongHieuController = TextEditingController();
   TextEditingController giaBanController = TextEditingController();
   TextEditingController giaVonController = TextEditingController();
-
   TextEditingController donViTinhController = TextEditingController();
   TextEditingController tonItNhatController = TextEditingController();
   TextEditingController tonNhieuNhatController = TextEditingController();
@@ -301,44 +301,52 @@ class ThemHangHoaController extends GetxController {
     }
   }
 
-  Future<void> save() async {
+  Future<void> save({bool? themPhieuNhap}) async {
     if (formKey.currentState!.validate()) {
       print(maHangController.text);
       print(tenHangController.text);
+      formKey.currentState!.save();
+      bool ktr = true;
       if (listImage.isNotEmpty) {
         print('Gọi save');
         loading.value = true;
-        formKey.currentState!.save();
+
         print(hangHoaModel.value.thuongHieu!.tenThuongHieu);
         print('gọi save ảnh');
-        bool ktr = await saveListImage();
+        ktr = await saveListImage();
+      }
+      if (ktr == true) {
+        var response = await HangHoaService().create(hangHoaModel.value);
+        ktr = checkResponGetConnect(response);
         if (ktr == true) {
-          var response = await HangHoaService().create(hangHoaModel.value);
-          ktr = checkResponGetConnect(response);
-          if (ktr == true) {
-            print('gọi update mã hàng hoá');
-            hangHoaModel.value.maHangHoa = response.body;
-            // thêm hàng hoá vào list
-            HangHoaController hangHoaController = Get.find();
-            hangHoaController.addHangHoa(hangHoaModel.value);
-            loading.value = false;
-            Get.back();
-            GetShowSnackBar.successSnackBar('Đã thêm thành công!');
-          } else {
-            loading.value = false;
-            await deleteListImage(hangHoaModel.value.hinhAnh!);
-            hangHoaModel.value.hinhAnh = [];
+          print('gọi update mã hàng hoá');
+          hangHoaModel.value.maHangHoa = response.body;
+          // thêm hàng hoá vào list
+          HangHoaController hangHoaController = Get.find();
+          hangHoaController.addHangHoa(hangHoaModel.value);
+          // thêm vào list của ThemPhieuNhapController
+          if (themPhieuNhap != null && themPhieuNhap == true) {
+            ThemPhieuNhapController themPhieuNhapController = Get.find();
+            themPhieuNhapController.addHangHoa(hangHoaModel.value);
           }
+          loading.value = false;
+          Get.back();
+          GetShowSnackBar.successSnackBar('Đã thêm thành công!');
+        } else {
+          loading.value = false;
+          await deleteListImage(hangHoaModel.value.hinhAnh!);
+          hangHoaModel.value.hinhAnh = [];
         }
       }
+
       loading.value = false;
     } else {
       loading.value = false;
-      GetShowSnackBar.errorSnackBar('Vui lòng thêm hình ảnh cho hàng hoá');
+      GetShowSnackBar.errorSnackBar('Vui lòng nhập đầy đủ dữ liệu bắt buộc');
     }
   }
 
-  Future<void> upDate() async {
+  Future<void> upDate({bool? themPhieuNhap}) async {
     if (formKey.currentState!.validate()) {
       print(maHangController.text);
       print(tenHangController.text);
@@ -363,6 +371,11 @@ class ThemHangHoaController extends GetxController {
             HangHoaController hangHoaController = Get.find();
             print('gọi update hàng hoá');
             hangHoaController.updateHangHoa(hangHoaModel.value);
+            if (themPhieuNhap != null && themPhieuNhap == true) {
+              ThemPhieuNhapController themPhieuNhapController = Get.find();
+              themPhieuNhapController.upDateGiaBan(
+                  hangHoaModel.value.maHangHoa!, hangHoaModel.value.donGiaBan!);
+            }
             loading.value = false;
             Get.back();
             GetShowSnackBar.successSnackBar(

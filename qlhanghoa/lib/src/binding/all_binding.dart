@@ -8,8 +8,11 @@ import 'package:qlhanghoa/src/controller/cua_hang/cua_hang_controller.dart';
 import 'package:qlhanghoa/src/controller/hang_hoa/hang_hoa_controller.dart';
 import 'package:qlhanghoa/src/controller/hang_hoa/them_and_edit_hang_hoa_controller.dart';
 import 'package:qlhanghoa/src/controller/loai_hang/loai_hang_controller.dart';
+import 'package:qlhanghoa/src/controller/nha_cung_cap/nha_cung_cap_controller.dart';
 import 'package:qlhanghoa/src/controller/nhan_vien/nhan_vien_controller.dart';
-import 'package:qlhanghoa/src/controller/nhap_hang/chi_tiet_phieu_nhap_controller.dart';
+import 'package:qlhanghoa/src/controller/nhap_hang/them_phieu_nhap/nhap_lo_controller.dart';
+import 'package:qlhanghoa/src/controller/nhap_hang/them_phieu_nhap/them_phieu_nhap_controller.dart';
+import 'package:qlhanghoa/src/controller/nhap_hang/xem_chi_tiet/chi_tiet_phieu_nhap_controller.dart';
 import 'package:qlhanghoa/src/controller/nhap_hang/phieu_nhap_controller.dart';
 import 'package:qlhanghoa/src/controller/thuong_hieu/thuong_hieu.controller.dart';
 
@@ -29,6 +32,9 @@ class AllBinding extends Bindings {
     Get.lazyPut(() => PhieuNhapController(), fenix: true);
     Get.lazyPut(() => ChiTietPhieuNhapController(), fenix: true);
     Get.lazyPut(() => NhanVienController(), fenix: true);
+    Get.lazyPut(() => NhaCungCapController(), fenix: true);
+    Get.lazyPut(() => ThemPhieuNhapController(), fenix: true);
+    Get.lazyPut(() => NhapLoController(), fenix: true);
   }
 
   void onDelete() async {

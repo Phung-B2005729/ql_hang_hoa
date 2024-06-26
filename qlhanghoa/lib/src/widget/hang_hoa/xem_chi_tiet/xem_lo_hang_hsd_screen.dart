@@ -207,7 +207,7 @@ class XemLoHangHSD extends GetView<LoHangController> {
                                                       .hanSuDung !=
                                                   null
                                               ? Text(
-                                                  'HSD ${FunctionHelper.formatDateString(controller.filteredList[index].hanSuDung.toString())}',
+                                                  'HSD ${FunctionHelper.formatDateVNStringVN(controller.filteredList[index].hanSuDung.toString())}',
                                                   style: const TextStyle(
                                                       fontSize: 14),
                                                 )

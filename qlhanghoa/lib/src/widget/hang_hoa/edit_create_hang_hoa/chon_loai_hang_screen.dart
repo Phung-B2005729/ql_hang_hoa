@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:qlhanghoa/src/controller/hang_hoa/them_and_edit_hang_hoa_controller.dart';
 import 'package:qlhanghoa/src/controller/loai_hang/loai_hang_controller.dart';
+import 'package:qlhanghoa/src/controller/nhap_hang/them_phieu_nhap/them_phieu_nhap_controller.dart';
 import 'package:qlhanghoa/src/helper/template/color.dart';
 import 'package:qlhanghoa/src/widget/shared/loading_circular_fullscreen.dart';
 
@@ -9,10 +10,15 @@ import 'package:qlhanghoa/src/widget/shared/loading_circular_fullscreen.dart';
 class ChonLoaiHangScreen extends StatelessWidget {
   LoaiHangController loaiHangController = Get.find();
   ThemHangHoaController themHangHoaController = Get.find();
-  ChonLoaiHangScreen({super.key});
+  ChonLoaiHangScreen({super.key, this.themPhieuNhap});
+
+  final bool? themPhieuNhap;
 
   @override
   Widget build(Object context) {
+    if (loaiHangController.listLoaiHang.isEmpty) {
+      loaiHangController.getListLoaiHang();
+    }
     return Stack(
       children: [
         Scaffold(
@@ -25,45 +31,30 @@ class ChonLoaiHangScreen extends StatelessWidget {
                     padding: const EdgeInsets.only(left: 10, right: 10),
                     child: Column(
                       children: [
-                        Dismissible(
-                          key: Key(
-                              controller.filteredList[index].sId.toString()),
-                          direction: DismissDirection.endToStart,
-                          onDismissed: (direction) async {
-                            controller.delete(controller.filteredList[index]);
-                            controller.filteredList.removeAt(index);
-                          },
-                          background: Container(
-                            color: Colors.red,
-                            alignment: Alignment.centerRight,
-                            padding: const EdgeInsets.symmetric(horizontal: 20),
-                            child: const Icon(
-                              Icons.delete,
-                              color: Colors.white,
-                            ),
-                          ),
-                          child: ListTile(
-                            onTap: () {
-                              // cập nhật controllerLoaiHang bên ThemHangHoaController và HangHoaModel.loaiHang = listLoaiHang[index]
-                              themHangHoaController
-                                  .saveLoaiHang(controller.filteredList[index]);
-                              Get.back();
-                            },
-                            title: Text(
-                              controller.filteredList[index].tenLoai!,
-                              style: const TextStyle(color: Colors.black),
-                            ),
-                            selected: themHangHoaController.getIdLoaiHang() ==
-                                controller.filteredList[index].sId,
-                            trailing: themHangHoaController.getIdLoaiHang() ==
-                                    controller.filteredList[index].sId
-                                ? const Icon(
-                                    Icons.check,
-                                    color: ColorClass.color_button_nhat,
-                                  )
-                                : null,
-                          ),
-                        ),
+                        (themPhieuNhap != null && themPhieuNhap == true)
+                            ? _buildContainerLoaiHang(controller, index)
+                            : Dismissible(
+                                key: Key(controller.filteredList[index].sId
+                                    .toString()),
+                                direction: DismissDirection.endToStart,
+                                onDismissed: (direction) async {
+                                  controller
+                                      .delete(controller.filteredList[index]);
+                                  controller.filteredList.removeAt(index);
+                                },
+                                background: Container(
+                                  color: Colors.red,
+                                  alignment: Alignment.centerRight,
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 20),
+                                  child: const Icon(
+                                    Icons.delete,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                child:
+                                    _buildContainerLoaiHang(controller, index),
+                              ),
                         const Divider(
                           color: ColorClass.color_thanh_ke,
                         )
@@ -77,6 +68,36 @@ class ChonLoaiHangScreen extends StatelessWidget {
             ? const LoadingCircularFullScreen()
             : const SizedBox())
       ],
+    );
+  }
+
+  ListTile _buildContainerLoaiHang(LoaiHangController controller, int index) {
+    return ListTile(
+      onTap: () async {
+        // cập nhật controllerLoaiHang bên ThemHangHoaController và HangHoaModel.loaiHang = listLoaiHang[index]
+        if (themPhieuNhap != null && themPhieuNhap == true) {
+          ThemPhieuNhapController themPhieuNhapController = Get.find();
+          await themPhieuNhapController
+              .chonLoaiHang(controller.filteredList[index].sId.toString());
+          Get.back();
+        } else {
+          themHangHoaController.saveLoaiHang(controller.filteredList[index]);
+          Get.back();
+        }
+      },
+      title: Text(
+        controller.filteredList[index].tenLoai!,
+        style: const TextStyle(color: Colors.black),
+      ),
+      selected: themHangHoaController.getIdLoaiHang() ==
+          controller.filteredList[index].sId,
+      trailing: themHangHoaController.getIdLoaiHang() ==
+              controller.filteredList[index].sId
+          ? const Icon(
+              Icons.check,
+              color: ColorClass.color_button_nhat,
+            )
+          : null,
     );
   }
 

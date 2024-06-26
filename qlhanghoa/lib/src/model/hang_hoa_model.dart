@@ -36,6 +36,8 @@ class HangHoaModel {
     this.hinhAnh,
     this.quanLyTheoLo,
   });
+
+  set value(HangHoaModel value) {}
   HangHoaModel copyWith({
     String? maHangHoa,
     String? tenHangHoa,

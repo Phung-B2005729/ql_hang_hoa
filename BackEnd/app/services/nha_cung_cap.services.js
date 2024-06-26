@@ -11,6 +11,8 @@ class NhaCungCapService {
              ma_nha_cung_cap: payload.ma_nha_cung_cap, // tự động
              ten_nha_cung_cap: payload.ten_nha_cung_cap,
              dia_chi: payload.dia_chi,
+             email: payload.email,
+             cong_ty: payload.cong_ty,
              sdt: payload.sdt,
          
         }

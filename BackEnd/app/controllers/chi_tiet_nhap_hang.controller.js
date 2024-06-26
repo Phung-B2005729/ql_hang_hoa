@@ -42,7 +42,7 @@ exports.findALL = async (req, res, next) => {
          }
          if(so_lo && so_lo!='' && so_lo!='Tất cả'){
             let t1 = {
-                so_lo : so_lo
+                'lo_nhap.so_lo' : so_lo
             }
             filter = {...filter, ...t1}
         }

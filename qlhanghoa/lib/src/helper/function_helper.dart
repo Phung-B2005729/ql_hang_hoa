@@ -26,7 +26,7 @@ class FunctionHelper {
   static String formatDateString(String dateString) {
     // Parse the input date string into a DateTime object
     DateTime dateTime = DateTime.parse(dateString);
-    DateTime vietnamDatetime = dateTime.add(Duration(hours: 7));
+    DateTime vietnamDatetime = dateTime.add(const Duration(hours: 7));
 
     // Format the DateTime object into the desired format
     String formattedDate = DateFormat('dd/MM/yyyy').format(vietnamDatetime);
@@ -34,15 +34,21 @@ class FunctionHelper {
     return formattedDate;
   }
 
-  static String formatDateString2(String dateString) {
+  static String formatDateVNStringVN(String dateString) {
     // Parse the input date string into a DateTime object
     DateTime dateTime = DateTime.parse(dateString);
-    DateTime vietnamDatetime = dateTime.add(Duration(hours: 7));
+    //DateTime vietnamDatetime = dateTime.add(Duration(hours: 7));
 
     // Format the DateTime object into the desired format
-    String formattedDate = DateFormat('yyyy-mm-dd').format(vietnamDatetime);
+    String formattedDate = DateFormat('dd/MM/yyyy').format(dateTime);
 
     return formattedDate;
+  }
+
+  static String formatDatetVNtoDateVN(DateTime date) {
+    // Parse the input date string into a DateTime object
+    final DateFormat formatter = DateFormat('yyyy-MM-dd');
+    return formatter.format(date);
   }
 
   // đổi định trạng của string dề dd/mm/yyyy hh:mm
@@ -69,6 +75,10 @@ class FunctionHelper {
     DateTime dateTime = DateTime.parse(date);
     DateTime vietnamDatetime = dateTime.add(const Duration(hours: 7));
     return vietnamDatetime;
+  }
+
+  static DateTime getDateTimeVnFormStringVN(String date) {
+    return DateTime.parse(date);
   }
 
   static DateTime getDateTimeFromStringUTC(String time) {

@@ -5,7 +5,7 @@ class GiaoDichModel {
   double? soLuongGiaoDich;
   double? soLuongTon;
   int? giaVon;
-  String? soLo;
+  //String? soLo;
   String? maHangHoa;
   String? maCuaHang;
   String? maNhanVien;
@@ -24,7 +24,7 @@ class GiaoDichModel {
       this.maCapNhat,
       this.soLuongTon,
       this.giaVon,
-      this.soLo,
+      //this.soLo,
       this.maHangHoa,
       this.maCuaHang,
       this.maNhanVien,
@@ -41,7 +41,7 @@ class GiaoDichModel {
     double? soLuongGiaoDich,
     double? soLuongTon,
     int? giaVon,
-    String? soLo,
+    //String? soLo,
     String? maHangHoa,
     String? maCuaHang,
     String? maNhanVien,
@@ -58,7 +58,7 @@ class GiaoDichModel {
       soLuongGiaoDich: soLuongGiaoDich ?? this.soLuongGiaoDich,
       soLuongTon: soLuongTon ?? this.soLuongTon,
       giaVon: giaVon ?? this.giaVon,
-      soLo: soLo ?? this.soLo,
+      // soLo: soLo ?? this.soLo,
       maHangHoa: maHangHoa ?? this.maHangHoa,
       maCapNhat: maCapNhat ?? this.maCapNhat,
       maCuaHang: maCuaHang ?? this.maCuaHang,
@@ -78,7 +78,7 @@ class GiaoDichModel {
     soLuongGiaoDich = double.tryParse(json['so_luong_giao_dich'].toString());
     soLuongTon = double.tryParse(json['so_luong_ton'].toString());
     giaVon = json['gia_von'];
-    soLo = json['so_lo'];
+    //soLo = json['so_lo'];
     maHangHoa = json['ma_hang_hoa'];
     maXuatKho = json['ma_xuat_kho'];
     maCuaHang = json['ma_cua_hang'];
@@ -98,7 +98,7 @@ class GiaoDichModel {
     data['so_luong_giao_dich'] = soLuongGiaoDich;
     data['so_luong_ton'] = soLuongTon;
     data['gia_von'] = giaVon;
-    data['so_lo'] = soLo;
+    // data['so_lo'] = soLo;
     data['ma_hang_hoa'] = maHangHoa;
     data['ma_cua_hang'] = maCuaHang;
     data['ma_cap_nhat'] = maCapNhat;

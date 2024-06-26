@@ -13,7 +13,6 @@ class NhaCungCapService {
             gia_giam: payload.gia_giam,
             tong_tien: payload.tong_tien,
             trang_thai: payload.trang_thai,
-            da_tra_nha_cung_cap: payload.da_tra_nha_cung_cap,
             // forgi
             ma_nha_cung_cap: payload.ma_nha_cung_cap,
             ma_cua_hang: payload.ma_cua_hang,

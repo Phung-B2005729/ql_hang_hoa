@@ -1,44 +1,49 @@
 import 'package:qlhanghoa/src/model/hang_hoa_model.dart';
+import 'package:qlhanghoa/src/model/lo_hang.model.dart';
 
 class ChiTietPhieuNhapModel {
   String? sId;
   String? maPhieuNhap;
-  String? soLo;
+  List<LoHangModel>? loNhap;
   int? donGiaNhap;
   double? soLuong;
+  int? giaGiam;
   String? maHangHoa;
+  String? ghiChu;
   HangHoaModel? hangHoa;
-  String? hanSuDung;
 
   ChiTietPhieuNhapModel({
     this.maPhieuNhap,
     this.sId,
     this.maHangHoa,
-    this.soLo,
+    this.loNhap,
     this.donGiaNhap,
+    this.giaGiam,
+    this.ghiChu,
     this.soLuong,
     this.hangHoa,
-    this.hanSuDung,
   });
 
   ChiTietPhieuNhapModel copyWith({
     String? maPhieuNhap,
     String? sId,
     String? maHangHoa,
-    String? soLo,
+    List<LoHangModel>? loNhap,
     int? donGiaNhap,
+    String? ghiChu,
+    int? giaGiam,
     double? soLuong,
     HangHoaModel? hangHoa,
-    String? hanSuDung,
   }) {
     return ChiTietPhieuNhapModel(
       sId: sId ?? this.sId,
       maHangHoa: maHangHoa ?? this.maHangHoa,
       maPhieuNhap: maPhieuNhap ?? this.maPhieuNhap,
-      soLo: soLo ?? this.soLo,
+      loNhap: loNhap ?? this.loNhap,
+      ghiChu: ghiChu ?? this.ghiChu,
+      giaGiam: giaGiam ?? this.giaGiam,
       donGiaNhap: donGiaNhap ?? this.donGiaNhap,
       soLuong: soLuong ?? this.soLuong,
-      hanSuDung: hanSuDung ?? this.hanSuDung,
       hangHoa: hangHoa ?? this.hangHoa,
     );
   }
@@ -46,11 +51,18 @@ class ChiTietPhieuNhapModel {
   ChiTietPhieuNhapModel.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];
     maHangHoa = json['ma_hang_hoa'];
-    soLo = json['so_lo'];
+    ghiChu = json['ghi_chu'];
+    loNhap = json['lo_nhap'] != null && json['lo_nhap'].isNotEmpty
+        ? List<LoHangModel>.from(
+            json['lo_nhap'].map((x) => LoHangModel.fromJson(x)))
+        : [];
     maPhieuNhap = json['ma_phieu_nhap'];
+    giaGiam = json['gia_giam'];
     donGiaNhap = json['don_gia_nhap'];
-    soLuong = double.tryParse(json['so_luong'].toString());
-    hanSuDung = json['han_su_dung'];
+    soLuong = json['so_luong'] != null
+        ? double.tryParse(json['so_luong'].toString())
+        : null;
+
     hangHoa = json['hang_hoa_info'] != null && json['hang_hoa_info'].isNotEmpty
         ? HangHoaModel.fromJson(json['hang_hoa_info'][0])
         : null;
@@ -60,12 +72,14 @@ class ChiTietPhieuNhapModel {
     final Map<String, dynamic> data = Map<String, dynamic>();
     data['_id'] = sId;
     data['ma_hang_hoa'] = maHangHoa;
-    data['so_lo'] = soLo;
+    data['ghi_chu'] = ghiChu;
+    data['gia_giam'] = giaGiam;
     data['ma_phieu_nhap'] = maPhieuNhap;
     data['don_gia_nhap'] = donGiaNhap;
     data['so_luong'] = soLuong;
-    data['han_su_dung'] = hanSuDung;
-
+    data['lo_nhap'] = loNhap != null
+        ? List<dynamic>.from(loNhap!.map((x) => x.toJson()))
+        : null;
     return data;
   }
 }

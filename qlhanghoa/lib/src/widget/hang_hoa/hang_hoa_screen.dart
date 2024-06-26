@@ -22,12 +22,14 @@ class HangHoaScreen extends GetView<HangHoaController> {
   HangHoaScreen({super.key});
   @override
   Widget build(BuildContext context) {
-    if (cuaHangController.listCuaHang.isEmpty) {
-      cuaHangController.getlistCuaHang();
-    }
-    if (controller.listHangHoa.isEmpty) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      //Sử dụng WidgetsBinding.instance.addPostFrameCallback để thực hiện thay đổi sau khi build hoàn tất.
+      if (cuaHangController.listCuaHang.isEmpty) {
+        cuaHangController.getlistCuaHang();
+      }
       controller.getlistHangHoa();
-    }
+    });
+
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(160),
@@ -186,7 +188,43 @@ class HangHoaScreen extends GetView<HangHoaController> {
                                               ? Image.network(
                                                   controller.filteredList[index]
                                                       .hinhAnh![0].linkAnh!,
-                                                  fit: BoxFit.contain)
+                                                  fit: BoxFit.contain,
+                                                  errorBuilder: (BuildContext
+                                                          context,
+                                                      Object exception,
+                                                      StackTrace? stackTrace) {
+                                                    return Image.asset(
+                                                        'assets/images/hang_hoa_mac_dinh.png',
+                                                        fit: BoxFit.contain);
+                                                  },
+                                                  loadingBuilder:
+                                                      (BuildContext context,
+                                                          Widget child,
+                                                          ImageChunkEvent?
+                                                              loadingProgress) {
+                                                    if (loadingProgress ==
+                                                        null) {
+                                                      return child;
+                                                    } else {
+                                                      return Center(
+                                                        child:
+                                                            CircularProgressIndicator(
+                                                          color: const Color
+                                                              .fromARGB(255,
+                                                              185, 185, 185),
+                                                          value: loadingProgress
+                                                                      .expectedTotalBytes !=
+                                                                  null
+                                                              ? loadingProgress
+                                                                      .cumulativeBytesLoaded /
+                                                                  loadingProgress
+                                                                      .expectedTotalBytes!
+                                                              : null,
+                                                        ),
+                                                      );
+                                                    }
+                                                  },
+                                                )
                                               : Image.asset(
                                                   'assets/images/hang_hoa_mac_dinh.png',
                                                   fit: BoxFit.contain,

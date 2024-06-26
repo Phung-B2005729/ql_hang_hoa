@@ -168,7 +168,34 @@ exports.findALL = async (req, res, next) => {
         }
     }
     console.log('thông tin lô ' + thong_tin_lo_hang);
-  
+   /* if(thong_tin_lo_hang!=null && thong_tin_lo_hang!=''){
+        console.log('vào lô');
+        thong_tin_lo_hang = helper.escapeStringRegexp(thong_tin_lo_hang);
+    let t1 = {
+        $or: [
+            {
+                'chi_tiet_phieu_nhap_info.han_su_dung' : {
+        $regex: new RegExp(thong_tin_lo_hang), $options: "i"
+            }
+        },
+        {
+            'chi_tiet_phieu_nhap_info.so_lo' : {
+                $regex: new RegExp(thong_tin_lo_hang), $options: "i"
+                    }
+        },
+         ]
+    }
+     if (Object.keys(filter).length > 0) {
+                filter = {
+                    $and: [
+                        filter,
+                        t1
+                    ]
+                };
+            } else {
+                filter = t1;
+            }
+} */
 if(thong_tin_phieu_nhap && thong_tin_phieu_nhap!=''){
         thong_tin_phieu_nhap = helper.escapeStringRegexp(thong_tin_phieu_nhap);
         let t1 = {
@@ -184,7 +211,6 @@ if(thong_tin_phieu_nhap && thong_tin_phieu_nhap!=''){
             ngay_lap_phieu: 1,
             tong_tien: 1,
             trang_thai: 1,
-            da_tra_nha_cung_cap: 1,
             // forgi
             ma_nha_cung_cap: 1,
             ma_cua_hang: 1,
@@ -206,7 +232,6 @@ if(thong_tin_phieu_nhap && thong_tin_phieu_nhap!=''){
 
 exports.findOne =  async (req, res, next) => {  // 
     try{
-        console.log('gọi find one phiếu nhập')
         const phieuNhapService = new PhieuNhapService(MongoDB.client);
         let pro = {
             ma_phieu_nhap: 1, // tự động
@@ -214,7 +239,6 @@ exports.findOne =  async (req, res, next) => {  //
             tong_tien: 1,
             trang_thai: 1,
             gia_giam: 1,
-            da_tra_nha_cung_cap: 1,
            
             // forgi
             ma_nha_cung_cap: 1,
@@ -224,15 +248,11 @@ exports.findOne =  async (req, res, next) => {  //
             'cua_hang_info.ten_cua_hang': 1,
             'nha_cung_cap_info.ten_nha_cung_cap': 1,
             'chi_tiet_phieu_nhap_info.ma_hang_hoa': 1,
-            'chi_tiet_phieu_nhap_info.lo_nhap': 1,
+            'chi_tiet_phieu_nhap_info.so_lo': 1,
             'chi_tiet_phieu_nhap_info.so_luong': 1,
             'chi_tiet_phieu_nhap_info.don_gia_nhap': 1,
-            'chi_tiet_phieu_nhap_info.ghi_chu': 1,
-          
+            'chi_tiet_phieu_nhap_info.han_su_dung': 1,
             'chi_tiet_phieu_nhap_info.hang_hoa_info.ten_hang_hoa': 1,
-            'chi_tiet_phieu_nhap_info.hang_hoa_info.gia_von': 1,
-            'chi_tiet_phieu_nhap_info.hang_hoa_info.don_gia_ban': 1,
-            'chi_tiet_phieu_nhap_info.hang_hoa_info.hinh_anh': 1,
             'chi_tiet_phieu_nhap_info.hang_hoa_info.quan_ly_theo_lo': 1,
             'chi_tiet_phieu_nhap_info.hang_hoa_info.don_vi_tinh': 1
         }
@@ -243,7 +263,6 @@ exports.findOne =  async (req, res, next) => {  //
         if(!document || (document && document.length==0)){
             return next(new ApiError(404, "Không tìm thấy data"));
         }
-        console.log(true);
         return res.send(document[0]);
     }catch(e){
         return next(new ApiError(500, "Lỗi server trong quá trình lấy danh sách"));
