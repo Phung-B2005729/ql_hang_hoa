@@ -9,19 +9,20 @@ class NhaCungCapService {
         // lay du lieu doi tuong loaihang va loai bo cac thuoc tinh undefined
         const phieu_nhap = {
             ma_phieu_nhap: payload.ma_phieu_nhap, // tự động
-            ngay_lap_phieu: new Date(),
+            ngay_lap_phieu: new Date(payload.ngay_lap_phieu) ?? new Date(),
             gia_giam: payload.gia_giam,
             tong_tien: payload.tong_tien,
-            trang_thai: payload.trang_thai,
+            trang_thai: payload.trang_thai ?? 'Đã nhập hàng',
             da_tra_nha_cung_cap: payload.da_tra_nha_cung_cap,
             // forgi
             ma_nha_cung_cap: payload.ma_nha_cung_cap,
             ma_cua_hang: payload.ma_cua_hang,
             ma_nhan_vien: payload.ma_nhan_vien,
         }
-        Object.keys(phieu_nhap).forEach((key)=>{
-            phieu_nhap[key] === undefined && delete phieu_nhap[key]
-        });
+        Object.keys(phieu_nhap).forEach((key) => {
+            if (phieu_nhap[key] === undefined || phieu_nhap[key] === null) {
+                delete phieu_nhap[key];
+            }  });
         return phieu_nhap;
     }
     
@@ -43,7 +44,7 @@ class NhaCungCapService {
         const cursor = await this.collectionPhieuNhap.find(filter);
         return await cursor.toArray();
     }
-    async findLooUp(filter, project, findOne){ // danh sách loại hàng 
+    async findLooUp(filter, project, findOne, phieuTam){ // danh sách loại hàng 
         const pipeline = [
             {
                 $lookup: {
@@ -113,6 +114,9 @@ class NhaCungCapService {
             pipeline.push({
                 $project: project
             })
+        }
+        if (phieuTam) {
+            pipeline.push({ $limit: 3 });
         }
         pipeline.push({
             $sort: {ngay_lap_phieu: -1, ma_phieu_nhap: 1}

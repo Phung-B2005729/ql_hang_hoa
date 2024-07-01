@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:qlhanghoa/src/controller/hang_hoa/hang_hoa_controller.dart';
 import 'package:qlhanghoa/src/controller/nhap_hang/them_phieu_nhap/nhap_lo_controller.dart';
 import 'package:qlhanghoa/src/helper/function_helper.dart';
 
@@ -1031,6 +1032,8 @@ class NhapHangTheoTungHangHoa extends GetView<NhapLoController> {
           TextButton(
               onPressed: () async {
                 // ignore: avoid_print
+                HangHoaController hangHoaController = Get.find();
+                hangHoaController.searchController.text = '';
                 print(
                     'gọi save update lại chi tiết nhập hàng + giá vốn của hàng hoá');
                 await controller.saveChiTiet();

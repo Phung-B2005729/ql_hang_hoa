@@ -12,14 +12,15 @@ class TaiKhoanService {
         const user = {
             user_name: payload.user_name,
             password: payload.password,
-            phan_quyen: payload.phan_quyen ?? 1, //0,1,2,
+            phan_quyen: payload.phan_quyen!=null ? payload.phan_quyen : 1, //0,1,2,
             trang_thai: payload.trang_thai ?? 1, // mac dinh la 1 binh thuong - 0 la bi khoa
             refresh_token: payload.refresh_token
         }
        console.log(payload.user_name)
-       Object.keys(user).forEach((key)=>{
-        user[key] === undefined && delete user[key]
-       });
+       Object.keys(user).forEach((key) => {
+        if (user[key] === undefined || user[key] === null) {
+            delete user[key];
+        }  });
         return user;
     }
 
@@ -60,6 +61,30 @@ class TaiKhoanService {
         return await cursor.toArray();
     }
 
+    async findLookup(filter, project){
+        const pipeline = [
+            {
+                $lookup: {
+                  from: 'nhan_vien',
+                  localField: "user_name",
+                  foreignField: "ma_nhan_vien",
+                  as: "nhan_vien_info"
+                }
+              },
+              {
+                $match: filter
+              }
+        ]
+
+        if(project){
+            pipeline.push({
+                $project: project
+            })
+        }
+        const cursor = await this.collectionUser.aggregate(pipeline);
+        return await cursor.toArray();
+    }
+
 
 
     //
@@ -68,7 +93,7 @@ class TaiKhoanService {
         return await this.collectionUser.findOne(
             {  $or: [
                 { _id: ObjectId.isValid(id) ? new ObjectId(id) : null },
-                { username: id }
+                { user_name: id }
             ] },
             {projection: project }
         );
@@ -80,9 +105,9 @@ class TaiKhoanService {
         
     }
     //
-    async findByUserName(name,project){
+    async findByuser_name(name,project){
         return await this.find({
-            username: {
+            user_name: {
                 $regex: new RegExp(name), $options: "i"
             }
         }, {projection: project });
@@ -93,7 +118,7 @@ class TaiKhoanService {
         const filter = {
             $or: [
             { _id: ObjectId.isValid(id) ? new ObjectId(id) : null },
-            { username: id }
+            { user_name: id }
         ]
         };
         console.log("fileder" + filter);
@@ -114,7 +139,7 @@ class TaiKhoanService {
        const result = await this.collectionUser.findOneAndDelete({
         $or: [
             { _id: ObjectId.isValid(id) ? new ObjectId(id) : null },
-            { username: id }
+            { user_name: id }
         ]
        });
        console.log("resu " +result);

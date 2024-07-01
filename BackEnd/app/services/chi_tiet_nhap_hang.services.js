@@ -16,9 +16,11 @@ class ChiTietNhapHangService {
              gia_giam: payload.gia_giam,
              lo_nhap: payload.lo_nhap,
         }
-        Object.keys(chi_tiet_nhap_hang).forEach((key)=>{
-            chi_tiet_nhap_hang[key] === undefined && delete chi_tiet_nhap_hang[key]
-        });
+        Object.keys(chi_tiet_nhap_hang).forEach((key) => {
+            if (chi_tiet_nhap_hang[key] === undefined || chi_tiet_nhap_hang[key] === null) {
+                delete chi_tiet_nhap_hang[key];
+            } });
+        
         return chi_tiet_nhap_hang;
     }
     

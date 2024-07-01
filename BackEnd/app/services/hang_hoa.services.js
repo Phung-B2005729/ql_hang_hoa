@@ -23,9 +23,10 @@ class HangHoaService {
              trang_thai: payload.trang_thai ?? 'Đang kinh doanh',
              quan_ly_theo_lo: payload.quan_ly_theo_lo,
         }
-        Object.keys(hang_hoa).forEach((key)=>{
-            hang_hoa[key] === undefined && delete hang_hoa[key]
-        });
+        Object.keys(hang_hoa).forEach((key) => {
+            if (hang_hoa[key] === undefined || hang_hoa[key] === null) {
+                delete hang_hoa[key];
+            } });
         return hang_hoa;
     }
     

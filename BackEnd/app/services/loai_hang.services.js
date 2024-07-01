@@ -10,9 +10,10 @@ class LoaiHangService {
         const loai_hang = {
             ten_loai: payload.ten_loai
         }
-        Object.keys(loai_hang).forEach((key)=>{
-            loai_hang[key] === undefined && delete loai_hang[key]
-        });
+       Object.keys(loai_hang).forEach((key) => {
+        if (loai_hang[key] === undefined || loai_hang[key] === null) {
+            delete loai_hang[key];
+        } });
         return loai_hang;
     }
     

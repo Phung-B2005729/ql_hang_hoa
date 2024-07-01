@@ -6,7 +6,7 @@ const { sdtSchema } = require("../validation/index");
 
 
 exports.create = async (req, res, next) => {
-    if(req.body.so_lo==null || req.body.ma_cua_hang==null || 
+    if(req.body.ma_cua_hang==null || 
         req.body.loai_giao_dich==null || req.body.so_luong_giao_dich==null || 
         req.body.so_luong_ton==null || req.body.gia_von==null){
         return next(new ApiError(400, "Data can not be empty"));
@@ -75,6 +75,7 @@ exports.create = async (req, res, next) => {
                 console.log("ma_hang_hoa" + ma_xuat_kho);
                 req.body.ma_xuat_kho = ma_xuat_kho;
               }
+              console.log(req.body);
          
             const document = await giaoDichSerivce.create(req.body); 
             return res.send(document.insertedId);
@@ -87,20 +88,14 @@ exports.findALL = async (req, res, next) => {
     let documents = []
     try{
         const giaoDichSerivce = new GiaoDichSerivce(MongoDB.client);
-        const so_lo = req.query.so_lo;
+     
         const ma_hang_hoa = req.query.ma_hang_hoa;
         const ma_cua_hang = req.query.ma_cua_hang;
         const ma_cua_hang_chuyen_den = req.query.ma_cua_hang_chuyen_den;
         const ma_nhan_vien = req.query.ma_nhan_vien;
         const loai_giao_dich = req.query.loai_giao_dich;
         let filter = {};
-        if(so_lo && so_lo!='Tất cả' && so_lo!=''){
-         
-                        let t1 = {
-                            so_lo : so_lo
-                    }
-            filter = {...filter, ...t1}
-         }
+        
          if(ma_cua_hang && ma_cua_hang!='' && ma_cua_hang!='Tất cả'){
          
             let t1 = {

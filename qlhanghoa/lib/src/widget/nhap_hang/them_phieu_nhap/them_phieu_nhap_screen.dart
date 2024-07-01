@@ -68,7 +68,7 @@ class ThemPhieuNhapScreen extends GetView<ThemPhieuNhapController> {
                     if (controller.phieuNhap.value.maNhaCungCap != null &&
                         controller.phieuNhap.value.maCuaHang != '' &&
                         controller.tinhTongSoLuong() > 0) {
-                      Get.to(() => ThanhToanScreen());
+                      Get.to(() => const ThanhToanScreen());
                     } else {
                       if (controller.phieuNhap.value.maNhaCungCap == null ||
                           controller.phieuNhap.value.maCuaHang == '') {
@@ -402,10 +402,15 @@ class ThemPhieuNhapScreen extends GetView<ThemPhieuNhapController> {
                                     color: Colors.black),
                               ),
                               Text(
-                                  FunctionHelper.formNum(((controller
-                                                  .listChiTietPhieuNhap[index]
-                                                  .hangHoa!
-                                                  .giaVon)! *
+                                  FunctionHelper.formNum((((controller
+                                                      .listChiTietPhieuNhap[
+                                                          index]
+                                                      .donGiaNhap ??
+                                                  controller
+                                                      .listChiTietPhieuNhap[
+                                                          index]
+                                                      .hangHoa!
+                                                      .giaVon))! *
                                               (controller
                                                   .listChiTietPhieuNhap[index]
                                                   .soLuong!) -
@@ -438,10 +443,11 @@ class ThemPhieuNhapScreen extends GetView<ThemPhieuNhapController> {
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               Text(
-                                  FunctionHelper.formNum(controller
-                                      .listChiTietPhieuNhap[index]
-                                      .hangHoa!
-                                      .giaVon
+                                  FunctionHelper.formNum(((controller
+                                              .listChiTietPhieuNhap[index]
+                                              .donGiaNhap ??
+                                          controller.listChiTietPhieuNhap[index]
+                                              .hangHoa!.giaVon))!
                                       .toString()),
                                   style: const TextStyle(
                                       fontSize: 15, color: Colors.black)),
@@ -613,6 +619,19 @@ class ThemPhieuNhapScreen extends GetView<ThemPhieuNhapController> {
           onPressed: () async {
             // lưu phiếu tạm và thoát
             Get.back();
+            if (controller.phieuNhap.value.maPhieuNhap != null) {
+              // save lại phiếu tạm
+              bool ktr = await controller.updatePhieuTam(phieuTam: true);
+              if (ktr == true) {
+                Get.back();
+              }
+            } else {
+              // thêm phiếu tạm mới
+              bool ktr = await controller.create(phieuTam: true);
+              if (ktr == true) {
+                Get.back();
+              }
+            }
           },
         ),
       ],

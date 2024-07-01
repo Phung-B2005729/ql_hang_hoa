@@ -14,9 +14,10 @@ class NhaCungCapService {
             ma_cua_hang: payload.ma_cua_hang,
             ma_nhan_vien: payload.ma_nhan_vien,
         }
-        Object.keys(phieu_nhap).forEach((key)=>{
-            phieu_nhap[key] === undefined && delete phieu_nhap[key]
-        });
+         Object.keys(phieu_nhap).forEach((key) => {
+            if (phieu_nhap[key] === undefined || phieu_nhap[key] === null) {
+                delete phieu_nhap[key];
+            }  });
         return phieu_nhap;
     }
     

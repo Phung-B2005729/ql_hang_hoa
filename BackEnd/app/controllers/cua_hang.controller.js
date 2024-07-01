@@ -83,7 +83,20 @@ exports.findALL = async (req, res, next) => {
                     }
             filter = {...filter, ...t1}
          }
-            documents = await cuaHangService.find(filter);
+         let pro = {
+            ma_cua_hang: 1,
+            ten_cua_hang: 1,
+            dia_chi :1,
+            loai_cua_hang: 1,
+            ghi_chu: 1,
+
+            sdt: 1,
+            'ton_kho.so_luong_ton': 1,
+            'ton_kho.ma_hang_hoa': 1,
+            'ton_kho.so_lo': 1,
+
+         }
+            documents = await cuaHangService.findLookup(filter, pro, false);
             return res.send(documents);
     }catch(e){
         return next(new ApiError(500, "Lỗi server trong quá trình lấy danh sách"));
@@ -92,12 +105,30 @@ exports.findALL = async (req, res, next) => {
 
 exports.findOne =  async (req, res, next) => {  // 
     try{
+        let pro = {
+            ma_cua_hang: 1,
+            ten_cua_hang: 1,
+            dia_chi :1,
+            loai_cua_hang: 1,
+            sdt: 1,
+            ghi_chu: 1,
+            'ton_kho.so_luong_ton': 1,
+            'ton_kho.ma_hang_hoa': 1,
+            'ton_kho.so_lo': 1,
+            'nhan_vien_info.ma_nhan_vien': 1,
+            'nhan_vien_info.ten_nhan_vien' : 1 
+            
+         }
         const cuaHangService = new CuaHangService(MongoDB.client);
-        const document = await cuaHangService.findById(req.params.id);
-        if(!document){
+        const document = await cuaHangService.findLookup({
+            ma_cua_hang: req.params.id
+        },
+    pro, true
+    )
+        if(!document || (document && document.length==0)){
             return next(new ApiError(404, "Không tìm thấy data"));
         }
-        return res.send(document);
+        return res.send(document[0]);
     }catch(e){
         return next(new ApiError(500, "Lỗi server trong quá trình lấy danh sách"));
     }
@@ -131,9 +162,7 @@ exports.update = async (req,res, next) => {
      try{
          const cuaHangService = new CuaHangService(MongoDB.client);
          const document = await cuaHangService.delete(req.params.id);
-         if(!document){
-             return next(new ApiError(404, "not found"));
-         }
+        
          return res.send({
              message: " deleted succesfully"
          });

@@ -10,6 +10,7 @@ import 'package:qlhanghoa/src/helper/function_helper.dart';
 import 'package:qlhanghoa/src/helper/template/color.dart';
 import 'package:qlhanghoa/src/widget/hang_hoa/xem_chi_tiet/chi_tiet_hang_hoa_screen.dart';
 import 'package:qlhanghoa/src/widget/shared/loading_circular_fullscreen.dart';
+import 'package:qlhanghoa/src/widget/shared/show_snack_bar.dart';
 
 // ignore: must_be_immutable
 class ChiTietPhieuNhapScreen extends GetView<ChiTietPhieuNhapController> {
@@ -148,7 +149,9 @@ class ChiTietPhieuNhapScreen extends GetView<ChiTietPhieuNhapController> {
                                           MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
-                                          '${chitiet.hangHoa!.tenHangHoa} (${chitiet.hangHoa!.donViTinh.toString()})',
+                                          chitiet.hangHoa != null
+                                              ? '${chitiet.hangHoa!.tenHangHoa} (${chitiet.hangHoa!.donViTinh.toString()})'
+                                              : '',
                                           style: const TextStyle(
                                               fontSize: 16,
                                               fontWeight: FontWeight.w600,
@@ -573,18 +576,46 @@ class ChiTietPhieuNhapScreen extends GetView<ChiTietPhieuNhapController> {
             size: 28,
           )),
       actions: [
-        PopupMenuButton(
-            icon: const Icon(Icons.more_vert),
-            itemBuilder: (BuildContext context) => <PopupMenuEntry>[
-                  const PopupMenuItem(
-                    child: ListTile(
-                      title: Text(
-                        'Huỷ phiếu',
-                        style: TextStyle(fontSize: 14, color: Colors.black),
+        if (controller.phieuNhap.value.trangThai != 'Đã huỷ')
+          PopupMenuButton(
+              icon: const Icon(Icons.more_vert),
+              itemBuilder: (BuildContext context) => <PopupMenuEntry>[
+                    if (controller.phieuNhap.value.trangThai == 'Đã nhập hàng')
+                      PopupMenuItem(
+                        child: ListTile(
+                          onTap: () async {
+                            bool ktr = await controller.huyPhieuNhap();
+                            if (ktr == true) {
+                              Get.back();
+                              //Get.back();
+                              GetShowSnackBar.successSnackBar('Đã huỷ');
+                            }
+                          },
+                          title: const Text(
+                            'Huỷ phiếu',
+                            style: TextStyle(fontSize: 14, color: Colors.black),
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                ])
+                    if (controller.phieuNhap.value.trangThai == 'Phiếu tạm')
+                      PopupMenuItem(
+                        child: ListTile(
+                          onTap: () async {
+                            bool ktr = await controller.deletePhieuNhap();
+                            if (ktr == true) {
+                              print('xoá phiếu thành công ' + ktr.toString());
+                              Get.back();
+                              Get.back();
+                              GetShowSnackBar.successSnackBar('Đẫ xoá');
+                            }
+                          },
+                          title: const Text(
+                            'Xoá phiếu',
+                            style: TextStyle(fontSize: 14, color: Colors.black),
+                          ),
+                        ),
+                      ),
+                  ])
       ],
     );
   }

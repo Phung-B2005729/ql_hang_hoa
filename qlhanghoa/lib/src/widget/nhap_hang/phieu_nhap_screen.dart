@@ -171,7 +171,7 @@ class PhieuNhapScreen extends GetView<PhieuNhapController> {
                     ],
                   )
                 : Container(
-                    margin: const EdgeInsets.only(top: 20),
+                    margin: const EdgeInsets.only(top: 5),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: const BorderRadius.only(
@@ -341,17 +341,64 @@ class PhieuNhapScreen extends GetView<PhieuNhapController> {
           if (hangHoaController.listHangHoa.isEmpty) {
             await hangHoaController.getlistHangHoa();
           }
+          // tìm kiếm nhập trước
+
           // chuyển đến thêm phiếu nhập
           ThemPhieuNhapController themPhieuNhapController = Get.find();
-          themPhieuNhapController.reSetData();
 
-          Get.to(() => ThemPhieuNhapScreen());
+          bool ktr = await themPhieuNhapController.getPhieuTamGanDay();
+          if (ktr == true) {
+            // có phiếu nhập
+            Get.dialog(_builDiaLogXanNhanMoPhieuTam(themPhieuNhapController),
+                barrierDismissible: true);
+          } else {
+            themPhieuNhapController.reSetData();
+            Get.to(() => ThemPhieuNhapScreen());
+          }
         },
         child: const Icon(
           Icons.add,
           color: Colors.white,
         ),
       ),
+    );
+  }
+
+  AlertDialog _builDiaLogXanNhanMoPhieuTam(ThemPhieuNhapController controller) {
+    return AlertDialog(
+      title: const Text(
+        'Hiện đang có một phiếu tạm',
+        style: TextStyle(
+            color: Colors.black, fontSize: 18, fontWeight: FontWeight.w700),
+      ),
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(5))),
+      content: const Text('Bạn có muốn tiếp tục làm việc với bản nháp này',
+          style: TextStyle(color: Colors.black, fontSize: 16)),
+      actions: [
+        TextButton(
+          child: const Text(
+            'BỎ QUA',
+            style: TextStyle(color: ColorClass.color_xanh_it_dam, fontSize: 18),
+          ),
+          onPressed: () {
+            Get.back();
+            controller.reSetData();
+            Get.to(() => ThemPhieuNhapScreen());
+          },
+        ),
+        TextButton(
+          child: const Text(
+            'ĐỒNG Ý',
+            style: TextStyle(color: ColorClass.color_xanh_it_dam, fontSize: 18),
+          ),
+          onPressed: () async {
+            // gọi hàm xoá
+            Get.back();
+            Get.to(() => ThemPhieuNhapScreen());
+          },
+        ),
+      ],
     );
   }
 

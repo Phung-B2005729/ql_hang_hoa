@@ -153,18 +153,22 @@ class HangHoaController extends GetxController {
 
   void filterListHangHoa() {
     String query = searchController.text.toLowerCase();
-    if (searchController.text.isNotEmpty) {
+    if (searchController.text.isNotEmpty || searchController.text == '') {
       //print('gọi');
       filteredList.value = listHangHoa
           .where((element) =>
               element.tenHangHoa!.toLowerCase().contains(query.toLowerCase()) ||
               element.maHangHoa!.toLowerCase().contains(query.toLowerCase()) ||
-              element.loaiHang!.tenLoai!
-                  .toLowerCase()
-                  .contains(query.toLowerCase()) ||
-              element.thuongHieu!.tenThuongHieu!
-                  .toLowerCase()
-                  .contains(query.toLowerCase()))
+              (element.loaiHang != null &&
+                  element.loaiHang!.tenLoai != null &&
+                  element.loaiHang!.tenLoai!
+                      .toLowerCase()
+                      .contains(query.toLowerCase())) ||
+              (element.thuongHieu != null &&
+                  element.thuongHieu!.tenThuongHieu != null &&
+                  element.thuongHieu!.tenThuongHieu!
+                      .toLowerCase()
+                      .contains(query.toLowerCase())))
           .toList();
     } else {
       filteredList.value = listHangHoa;

@@ -26,15 +26,16 @@ class GiaoDichService {
              ma_cap_nhat: payload.ma_cap_nhat,
              ma_xuat_kho: payload.ma_xuat_kho,
         }
-        Object.keys(giao_dich).forEach((key)=>{
-            giao_dich[key] === undefined && delete giao_dich[key]
-        });
+        Object.keys(giao_dich).forEach((key) => {
+        if (giao_dich[key] === undefined || giao_dich[key] === null) {
+            delete giao_dich[key];
+        } });
         return giao_dich;
     }
     
     async create(payload){   
         const giao_dich = this.extractGiaoDichData(payload);
-      
+       console.log(giao_dich);
         try {
          const ketqua = await this.collectionGiaoDich.insertOne(giao_dich);
          console.log('Insert thành công');
@@ -58,8 +59,14 @@ class GiaoDichService {
         }
     }
     async find(filter){ // danh sách loại hàng 
-        const cursor = await this.collectionGiaoDich.find(filter).sort({ thoi_gian_giao_dich: -1 });;
-        return await cursor.toArray();
+        try {
+
+            const cursor = await this.collectionGiaoDich.find(filter).sort({ thoi_gian_giao_dich: -1 });
+            return await cursor.toArray();
+        } catch (error) {
+            console.error("Error fetching transactions:", error);
+            throw error;
+        }
     }
     async findById(id){ // tên loại hàng theo id 
         console.log("goi ham findById " +id);

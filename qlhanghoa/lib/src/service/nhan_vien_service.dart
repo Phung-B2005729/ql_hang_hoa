@@ -39,11 +39,26 @@ class NhanVienService extends GetConnect {
   }
 
   // refresh Token
-  Future<Response> findAll() async {
+  Future<Response> findAll({
+    String? chuaTaiKhoan,
+    String? coTaiKhoan,
+    String? thongTinChung,
+    String? maCuaHang,
+    List? trangThai,
+    List? chucVu,
+  }) async {
     try {
       final response = await get(
         "/",
-        query: {},
+        query: {
+          if (chuaTaiKhoan != null) 'chua_tai_khoan': chuaTaiKhoan,
+          if (coTaiKhoan != null) 'co_tai_khoan': coTaiKhoan,
+          if (thongTinChung != null) 'thong_tin_chung': thongTinChung,
+          if (maCuaHang != null) 'ma_cua_hang': maCuaHang,
+          if (trangThai != null && trangThai.isNotEmpty)
+            'trang_thai': trangThai,
+          if (chucVu != null && chucVu.isNotEmpty) 'chuc_vu': chucVu,
+        },
         contentType: AppConfig.contentTypeJson,
       );
       return response;

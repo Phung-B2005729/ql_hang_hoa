@@ -57,6 +57,18 @@ class PhieuNhapController extends GetxController {
         thongTinNhaCungCap: thongTinNhaCungCap.text);
   }
 
+  void sortListByNgayLapPhieu() {
+    listPhieuNhap.sort((a, b) {
+      // Chuyển đổi ngày từ chuỗi ISO 8601 sang DateTime
+      DateTime ngayA = DateTime.parse(a.ngayLapPhieu.toString());
+      DateTime ngayB = DateTime.parse(b.ngayLapPhieu.toString());
+
+      // So sánh và sắp xếp theo thứ tự giảm dần
+      return ngayB.compareTo(ngayA);
+    });
+    update();
+  }
+
   void setNgayMaDinhToDay() async {
     DateTime now = DateTime.now().toUtc();
     ngayBatDau.value =

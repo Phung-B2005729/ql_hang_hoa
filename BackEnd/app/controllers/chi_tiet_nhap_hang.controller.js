@@ -6,14 +6,15 @@ const helper = require("../helper/index");
 
 
 exports.create = async (req, res, next) => {
-    if(req.body.so_lo==null || req.body.ma_phieu_nhap==null || req.body.so_luong==null || req.body.don_gia_nhap==null || req.body.ma_hang_hoa==null){
+
+    if(req.body.ma_phieu_nhap==null || req.body.so_luong==null || req.body.don_gia_nhap==null || req.body.ma_hang_hoa==null){
         return next(new ApiError(400, "Data can not be empty"));
     }
     else{
         try{
           const chiTietNhapHangService = new ChiTietNhapHangService(MongoDB.client);
-          if(req.body.so_lo && req.body.ma_phieu_nhap && req.body.ma_hang_hoa){
-            const exitsChiTiet2 = await chiTietNhapHangService.findOne({so_lo: req.body.so_lo, ma_phieu_nhap: req.body.ma_phieu_nhap, ma_hang_hoa: req.body.ma_hang_hoa});
+          if(req.body.ma_phieu_nhap && req.body.ma_hang_hoa){
+            const exitsChiTiet2 = await chiTietNhapHangService.findOne({ma_phieu_nhap: req.body.ma_phieu_nhap, ma_hang_hoa: req.body.ma_hang_hoa});
             if(exitsChiTiet2){
                 console.log(exitsChiTiet2);
                 return next(new ApiError(401, "Mã phiếu nhập và số lô đã tồn tại"));
@@ -139,5 +140,24 @@ exports.update = async (req,res, next) => {
          return next(new ApiError(500, `Could not delete with id=${req.params.id}`));
      }
  }
+
+ exports.deleteMany = async (req,res, next) => {
+   
+    try{
+        const chiTietNhapHangService = new ChiTietNhapHangService(MongoDB.client);
+        const document = await chiTietNhapHangService.deleteMany({
+            ma_phieu_nhap: req.params.ma_phieu_nhap
+        })
+        if(!document){
+            return next(new ApiError(404, "not found"));
+        }
+        return res.send({
+            message: " deleted succesfully"
+        });
+    }catch(err){
+        return next(new ApiError(500, `Could not delete with id=${req.params.id}`));
+    }
+}
+
 
 

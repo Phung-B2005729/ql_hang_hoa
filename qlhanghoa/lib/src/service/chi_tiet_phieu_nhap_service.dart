@@ -6,7 +6,7 @@ import 'package:qlhanghoa/src/util/auth_util.dart';
 class ChiTietPhieuNhapService extends GetConnect {
   // hàm create
   ChiTietPhieuNhapService() {
-    httpClient.baseUrl = "${AppConfig.urlApi}/chi_tiet_nha";
+    httpClient.baseUrl = "${AppConfig.urlApi}/chi_tiet_nhap_hang";
     httpClient.addRequestModifier<void>((request) {
       String? token = AuthUtil.getAccessToken();
       if (token != null) {
@@ -74,6 +74,14 @@ class ChiTietPhieuNhapService extends GetConnect {
   // deleteOne
   Future<Response> deleteAll() async {
     var reponse = await delete("/");
+    //
+    return reponse;
+  }
+
+  // deleteOne
+  Future<Response> deleteMany({required String maPhieuNhap}) async {
+    // ignore: unnecessary_brace_in_string_interps
+    var reponse = await delete('/detele_many/${maPhieuNhap}');
     //
     return reponse;
   }

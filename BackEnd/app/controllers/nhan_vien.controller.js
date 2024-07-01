@@ -3,6 +3,7 @@ const NhanVienService = require("../services/nhan_vien.services");
 const MongoDB = require("../utils/mongodb.util");
 const helper = require("../helper/index");
 const { sdtSchema, emailSchema } = require("../validation/index");
+const PhieuNhapService = require("../services/phieu_nhap.services");
 
 
 exports.create = async (req, res, next) => {
@@ -75,35 +76,126 @@ exports.create = async (req, res, next) => {
     }
 }
 exports.findALL = async (req, res, next) => {
-    let documents = []
-    try{
+    let documents = [];
+    try {
         const nhanVienService = new NhanVienService(MongoDB.client);
-        let ten_nhan_vien = req.query.ten_nhan_vien;
+        let thong_tin_chung = req.query.thong_tin_chung;
+        let ma_cua_hang = req.query.ma_cua_hang;
+        let chuc_vu = req.query.chuc_vu;
+        let chua_tai_khoan = req.query.chua_tai_khoan; // =1 thì mới tìm kiếm
+        let co_tai_khoan = req.query.co_tai_khoan; 
+       // let tai_khoan = req.query.tai_khoan; // có tài khoản = 0; = 1
+        let trang_thai = req.query.trang_thai; // giá trị của trang_thai là 1 list
         let filter = {};
-        if(ten_nhan_vien){
-                    ten_nhan_vien = helper.escapeStringRegexp(ten_nhan_vien);
-                        let t1 = {
-                            ten_nhan_vien : {
-                            $regex: new RegExp(ten_nhan_vien), $options: "i"
+
+        if (thong_tin_chung && thong_tin_chung !== '' && thong_tin_chung !== 'null') {
+            thong_tin_chung = helper.escapeStringRegexp(thong_tin_chung);
+            let t1 = {
+                $or: [
+                    {
+                        ten_nhan_vien: {
+                            $regex: new RegExp(thong_tin_chung), $options: "i"
+                        }
+                    },
+                    {
+                        sdt: {
+                            $regex: new RegExp(thong_tin_chung), $options: "i"
+                        }
+                    },
+                    {
+                        ma_nhan_vien: {
+                            $regex: new RegExp(thong_tin_chung), $options: "i"
+                        }
+                    },
+                    {
+                        dia_chi: {
+                            $regex: new RegExp(thong_tin_chung), $options: "i"
                         }
                     }
+                ]
+            };
+            filter = { ...filter, ...t1 };
+        }
+
+        if (trang_thai && Array.isArray(trang_thai) && trang_thai.length > 0) {
+            filter.trang_thai = { $in: trang_thai };
+        }
+
+        if (ma_cua_hang && ma_cua_hang !== '' && ma_cua_hang !== 'null' && ma_cua_hang!='Tất cả') {
+            filter.ma_cua_hang = ma_cua_hang;
+        }
+
+        if (chuc_vu && Array.isArray(chuc_vu) && chuc_vu.length > 0) {
+            filter.chuc_vu = { $in: chuc_vu };
+        }
+
+        if (co_tai_khoan=='1' && chua_tai_khoan!='1') {
+            filter.tai_khoan = { $exists: true };
+        }
+        if(chua_tai_khoan=='1' && co_tai_khoan!='1'){
+            t1 = {
+                $or: [
+                    {tai_khoan: { $exists: false } },
+                    {'tai_khoan.user_name': { $exists: false }}
+                ]
+            }
             filter = {...filter, ...t1}
-         }
-            documents = await nhanVienService.find(filter);
-            return res.send(documents);
-    }catch(e){
+         /*   filter.tai_khoan = {
+                $or: [
+                    { $exists: false },
+                    { $eq: null }
+                ]}; */
+        }
+
+        let pro = {
+            ma_nhan_vien: 1, // tự động
+            ten_nhan_vien: 1,
+            dia_chi: 1,
+            sdt: 1,
+            email: 1,
+            stk: 1,
+            gioi_tinh: 1,
+            chuc_vu: 1,
+            trang_thai: 1,
+            ghi_chu: 1,
+            tai_khoan: 1, // object tài khoản
+            ma_cua_hang: 1,
+            'cua_hang_info.ten_cua_hang': 1
+        };
+        documents = await nhanVienService.findLookUp(filter, pro);
+        return res.send(documents);
+    } catch (e) {
         return next(new ApiError(500, "Lỗi server trong quá trình lấy danh sách"));
-    } 
-}
+    }
+};
 
 exports.findOne =  async (req, res, next) => {  // 
     try{
         const nhanVienService = new NhanVienService(MongoDB.client);
-        const document = await nhanVienService.findById(req.params.id);
-        if(!document){
-            return next(new ApiError(404, "Không tìm thấy data"));
-        }
-        return res.send(document);
+       
+       
+        let pro = {
+            ma_nhan_vien: 1, // tự động
+            ten_nhan_vien: 1,
+            dia_chi: 1,
+            sdt: 1,
+            email: 1,
+            stk: 1,
+            gioi_tinh: 1,
+            ghi_chu: 1,
+            chuc_vu: 1,
+            trang_thai: 1,
+            tai_khoan: 1, // object tài khoản
+            ma_cua_hang: 1,
+            'cua_hang_info.ten_cua_hang' : 1
+         }
+          let  document = await nhanVienService.findLookUp({
+                ma_nhan_vien: req.params.id
+            }, pro);
+            if(!document || (document && document.length==0)){
+                return next(new ApiError(404, "Không tìm thấy data"));
+            }
+        return res.send(document[0]);
     }catch(e){
         return next(new ApiError(500, "Lỗi server trong quá trình lấy danh sách"));
     }
@@ -114,12 +206,7 @@ exports.update = async (req,res, next) => {
     }
     try{
      const nhanVienService = new NhanVienService(MongoDB.client);
-     if(req.body.sdt){
-     const { error } = sdtSchema.validate(req.body.sdt);
-     if (error) {
-       return next(new ApiError(400, error.message));
-     }
-    }
+    console.log('gọi update');
      const document = await nhanVienService.update(req.params.id, req.body);
      if(!document){
          return next(new ApiError(404,"not found"));
@@ -136,11 +223,16 @@ exports.update = async (req,res, next) => {
    
      try{
          const nhanVienService = new NhanVienService(MongoDB.client);
-         
-         const document = await nhanVienService.delete(req.params.id);
-         if(!document){
-             return next(new ApiError(404, "not found"));
+         const phieuNhapService = new PhieuNhapService(MongoDB.client);
+         const phieNhap = await phieuNhapService.findOne({
+            ma_nhan_vien: req.params.id
+         });
+         if(phieNhap!=null){
+            //console.log(phieNhap);
+            return next(new ApiError(401, "Nhân viên đã có dữ liệu phiếu nhập không thể xoá"));
          }
+         const document = await nhanVienService.delete(req.params.id);
+        
          return res.send({
              message: " deleted succesfully"
          });

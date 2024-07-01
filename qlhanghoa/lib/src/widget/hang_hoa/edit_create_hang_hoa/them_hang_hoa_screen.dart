@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_null_comparison
+
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -178,6 +180,7 @@ class ThemHangHoaScreen extends GetView<ThemHangHoaController> {
             style: TextStyle(color: ColorClass.color_button_nhat, fontSize: 18),
           ),
           onPressed: () async {
+            controller.reSetTam();
             Get.back();
             Get.back();
           },
@@ -559,8 +562,10 @@ class ThemHangHoaScreen extends GetView<ThemHangHoaController> {
     return TextFormField(
       onSaved: (newValue) {
         var va = newValue.toString().replaceAll(',', '');
-        controller.hangHoaModel.value = controller.hangHoaModel.value
-            .copyWith(tonNhieuNhat: double.parse(va));
+        print(va);
+        controller.hangHoaModel.value = controller.hangHoaModel.value.copyWith(
+            tonNhieuNhat:
+                va != '' && va != null ? double.parse(va) : 999999999.99);
       },
       inputFormatters: <TextInputFormatter>[
         FilteringTextInputFormatter.allow(RegExp(r'[0-9.]')),

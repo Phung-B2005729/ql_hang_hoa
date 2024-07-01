@@ -10,9 +10,10 @@ class ThuongHieuService {
         const thuong_hieu = {
             ten_thuong_hieu: payload.ten_thuong_hieu
         }
-        Object.keys(thuong_hieu).forEach((key)=>{
-            thuong_hieu[key] === undefined && delete thuong_hieu[key]
-        });
+         Object.keys(thuong_hieu).forEach((key) => {
+            if (thuong_hieu[key] === undefined || thuong_hieu[key] === null) {
+                delete thuong_hieu[key];
+            }   });
         return thuong_hieu;
     }
     

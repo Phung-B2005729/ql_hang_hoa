@@ -7,7 +7,7 @@ const { sdtSchema } = require("../validation/index");
 
 
 exports.create = async (req, res, next) => {
-    if(req.body.ma_nha_cung_cap==null || req.body.ma_nhan_vien==null || req.body.ma_cua_hang==null){
+    if((req.body.ma_nha_cung_cap==null || req.body.ma_nhan_vien==null || req.body.ma_cua_hang==null) && req.body.trang_thai!='Phiếu tạm'){
         return next(new ApiError(400, "Data can not be empty"));
     }
     else{
@@ -150,10 +150,7 @@ exports.findALL = async (req, res, next) => {
                   { 'chi_tiet_phieu_nhap_info.hang_hoa_info.ten_hang_hoa': { $regex: new RegExp(thong_tin_hang_hoa, "i") } },
                   { 'chi_tiet_phieu_nhap_info.ma_hang_hoa': { $regex: new RegExp(thong_tin_hang_hoa, "i") } },
                   { 'chi_tiet_phieu_nhap_info.so_lo': { $regex: new RegExp(thong_tin_hang_hoa, "i") } }
-                ]
-            
-            
-              
+                ]      
         }
       
         if (Object.keys(filter).length > 0) {
@@ -197,13 +194,130 @@ if(thong_tin_phieu_nhap && thong_tin_phieu_nhap!=''){
             'chi_tiet_phieu_nhap_info.hang_hoa_info.ten_hang_hoa': 1,
             'chi_tiet_phieu_nhap_info.hang_hoa_info.quan_ly_theo_lo': 1
         }
-            documents = await phieuNhapService.findLooUp(filter, pro, false);
+            documents = await phieuNhapService.findLooUp(filter, pro, false, false);
+            return res.send(documents);
+    }catch(e){
+        return next(new ApiError(500, "Lỗi server trong quá trình lấy danh sách"));
+    } 
+}
+exports.findTongQuan = async (req, res, next) => {
+    let documents = []
+    try{
+        const phieuNhapService = new PhieuNhapService(MongoDB.client);
+       
+        let ma_cua_hang = req.query.ma_cua_hang;
+       
+        const ngay_bat_dau = req.query.ngay_bat_dau;
+        const ngay_ket_thuc = req.query.ngay_ket_thuc;
+      
+        let trang_thai = req.query.trang_thai;
+        
+        let filter = {};
+        if(ngay_bat_dau && ngay_ket_thuc && ngay_bat_dau!='' && ngay_ket_thuc!=''){
+            console.log(new Date(ngay_bat_dau))
+            console.log(new Date(ngay_ket_thuc))
+         let t1 = { ngay_lap_phieu: {
+            $gte: new Date(ngay_bat_dau),
+            $lte: new Date(ngay_ket_thuc)
+          }
+        }
+        filter = {...filter, ...t1}
+        }
+       
+         if(ma_cua_hang && ma_cua_hang!='Tất cả' && ma_cua_hang!=''){
+           
+            let t1 = {
+               ma_cua_hang: ma_cua_hang
+            }
+            filter = {...filter, ...t1}
+        }
+       
+        if(trang_thai && trang_thai!='Tất cả' && trang_thai!=''){
+           
+            let t1 = {
+               trang_thai: trang_thai
+            }
+            filter = {...filter, ...t1}
+        }
+
+        
+    console.log(filter);
+        let pro = {
+            ma_phieu_nhap: 1, // tự động
+          
+            tong_tien: 1,
+            gia_giam: 1,
+            trang_thai: 1,
+          
+            ma_cua_hang: 1,
+          
+            'chi_tiet_phieu_nhap_info.so_luong': 1,
+            'chi_tiet_phieu_nhap_info.ma_hang_hoa': 1,
+           
+        }
+            documents = await phieuNhapService.findLooUp(filter, pro, false, false);
             return res.send(documents);
     }catch(e){
         return next(new ApiError(500, "Lỗi server trong quá trình lấy danh sách"));
     } 
 }
 
+exports.findPhieuTamGanDay = async (req, res, next) =>  {
+    try{
+        const phieuNhapService = new PhieuNhapService(MongoDB.client);
+        let pro = {
+            ma_phieu_nhap: 1, // tự động
+            ngay_lap_phieu: 1,
+            tong_tien: 1,
+            trang_thai: 1,
+            gia_giam: 1,
+            da_tra_nha_cung_cap: 1,
+            // forgi
+            ma_nha_cung_cap: 1,
+            ma_cua_hang: 1,
+            ma_nhan_vien: 1,
+            'nhan_vien_info.ten_nhan_vien': 1,
+            'cua_hang_info.ten_cua_hang': 1,
+            'nha_cung_cap_info.ten_nha_cung_cap': 1,
+            'chi_tiet_phieu_nhap_info.ma_hang_hoa': 1,
+            'chi_tiet_phieu_nhap_info.lo_nhap': 1,
+            'chi_tiet_phieu_nhap_info.so_luong': 1,
+            'chi_tiet_phieu_nhap_info.don_gia_nhap': 1,
+            'chi_tiet_phieu_nhap_info.ghi_chu': 1,
+          
+            'chi_tiet_phieu_nhap_info.hang_hoa_info.ten_hang_hoa': 1,
+            'chi_tiet_phieu_nhap_info.hang_hoa_info.gia_von': 1,
+            'chi_tiet_phieu_nhap_info.hang_hoa_info.don_gia_ban': 1,
+            'chi_tiet_phieu_nhap_info.hang_hoa_info.hinh_anh': 1,
+            'chi_tiet_phieu_nhap_info.hang_hoa_info.quan_ly_theo_lo': 1,
+            'chi_tiet_phieu_nhap_info.hang_hoa_info.don_vi_tinh': 1
+        }
+        const ma_cua_hang = req.query.ma_cua_hang;
+        let filter = {
+            trang_thai: 'Phiếu tạm'
+        }
+        if(ma_cua_hang && ma_cua_hang!='Tất cả' && ma_cua_hang!=''){
+            //
+            t1 = {
+                ma_cua_hang: ma_cua_hang
+            }
+            filter = {...filter, ...t1}
+        }
+        
+        const document = await phieuNhapService.findLooUp(filter, pro, true, true);
+           
+        if(!document){
+            return next(new ApiError(404, "Không tìm thấy data"));
+        }
+        console.log(true);
+        
+        return res.send(document);
+        
+    }catch(e){
+        return next(new ApiError(500, "Lỗi server trong quá trình lấy danh sách"));
+    }
+
+}
 exports.findOne =  async (req, res, next) => {  // 
     try{
         console.log('gọi find one phiếu nhập')
@@ -215,7 +329,6 @@ exports.findOne =  async (req, res, next) => {  //
             trang_thai: 1,
             gia_giam: 1,
             da_tra_nha_cung_cap: 1,
-           
             // forgi
             ma_nha_cung_cap: 1,
             ma_cua_hang: 1,
@@ -238,7 +351,7 @@ exports.findOne =  async (req, res, next) => {  //
         }
         const document = await phieuNhapService.findLooUp({
             ma_phieu_nhap:
-            req.params.id}, pro, true);
+            req.params.id}, pro, true, false);
            
         if(!document || (document && document.length==0)){
             return next(new ApiError(404, "Không tìm thấy data"));

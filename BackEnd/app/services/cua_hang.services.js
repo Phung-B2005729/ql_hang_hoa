@@ -12,11 +12,14 @@ class CuaHangService {
             ten_cua_hang: payload.ten_cua_hang,
             dia_chi : payload.dia_chi,
             loai_cua_hang: payload.loai_cua_hang ?? "Chi nhánh",
-            sdt: payload.sdt
+            sdt: payload.sdt,
+            ghi_chu: payload.ghi_chu
         }
-        Object.keys(cua_hang).forEach((key)=>{
-            cua_hang[key] === undefined && delete cua_hang[key]
-        });
+     
+        Object.keys(cua_hang).forEach((key) => {
+            if (cua_hang[key] === undefined || cua_hang[key] === null) {
+                delete cua_hang[key];
+            }});
         return cua_hang;
     }
     
@@ -36,6 +39,41 @@ class CuaHangService {
     }
     async find(filter){ // danh sách loại hàng 
         const cursor = await this.collectionCuaHang.find(filter);
+        return await cursor.toArray();
+    }
+    async findLookup(filter, project, findOne){ // danh sách loại hàng 
+        const pipeline = [
+            {
+                $lookup: {
+                  from: 'ton_kho_lo_hang',
+                  localField: "ma_cua_hang",
+                  foreignField: "ma_cua_hang",
+                  as: "ton_kho"
+                }
+              }
+              ,
+              {
+                $match: filter
+              }
+        ]
+        if(findOne){
+            pipeline.push({
+                
+                    $lookup: {
+                      from: 'nhan_vien',
+                      localField: "ma_cua_hang",
+                      foreignField: "ma_cua_hang",
+                      as: "nhan_vien_info"
+                    }
+                  
+            })
+        }
+        if(project){
+            pipeline.push({
+                $project: project
+            })
+        }
+        const cursor = await this.collectionCuaHang.aggregate(pipeline);
         return await cursor.toArray();
     }
     async findById(id){ // tên loại hàng theo id 

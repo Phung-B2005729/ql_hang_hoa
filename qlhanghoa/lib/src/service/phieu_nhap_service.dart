@@ -81,6 +81,34 @@ class PhieuNhapService extends GetConnect {
     }
   }
 
+  Future<Response> findTongQuan({
+    String? trangThai,
+    String? ngayBatDau,
+    String? ngayKetThuc,
+    String? maCuaHang,
+  }) async {
+    try {
+      final response = await get(
+        "/tong_quan",
+        query: {
+          if (maCuaHang != null) 'ma_cua_hang': maCuaHang,
+          if (ngayBatDau != null) 'ngay_bat_dau': ngayBatDau,
+          if (ngayKetThuc != null) 'ngay_ket_thuc': ngayKetThuc,
+          if (trangThai != null) 'trang_thai': trangThai,
+        },
+        contentType: AppConfig.contentTypeJson,
+      );
+      return response;
+    } catch (e) {
+      // ignore: avoid_print
+      print("Error: $e");
+      return const Response(
+        statusCode: 500,
+        statusText: "Server Error",
+      );
+    }
+  }
+
   // deleteOne
   Future<Response> deleteOne({required String id}) async {
     var reponse = await delete("/$id");
@@ -99,6 +127,17 @@ class PhieuNhapService extends GetConnect {
   Future<Response> getById({required String id}) async {
     final response = await get(
       '/$id',
+    );
+    return response;
+  }
+
+  Future<Response> getPhieuTamGanDay({String? maCuaHang}) async {
+    final response = await get(
+      '/phieu_tam',
+      query: {
+        if (maCuaHang != null) 'ma_cua_hang': maCuaHang,
+      },
+      contentType: AppConfig.contentTypeJson,
     );
     return response;
   }

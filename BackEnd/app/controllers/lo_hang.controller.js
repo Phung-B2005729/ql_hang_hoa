@@ -36,13 +36,13 @@ exports.findALL = async (req, res, next) => {
         let filter = {};
         let project = {
             so_lo: 1,
-          //  "ton_kho.ma_cua_hang": 1,
-          //  "ton_kho.so_luong_ton" : 1,
+            
             ma_hang_hoa: 1,
             ngay_san_xuat: 1,
             han_su_dung: 1,
             trang_thai: 1,
-            ton_kho: 1,
+            "ton_kho.ma_cua_hang": 1,
+            "ton_kho.so_luong_ton" : 1,
         }
         if(ma_hang_hoa!=null && ma_hang_hoa!='Tất cả' && ma_hang_hoa!=''){
                         let t1 = {
@@ -79,6 +79,15 @@ exports.findALL = async (req, res, next) => {
 
 exports.findOne =  async (req, res, next) => {  // 
     try{
+        let project = {
+            so_lo: 1,
+            ma_hang_hoa: 1,
+            ngay_san_xuat: 1,
+            han_su_dung: 1,
+            trang_thai: 1,
+            "ton_kho.ma_cua_hang": 1,
+            "ton_kho.so_luong_ton" : 1,
+        }
         const loHangService = new LoHangService(MongoDB.client);
         const document = await loHangService.findLookUp({
             so_lo: req.params.id

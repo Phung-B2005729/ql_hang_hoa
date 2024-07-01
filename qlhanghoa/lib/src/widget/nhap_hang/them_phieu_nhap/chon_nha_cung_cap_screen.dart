@@ -29,9 +29,8 @@ class ChonNhaCungCapScreen extends StatelessWidget {
                           () => ListTile(
                             onTap: () {
                               // cập nhật controllerLoaiHang bên ThemHangHoaController và HangHoaModel.loaiHang = listLoaiHang[index]
-                              themPhieuNhapController.chonNhaCungCap(controller
-                                  .filteredList[index].maNhaCungCap
-                                  .toString());
+                              themPhieuNhapController.chonNhaCungCap(
+                                  controller.filteredList[index]);
                               Get.back();
                             },
                             title: Text(
@@ -145,7 +144,7 @@ class ChonNhaCungCapScreen extends StatelessWidget {
                 borderSide: const BorderSide(
                     color: ColorClass.color_thanh_ke, width: 1),
                 borderRadius: BorderRadius.circular(11)),
-            hintText: 'Tên loại hàng',
+            hintText: 'Mã, tên ncc',
             hintStyle: const TextStyle(
                 fontSize: 14, color: Color.fromARGB(255, 170, 170, 170)),
             prefixIcon: const Icon(

@@ -24,8 +24,12 @@ class LoadingCircularFullScreen extends StatelessWidget {
             ),
             const SizedBox(height: 30),
             Text(
+              // ignore: prefer_interpolation_to_compose_strings
               (title ?? "Đang xử lý") + "...",
-              style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
+              style: const TextStyle(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 16,
+                  color: Colors.black),
             ),
           ],
         ),

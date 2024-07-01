@@ -1,102 +1,100 @@
 // ignore_for_file: unused_local_variable
 
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import 'color.dart';
 
 class AppTheme {
   // 1
-  static TextTheme lightTextTheme = TextTheme(
+  static TextTheme lightTextTheme = const TextTheme(
     // titleLarge
-    titleLarge: GoogleFonts.openSans(
+    titleLarge: TextStyle(
       fontSize: 22, //30
       fontWeight: FontWeight.w600,
       color: ColorClass.color_title_large,
     ),
-    titleMedium: GoogleFonts.openSans(
+    titleMedium: TextStyle(
       fontSize: 16,
       fontWeight: FontWeight.w600,
       color: ColorClass.color_title_medium,
     ),
     //
-    titleSmall: GoogleFonts.openSans(
-        fontSize: 14, color: ColorClass.color_title_medium),
+    titleSmall: TextStyle(fontSize: 14, color: ColorClass.color_title_medium),
 
     // context  body
-    bodyLarge: GoogleFonts.openSans(
+    bodyLarge: TextStyle(
       fontSize: 16, //30
       color: ColorClass.color_back,
     ),
-    bodyMedium: GoogleFonts.openSans(
+    bodyMedium: TextStyle(
       fontSize: 15,
       color: ColorClass.color_back,
     ),
 
     //
-    bodySmall: GoogleFonts.openSans(
+    bodySmall: TextStyle(
       fontSize: 14,
       color: ColorClass.color_back,
     ),
 
     //
-    displayLarge: GoogleFonts.openSans(
+    displayLarge: TextStyle(
       fontSize: 24, //28
       color: ColorClass.color_xanh_content,
     ),
-    displaySmall: GoogleFonts.openSans(
+    displaySmall: TextStyle(
       fontSize: 14, //28
       color: ColorClass.color_xanh_content,
     ),
-    displayMedium: GoogleFonts.openSans(
+    displayMedium: TextStyle(
       fontSize: 19, //28
       fontWeight: FontWeight.w600,
       color: ColorClass.color_back,
     ),
   );
   // 2
-  static TextTheme darkTextTheme = TextTheme(
+  static TextTheme darkTextTheme = const TextTheme(
     // titleLarge
-    titleLarge: GoogleFonts.openSans(
+    titleLarge: TextStyle(
       fontSize: 22, //30
       color: Colors.white,
     ),
-    titleMedium: GoogleFonts.openSans(
+    titleMedium: TextStyle(
       fontSize: 16,
       color: Colors.white,
     ),
     //
-    titleSmall: GoogleFonts.openSans(
+    titleSmall: TextStyle(
       fontSize: 14,
       color: Colors.white,
     ),
 
     // context  body
-    bodyLarge: GoogleFonts.openSans(
+    bodyLarge: TextStyle(
       fontSize: 16, //30
       color: Colors.white,
     ),
-    bodyMedium: GoogleFonts.openSans(
+    bodyMedium: TextStyle(
       fontSize: 15,
       color: Colors.white,
     ),
 
     //
-    bodySmall: GoogleFonts.openSans(
+    bodySmall: TextStyle(
       fontSize: 14,
       color: Colors.white,
     ),
 
     //
-    displayLarge: GoogleFonts.openSans(
+    displayLarge: TextStyle(
       fontSize: 24, //28
       color: Colors.white,
     ),
-    displaySmall: GoogleFonts.openSans(
+    displaySmall: TextStyle(
       fontSize: 14, //28
       color: Colors.white,
     ),
-    displayMedium: GoogleFonts.openSans(
+    displayMedium: TextStyle(
       fontSize: 14, //28
       color: Colors.white,
     ),

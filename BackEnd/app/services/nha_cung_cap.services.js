@@ -14,11 +14,13 @@ class NhaCungCapService {
              email: payload.email,
              cong_ty: payload.cong_ty,
              sdt: payload.sdt,
+             ghi_chu: payload.ghi_chu,
          
         }
-        Object.keys(nha_cung_cap).forEach((key)=>{
-            nha_cung_cap[key] === undefined && delete nha_cung_cap[key]
-        });
+        Object.keys(nha_cung_cap).forEach((key) => {
+            if (nha_cung_cap[key] === undefined || nha_cung_cap[key] === null) {
+                delete nha_cung_cap[key];
+            } });
         return nha_cung_cap;
     }
     
@@ -38,6 +40,52 @@ class NhaCungCapService {
     }
     async find(filter){ // danh sách loại hàng 
         const cursor = await this.collectionNhaCungCap.find(filter);
+        return await cursor.toArray();
+    }
+    async findLookup(filter, project){ // danh sách loại hàng 
+        const pipeline =  [
+            {
+                $lookup: {
+                  from: 'phieu_nhap',
+                  localField: "ma_nha_cung_cap",
+                  foreignField: "ma_nha_cung_cap",
+                  as: "phieu_nhap_info",
+                  pipeline: [
+                    {
+                        $lookup: {
+                            from: 'nhan_vien',
+                            //"$ma_hang_hoa": Định nghĩa biến maHangHoa và gán giá trị của nó là giá trị của trường ma_hang_hoa trong tài liệu hiện tại.
+                            //"$so_lo": Định nghĩa biến soLo và gán giá trị của nó là giá trị của trường so_lo trong tài liệu hiện tại.
+                            let: { maNhanVien: "$ma_nhan_vien"},
+                            pipeline: [
+                                {
+                                    $match: {
+                                        $expr: {
+                                            
+                                                 $eq: ["$ma_nhan_vien", "$$maNhanVien"] ,
+                                               
+                                            
+                                        }
+                                    }
+                                }
+                            ],
+                            as: "nhan_vien_info"
+                        }
+                    }
+                  ]
+                }
+              },
+              {
+                $match: filter
+              }
+        ]
+       
+        if(project) {
+               pipeline.push({
+                $project: project
+               })
+        }
+        const cursor = await this.collectionNhaCungCap.aggregate(pipeline)
         return await cursor.toArray();
     }
     async findById(id){ // tên loại hàng theo id 

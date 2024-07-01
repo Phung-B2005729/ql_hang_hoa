@@ -13,9 +13,12 @@ class ChiTietKiemKhoService {
              so_luong_thuc_te : payload.so_luong_thuc_te,
              so_luong_ton_kho: payload.so_luong_ton_kho, 
         }
-        Object.keys(chi_tiet_kiem_kho).forEach((key)=>{
-            chi_tiet_kiem_kho[key] === undefined && delete chi_tiet_kiem_kho[key]
-        });
+        Object.keys(chi_tiet_kiem_kho).forEach((key) => {
+            if (chi_tiet_kiem_kho[key] === undefined || chi_tiet_kiem_kho[key] === null) {
+                delete chi_tiet_kiem_kho[key];
+            
+            } });
+       
         return chi_tiet_kiem_kho;
     }
     

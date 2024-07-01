@@ -371,7 +371,7 @@ class TimKiemHangHoaScreen extends GetView<HangHoaController> {
                           borderSide: const BorderSide(
                               color: Color.fromARGB(255, 64, 64, 64), width: 1),
                           borderRadius: BorderRadius.circular(15)),
-                      hintText: 'Tên hàng, thương hiệu, loại hàng..',
+                      hintText: 'Mã hàng, tên hàng, thương hiệu, loại hàng..',
                       hintStyle: const TextStyle(
                           fontSize: 14,
                           color: Color.fromARGB(255, 170, 170, 170)),

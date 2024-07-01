@@ -14,9 +14,10 @@ class TonKhoLoHangService {
              so_luong_ton : payload.so_luong_ton,
              ma_hang_hoa: payload.ma_hang_hoa,
         }
-        Object.keys(ton_kho_lo_hang).forEach((key)=>{
-            ton_kho_lo_hang[key] === undefined && delete ton_kho_lo_hang[key]
-        });
+         Object.keys(ton_kho_lo_hang).forEach((key) => {
+            if (ton_kho_lo_hang[key] === undefined || ton_kho_lo_hang[key] === null) {
+                delete ton_kho_lo_hang[key];
+            }   });
         return ton_kho_lo_hang;
     }
     
@@ -41,9 +42,7 @@ class TonKhoLoHangService {
     async sumSoLuongTonKho(filter){ // danh sách loại hàng 
         const pipeline = [
             {
-              $match: {
-                filter
-              }
+              $match: filter
             },
              {
                   "$group": {
@@ -54,6 +53,33 @@ class TonKhoLoHangService {
                   }
               }
           ]
+          
+        const cursor = await this.collectionTonKhoLoHangHang.aggregate(pipeline);
+        return await cursor.toArray();
+    }
+    async findLookup(filter,pro){ // danh sách loại hàng 
+        const pipeline = [
+            {
+                $lookup: {
+                  from: 'hang_hoa',
+                  localField: "ma_hang_hoa",
+                  foreignField: "ma_hang_hoa",
+                  as: "hang_hoa_info"
+                }
+              },
+            {
+              $match: filter
+            },
+          ]
+          if(pro){
+            pipeline.push({
+                $project: pro
+            });
+          }
+          pipeline.push({
+            $sort: {han_su_dung: 1,so_luong_ton: -1 , ma_hang_hoa: 1, 
+            }
+          })
           
         const cursor = await this.collectionTonKhoLoHangHang.aggregate(pipeline);
         return await cursor.toArray();
@@ -90,12 +116,9 @@ class TonKhoLoHangService {
         console.log(result);
         return result;
     }
-    async updateLoHangCuaHang(so_lo, ma_cua_hang, payload){
-        console.log(id);
-        const filter = {
-            so_lo: so_lo,
-            ma_cua_hang: ma_cua_hang
-        };
+    async updateFilter(filter1, payload){
+       // console.log(id);
+        const filter = filter1;
         console.log("fileder" + filter);
         const update = this.extractTonKhoLoHangData(payload);
         console.log(update);

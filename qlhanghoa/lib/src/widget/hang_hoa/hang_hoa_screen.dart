@@ -27,59 +27,12 @@ class HangHoaScreen extends GetView<HangHoaController> {
       if (cuaHangController.listCuaHang.isEmpty) {
         cuaHangController.getlistCuaHang();
       }
+
       controller.getlistHangHoa();
     });
 
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(160),
-        child: Container(
-          margin: const EdgeInsets.only(bottom: 10),
-          padding: const EdgeInsets.only(top: 10),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(20),
-            boxShadow: [
-              BoxShadow(
-                color: ColorClass.color_thanh_ke.withOpacity(
-                    0.2), //withOpacity(0.2) sẽ làm màu đó trở nên trong suốt 20%. Điều này làm cho bóng mờ hơn so với màu gốc.
-                spreadRadius: 5,
-                blurRadius: 7, // tạo độ mờ
-                offset: const Offset(0, 3), // dịch chuyên vị trí shadow
-              ),
-            ],
-          ),
-          child: ClipRRect(
-            borderRadius: const BorderRadius.only(
-                bottomLeft: Radius.circular(29),
-                bottomRight: Radius.circular(29)),
-            child: AppBar(
-              //backgroundColor: Colors.white,
-              title: const Text(
-                'Hàng Hoá',
-              ),
-              titleSpacing: 20,
-              titleTextStyle: AppTheme.lightTextTheme.titleLarge,
-              actions: [
-                Container(
-                  margin: const EdgeInsets.only(right: 20),
-                  child: IconButton(
-                      onPressed: () {
-                        // chuyển trang nhập tìm kiếm
-                        Get.to(() => TimKiemHangHoaScreen());
-                      },
-                      icon: const Icon(
-                        Icons.search,
-                        color: Color.fromARGB(255, 57, 57, 57),
-                        size: 30,
-                      )),
-                ),
-              ],
-              bottom: _buildBottomAppBar(),
-            ),
-          ),
-        ),
-      ),
+      appBar: _buildAppBar(),
       body: Stack(
         children: [
           Obx(
@@ -193,6 +146,7 @@ class HangHoaScreen extends GetView<HangHoaController> {
                                                           context,
                                                       Object exception,
                                                       StackTrace? stackTrace) {
+                                                    print('error image');
                                                     return Image.asset(
                                                         'assets/images/hang_hoa_mac_dinh.png',
                                                         fit: BoxFit.contain);
@@ -322,6 +276,58 @@ class HangHoaScreen extends GetView<HangHoaController> {
         child: const Icon(
           Icons.add,
           color: Colors.white,
+        ),
+      ),
+    );
+  }
+
+  PreferredSize _buildAppBar() {
+    return PreferredSize(
+      preferredSize: const Size.fromHeight(160),
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 10),
+        padding: const EdgeInsets.only(top: 10),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: ColorClass.color_thanh_ke.withOpacity(
+                  0.2), //withOpacity(0.2) sẽ làm màu đó trở nên trong suốt 20%. Điều này làm cho bóng mờ hơn so với màu gốc.
+              spreadRadius: 5,
+              blurRadius: 7, // tạo độ mờ
+              offset: const Offset(0, 3), // dịch chuyên vị trí shadow
+            ),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: const BorderRadius.only(
+              bottomLeft: Radius.circular(29),
+              bottomRight: Radius.circular(29)),
+          child: AppBar(
+            //backgroundColor: Colors.white,
+            title: const Text(
+              'Hàng Hoá',
+            ),
+            titleSpacing: 20,
+            titleTextStyle: AppTheme.lightTextTheme.titleLarge,
+            actions: [
+              Container(
+                margin: const EdgeInsets.only(right: 20),
+                child: IconButton(
+                    onPressed: () {
+                      // chuyển trang nhập tìm kiếm
+                      Get.to(() => TimKiemHangHoaScreen());
+                    },
+                    icon: const Icon(
+                      Icons.search,
+                      color: Color.fromARGB(255, 57, 57, 57),
+                      size: 30,
+                    )),
+              ),
+            ],
+            bottom: _buildBottomAppBar(),
+          ),
         ),
       ),
     );

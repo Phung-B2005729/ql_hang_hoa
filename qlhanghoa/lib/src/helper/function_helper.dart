@@ -153,4 +153,19 @@ class FunctionHelper {
   // từ string UTC to DateTimeVN
   // Chọn xong từ DateTiemVN so sánh => thông báo => chuyển về String UTC
   // từ dateTimeVN đưa về thời gian bắt đâù kể thúc sau đó chuyển về String UTC
+  static String getInitials(String name) {
+    return name[0].toUpperCase(); // Ghép các chữ cái đầu lại thành một chuỗi
+  }
+
+  static int tinhSoNgay(String date) {
+    // Chuyển đổi thành ngày bắt đầu và ngày kết thúc
+    DateTime date1 = DateTime.parse(date);
+    DateTime date2 = DateTime.now();
+
+    // Tính số ngày khác nhau
+    Duration difference = date1.difference(date2);
+
+    // Trả về số ngày khác nhau
+    return difference.inDays;
+  }
 }

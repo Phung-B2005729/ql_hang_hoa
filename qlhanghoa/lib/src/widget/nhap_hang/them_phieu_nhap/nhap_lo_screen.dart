@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:qlhanghoa/src/controller/hang_hoa/hang_hoa_controller.dart';
 import 'package:qlhanghoa/src/controller/nhap_hang/them_phieu_nhap/nhap_lo_controller.dart';
 import 'package:qlhanghoa/src/helper/function_helper.dart';
 
@@ -959,6 +960,8 @@ class ThemLoScreen extends GetView<NhapLoController> {
                   print('gọi save update lại lô');
                   controller.addUpdateLoHang(controller.loHangModel.value);
                   await controller.saveChiTiet();
+                  HangHoaController hangHoaController = Get.find();
+                  hangHoaController.searchController.text = '';
                   Get.back();
                   if (themMoi != null && themMoi == true) {
                     print('gọi get backend');

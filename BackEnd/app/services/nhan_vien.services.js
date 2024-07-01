@@ -14,15 +14,25 @@ class NhanVienService {
              sdt: payload.sdt,
              email: payload.email,
              stk: payload.stk,
+             ghi_chu: payload.ghi_chu,
              gioi_tinh: payload.gioi_tinh,
+             ghi_chu: payload.ghi_chu,
              chuc_vu: payload.chuc_vu,
-             trang_thai: payload.trang_thai,
+             trang_thai: payload.trang_thai ?? 'Đang làm việc',
              tai_khoan: payload.tai_khoan, // object tài khoản
              ma_cua_hang: payload.ma_cua_hang
         }
-        Object.keys(nhan_vien).forEach((key)=>{
-            nhan_vien[key] === undefined && delete nhan_vien[key]
-        });
+        Object.keys(nhan_vien).forEach((key) => {
+            if (nhan_vien[key] === undefined || nhan_vien[key] === null) {
+                delete nhan_vien[key];
+            }  });
+            if(nhan_vien.tai_khoan){
+            Object.keys(nhan_vien.tai_khoan).forEach((key) => {
+                if (nhan_vien.tai_khoan[key] === undefined || nhan_vien.tai_khoan[key] === null) {
+                    delete nhan_vien.tai_khoan[key];
+                }  });
+            }
+
         return nhan_vien;
     }
     
@@ -42,6 +52,30 @@ class NhanVienService {
     }
     async find(filter){ // danh sách loại hàng 
         const cursor = await this.collectionNhanVien.find(filter);
+        return await cursor.toArray();
+    }
+    async findLookUp(filter, project){ // danh sách loại hàng
+        const pipeline =  [
+            {
+                $lookup: {
+                  from: 'cua_hang',
+                  localField: "ma_cua_hang",
+                  foreignField: "ma_cua_hang",
+                  as: "cua_hang_info"
+                }
+              },
+              {
+                $match: filter
+              }
+        ]
+       
+        if(project) {
+               pipeline.push({
+                $project: project
+               })
+        }
+        console.log(filter);
+        const cursor = await this.collectionNhanVien.aggregate(pipeline)
         return await cursor.toArray();
     }
     async findById(id){ // tên loại hàng theo id 

@@ -7,7 +7,7 @@ class LoHangModel {
   String? maHangHoa;
   String? ngaySanXuat;
   String? hanSuDung;
-  String? trangThai;
+  // String? trangThai;
   double? tongSoLuong;
   double? soLuongNhap;
   String? ngayTaoLo;
@@ -24,7 +24,7 @@ class LoHangModel {
     this.tonKho,
     this.soLuongNhap,
     this.hanSuDung,
-    this.trangThai,
+    //this.trangThai,
     this.hangHoa,
   });
 
@@ -38,7 +38,7 @@ class LoHangModel {
       String? ngayTaoLo,
       double? tongSoLuong,
       String? hanSuDung,
-      String? trangThai,
+      //String? trangThai,
       HangHoaModel? hangHoa}) {
     return LoHangModel(
       sId: sId ?? this.sId,
@@ -50,7 +50,7 @@ class LoHangModel {
       ngayTaoLo: ngayTaoLo ?? this.ngayTaoLo,
       tongSoLuong: tongSoLuong ?? this.tongSoLuong,
       hanSuDung: hanSuDung ?? this.hanSuDung,
-      trangThai: trangThai ?? this.trangThai,
+      // trangThai: trangThai ?? this.trangThai,
       hangHoa: hangHoa ?? this.hangHoa,
     );
   }
@@ -72,7 +72,7 @@ class LoHangModel {
         : null;
     ngayTaoLo = json['ngay_tao_lo'];
     hanSuDung = json['han_su_dung'];
-    trangThai = json['trang_thai'];
+    // trangThai = json['trang_thai'];
     hangHoa = json['hang_hoa_info'] != null && json['hang_hoa_info'].isNotEmpty
         ? HangHoaModel.fromJson(json['hang_hoa_info'][0])
         : null;
@@ -92,7 +92,7 @@ class LoHangModel {
     data['ngay_san_xuat'] = ngaySanXuat;
     data['ngay_tao_lo'] = ngayTaoLo;
     data['han_su_dung'] = hanSuDung;
-    data['trang_thai'] = trangThai;
+    //data['trang_thai'] = trangThai;
     return data;
   }
 }

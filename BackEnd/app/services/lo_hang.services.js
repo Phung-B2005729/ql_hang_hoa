@@ -14,11 +14,13 @@ class LoHangService {
              han_su_dung: payload.han_su_dung,  
              ngay_tao: payload.ngay_tao ?? new Date(), 
              tong_so_luong: payload.tong_so_luong,
-             trang_thai: payload.trang_thai // 'còn hàng','đã trả hàng'
-        }
-        Object.keys(lo_hang).forEach((key)=>{
-            lo_hang[key] === undefined && delete lo_hang[key]
-        });
+           //  trang_thai: payload.trang_thai
+        } 
+        Object.keys(lo_hang).forEach((key) => {
+            if (lo_hang[key] === undefined || lo_hang[key] === null) {
+                delete lo_hang[key];
+            } });
+        
         return lo_hang;
     }
     

@@ -1,4 +1,4 @@
-// ignore_for_file: unnecessary_null_comparison, duplicate_ignore
+// ignore_for_file: unnecessary_null_comparison, duplicate_ignore, avoid_print, unnecessary_overrides
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
@@ -39,6 +39,13 @@ class ThemHangHoaController extends GetxController {
       quanLyTheoLo: true,
       tonNhieuNhat: 999999999,
       hinhAnh: []).obs;
+  var hangHoaModelTam = HangHoaModel(
+      donGiaBan: 0,
+      giaVon: 0,
+      donViTinh: 'Kg',
+      quanLyTheoLo: true,
+      tonNhieuNhat: 999999999,
+      hinhAnh: []).obs;
 
   RxInt indexImage = 0.obs;
   RxList<dynamic> listImage = [].obs;
@@ -46,9 +53,48 @@ class ThemHangHoaController extends GetxController {
 
   RxBool loading = false.obs;
 
+  // ignore: unnecessary_overrides
   @override
   void onInit() {
     super.onInit();
+  }
+
+  void setUpTam() {
+    hangHoaModelTam.value = HangHoaModel(
+      maHangHoa: hangHoaModel.value.maHangHoa,
+      tenHangHoa: hangHoaModel.value.tenHangHoa,
+      moTa: hangHoaModel.value.moTa,
+      donGiaBan: hangHoaModel.value.donGiaBan,
+      loHang: hangHoaModel.value.loHang,
+      giaVon: hangHoaModel.value.giaVon,
+      tonNhieuNhat: hangHoaModel.value.tonNhieuNhat,
+      donViTinh: hangHoaModel.value.donViTinh,
+      hinhAnh: hangHoaModel.value.hinhAnh,
+      trangThai: hangHoaModel.value.trangThai,
+      loaiHang: hangHoaModel.value.loaiHang,
+      thuongHieu: hangHoaModel.value.thuongHieu,
+      quanLyTheoLo: hangHoaModel.value.quanLyTheoLo,
+    );
+    update();
+  }
+
+  void reSetTam() {
+    hangHoaModel.value = HangHoaModel(
+      maHangHoa: hangHoaModelTam.value.maHangHoa,
+      tenHangHoa: hangHoaModelTam.value.tenHangHoa,
+      moTa: hangHoaModelTam.value.moTa,
+      donGiaBan: hangHoaModelTam.value.donGiaBan,
+      loHang: hangHoaModelTam.value.loHang,
+      giaVon: hangHoaModelTam.value.giaVon,
+      tonNhieuNhat: hangHoaModelTam.value.tonNhieuNhat,
+      donViTinh: hangHoaModelTam.value.donViTinh,
+      hinhAnh: hangHoaModelTam.value.hinhAnh,
+      trangThai: hangHoaModelTam.value.trangThai,
+      loaiHang: hangHoaModelTam.value.loaiHang,
+      thuongHieu: hangHoaModelTam.value.thuongHieu,
+      quanLyTheoLo: hangHoaModelTam.value.quanLyTheoLo,
+    );
+    update();
   }
 
   void getUpData() async {
@@ -59,8 +105,8 @@ class ThemHangHoaController extends GetxController {
     moTaController.text = hangHoaModel.value.moTa ?? '';
     print(moTaController.text);
 
-    tonItNhatController.text =
-        FunctionHelper.formNum(hangHoaModel.value.tonNhieuNhat.toString());
+    tonItNhatController.text = FunctionHelper.formNum(
+        hangHoaModel.value.tonNhieuNhat.toString() ?? '999999999');
     giaBanController.text =
         FunctionHelper.formNum(hangHoaModel.value.donGiaBan.toString());
     donViTinhController.text = hangHoaModel.value.donViTinh.toString();
@@ -142,6 +188,7 @@ class ThemHangHoaController extends GetxController {
   void saveLoaiHang(LoaiHangModel loaiHang) {
     hangHoaModel.value = hangHoaModel.value.copyWith(loaiHang: loaiHang);
     loaiHangController.text = loaiHang.tenLoai!;
+
     update();
   }
 
@@ -222,6 +269,7 @@ class ThemHangHoaController extends GetxController {
   Future<dynamic> saveListImage() async {
     // lộc ra
     List<dynamic> list =
+        // ignore: prefer_iterable_wheretype
         await listImage.where((elem) => elem is XFile).toList();
     if (list.isNotEmpty) {
       var response = await UpLoadService.uploadMultiple(list);
@@ -259,6 +307,7 @@ class ThemHangHoaController extends GetxController {
       }
       return true;
     } catch (e) {
+      // ignore: prefer_interpolation_to_compose_strings
       print('Error delete image ' + e.toString());
       return false;
     }
@@ -350,44 +399,45 @@ class ThemHangHoaController extends GetxController {
     if (formKey.currentState!.validate()) {
       print(maHangController.text);
       print(tenHangController.text);
+      print('Gọi save');
+      loading.value = true;
+      formKey.currentState!.save();
+      print(hangHoaModel.value.thuongHieu!.tenThuongHieu);
+      print('gọi save ảnh');
+      bool ktr = true;
       if (listImage.isNotEmpty) {
-        print('Gọi save');
-        loading.value = true;
-        formKey.currentState!.save();
-        print(hangHoaModel.value.thuongHieu!.tenThuongHieu);
-        print('gọi save ảnh');
-        bool ktr = await saveListImage();
+        ktr = await saveListImage();
+      }
+
+      if (ktr == true) {
+        print('gọi update hàng hoá');
+
+        var response = await HangHoaService().update(
+            id: hangHoaModel.value.maHangHoa!, hangHoa: hangHoaModel.value);
+        ktr = checkResponGetConnect(response);
         if (ktr == true) {
+          // gọi delete ảnh trên firebase
+          await deleteListImage(listImageDeleted);
+          listImageDeleted.value = [];
+          // gọi update hàng hoá trong list Hàng Hoá
+          HangHoaController hangHoaController = Get.find();
           print('gọi update hàng hoá');
-          print(hangHoaModel.value.hinhAnh!.length);
-          var response = await HangHoaService().update(
-              id: hangHoaModel.value.maHangHoa!, hangHoa: hangHoaModel.value);
-          ktr = checkResponGetConnect(response);
-          if (ktr == true) {
-            // gọi delete ảnh trên firebase
-            await deleteListImage(listImageDeleted);
-            listImageDeleted.value = [];
-            // gọi update hàng hoá trong list Hàng Hoá
-            HangHoaController hangHoaController = Get.find();
-            print('gọi update hàng hoá');
-            hangHoaController.updateHangHoa(hangHoaModel.value);
-            if (themPhieuNhap != null && themPhieuNhap == true) {
-              ThemPhieuNhapController themPhieuNhapController = Get.find();
-              themPhieuNhapController.upDateGiaBan(
-                  hangHoaModel.value.maHangHoa!, hangHoaModel.value.donGiaBan!);
-            }
-            loading.value = false;
-            Get.back();
-            GetShowSnackBar.successSnackBar(
-                'Đã update thành công hàng hoá ${hangHoaModel.value.tenHangHoa}!');
-          } else {
-            loading.value = false;
-            await deleteListImage(hangHoaModel.value.hinhAnh!);
-            hangHoaModel.value.hinhAnh = [];
+          hangHoaController.updateHangHoa(hangHoaModel.value);
+          if (themPhieuNhap != null && themPhieuNhap == true) {
+            ThemPhieuNhapController themPhieuNhapController = Get.find();
+            themPhieuNhapController.upDateGiaBan(
+                hangHoaModel.value.maHangHoa!, hangHoaModel.value.donGiaBan!);
           }
+          loading.value = false;
+          Get.back();
+          GetShowSnackBar.successSnackBar(
+              'Đã update thành công hàng hoá ${hangHoaModel.value.tenHangHoa}!');
+        } else {
+          loading.value = false;
+          await deleteListImage(hangHoaModel.value.hinhAnh!);
+          hangHoaModel.value.hinhAnh = [];
         }
       }
-      loading.value = false;
     } else {
       loading.value = false;
       GetShowSnackBar.errorSnackBar('Vui lòng thêm hình ảnh cho hàng hoá');

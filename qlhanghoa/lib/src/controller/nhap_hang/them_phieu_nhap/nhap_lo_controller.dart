@@ -85,7 +85,7 @@ class NhapLoController extends GetxController {
         maHangHoa: hangHoa.maHangHoa,
         tenHangHoa: hangHoa.tenHangHoa,
         donGiaBan: hangHoa.donGiaBan,
-        giaVon: hangHoa.giaVon,
+        giaVon: chiTiet.donGiaNhap ?? hangHoa.giaVon,
         loHang: hangHoa.loHang,
         quanLyTheoLo: hangHoa.quanLyTheoLo,
         hinhAnh: hangHoa.hinhAnh,
@@ -312,16 +312,17 @@ class NhapLoController extends GetxController {
 
   setUpDataThemLo(LoHangModel loHang) {
     loHangModel.value = LoHangModel(
-        sId: loHang.sId ?? '',
-        soLo: loHang.soLo ?? '',
-        maHangHoa: loHang.maHangHoa ?? '',
-        ngaySanXuat: loHang.ngaySanXuat ?? '',
-        ngayTaoLo: loHang.ngayTaoLo ?? '',
-        tonKho: loHang.tonKho ?? [],
-        soLuongNhap:
-            (loHang.soLuongNhap ?? 0) + (loHangModel.value.soLuongNhap ?? 0),
-        hanSuDung: loHang.hanSuDung ?? '',
-        trangThai: loHang.trangThai ?? '');
+      sId: loHang.sId ?? '',
+      soLo: loHang.soLo ?? '',
+      maHangHoa: loHang.maHangHoa ?? '',
+      ngaySanXuat: loHang.ngaySanXuat ?? '',
+      ngayTaoLo: loHang.ngayTaoLo ?? '',
+      tonKho: loHang.tonKho ?? [],
+      soLuongNhap:
+          (loHang.soLuongNhap ?? 0) + (loHangModel.value.soLuongNhap ?? 0),
+      hanSuDung: loHang.hanSuDung ?? '',
+      // trangThai: loHang.trangThai ?? ''
+    );
 
     setUpControllerThemLo();
 
@@ -455,7 +456,7 @@ class NhapLoController extends GetxController {
         soLuongNhap: loHang.soLuongNhap,
         tongSoLuong: loHang.tongSoLuong,
         hanSuDung: loHang.hanSuDung,
-        trangThai: loHang.trangThai,
+        //  trangThai: loHang.trangThai,
         tonKho: loHang.tonKho,
       );
       textEditingControllers[index].text = loHang.soLuongNhap.toString();

@@ -139,6 +139,7 @@ class ChiTietHangHoaScreen extends StatelessWidget {
             onPressed: () async {
               print('gọi edit');
               controller.changEdit(true);
+              controller.setUpTam();
               Get.to(() => ThemHangHoaScreen());
 
               // xử lý thêm  hàng hoá

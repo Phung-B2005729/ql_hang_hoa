@@ -17,61 +17,64 @@ class ThanhToanScreen extends GetView<ThemPhieuNhapController> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: _buildAppBar(),
-      body: Obx(
-        () => controller.loading != true
-            ? Column(
-                children: [
-                  Expanded(
-                    child: SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          Container(
-                            margin: const EdgeInsets.only(top: 20),
-                            padding: const EdgeInsets.only(
-                                left: 20, top: 20, bottom: 20, right: 20),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(15),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: ColorClass.color_thanh_ke
-                                      .withOpacity(0.2),
-                                  spreadRadius: 5,
-                                  blurRadius: 7,
-                                  offset: const Offset(3, 0),
-                                ),
-                              ],
-                            ),
-                            child: const Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text('Phương thức',
+    return Obx(
+      () => controller.loading != true
+          ? Scaffold(
+              appBar: _buildAppBar(),
+              body: Form(
+                key: controller.formKey,
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            Container(
+                              margin: const EdgeInsets.only(top: 20),
+                              padding: const EdgeInsets.only(
+                                  left: 20, top: 20, bottom: 20, right: 20),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(15),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: ColorClass.color_thanh_ke
+                                        .withOpacity(0.2),
+                                    spreadRadius: 5,
+                                    blurRadius: 7,
+                                    offset: const Offset(3, 0),
+                                  ),
+                                ],
+                              ),
+                              child: const Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text('Phương thức',
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600)),
+                                  Text(
+                                    'Tiền mặt',
                                     style: TextStyle(
                                         color: Colors.black,
                                         fontSize: 16,
-                                        fontWeight: FontWeight.w600)),
-                                Text(
-                                  'Tiền mặt',
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600),
-                                )
-                              ],
+                                        fontWeight: FontWeight.w600),
+                                  )
+                                ],
+                              ),
                             ),
-                          ),
-                          __buildContrainerTongCong(),
-                        ],
+                            __buildContrainerTongCong(),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                  _buildButtonXuLy(),
-                ],
-              )
-            : const LoadingCircularFullScreen(),
-      ),
+                    _buildButtonXuLy(),
+                  ],
+                ),
+              ))
+          : const LoadingCircularFullScreen(),
     );
   }
 
@@ -99,8 +102,22 @@ class ThanhToanScreen extends GetView<ThemPhieuNhapController> {
                   backgroundColor:
                       MaterialStatePropertyAll<Color>(Colors.green),
                 ),
-                onPressed: () {
+                onPressed: () async {
                   // lưu tạm
+                  print('gọi lưu');
+                  if (controller.phieuNhap.value.maPhieuNhap != null) {
+                    bool ktr = await controller.updatePhieuTam(phieuTam: true);
+                    if (ktr == true) {
+                      Get.back();
+                      Get.back();
+                    }
+                  } else {
+                    bool ktr = await controller.create(phieuTam: true);
+                    if (ktr == true) {
+                      Get.back();
+                      Get.back();
+                    }
+                  }
                 },
                 child: const Text(
                   'Lưu tạm',
@@ -110,8 +127,28 @@ class ThanhToanScreen extends GetView<ThemPhieuNhapController> {
                 style: const ButtonStyle(
                   backgroundColor: MaterialStatePropertyAll<Color>(Colors.blue),
                 ),
-                onPressed: () {
-                  // lưu tạm
+                onPressed: () async {
+                  // lưu
+                  print('gọi lưu');
+                  if (controller.phieuNhap.value.maPhieuNhap != null) {
+                    bool ktr = await controller.updatePhieuTam(phieuTam: false);
+                    if (ktr == true) {
+                      Get.back();
+                      Get.back();
+                      Future.delayed(const Duration(milliseconds: 300), () {
+                        GetShowSnackBar.successSnackBar('Đã thêm');
+                      });
+                    }
+                  } else {
+                    bool ktr = await controller.create(phieuTam: false);
+                    if (ktr == true) {
+                      Get.back();
+                      Get.back();
+                      Future.delayed(const Duration(milliseconds: 300), () {
+                        GetShowSnackBar.successSnackBar('Đã thêm');
+                      });
+                    }
+                  }
                 },
                 child: const Text(
                   'Hoàn thành',
@@ -250,6 +287,9 @@ class ThanhToanScreen extends GetView<ThemPhieuNhapController> {
       style: const TextStyle(color: Colors.black, fontSize: 16),
       controller: controller.giaGiamController,
       keyboardType: TextInputType.number,
+      onSaved: (newValue) {
+        controller.changeGiaGiam(controller.giaGiamController.text);
+      },
       inputFormatters: <TextInputFormatter>[
         FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
         TextInputFormatter.withFunction((oldValue, newValue) {
@@ -333,6 +373,9 @@ class ThanhToanScreen extends GetView<ThemPhieuNhapController> {
       style: const TextStyle(color: Colors.black, fontSize: 16),
       controller: controller.daTraNCCController,
       keyboardType: TextInputType.number,
+      onSaved: (newValue) {
+        controller.changeDaTraNhaCungCap(newValue.toString());
+      },
       inputFormatters: <TextInputFormatter>[
         FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
         TextInputFormatter.withFunction((oldValue, newValue) {
@@ -364,8 +407,9 @@ class ThanhToanScreen extends GetView<ThemPhieuNhapController> {
         if (int.tryParse(va) == null) {
           return 'Vui lòng nhập vào giá trị số';
         }
-        if (int.parse(va) < 0) {
-          return 'Giá trị phải lớn hơn hoặc bằng 0';
+        if (int.parse(va) <= 0) {
+          print('kiếm tra lõi');
+          return 'Vui lòng nhập vào tiền trả ncc';
         }
         return null;
       },
@@ -385,11 +429,12 @@ class ThanhToanScreen extends GetView<ThemPhieuNhapController> {
       onChanged: (value) {
         if (value.isEmpty) {
           controller.daTraNCCController.text = '0';
+          controller.changeDaTraNhaCungCap('0');
         }
 
         if (int.tryParse(value) != null) {
           //  print(FunctionHelper.formNum(value));
-
+          controller.changeDaTraNhaCungCap(value);
           controller.daTraNCCController.text = FunctionHelper.formNum(value);
         }
       },

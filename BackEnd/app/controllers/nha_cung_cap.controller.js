@@ -84,7 +84,20 @@ exports.findALL = async (req, res, next) => {
                     }
             filter = {...filter, ...t1}
          }
-            documents = await nhaCungCapService.find(filter);
+        
+         let pro = {
+            ma_nha_cung_cap: 1, // tự động
+            ten_nha_cung_cap: 1,
+            dia_chi: 1,
+            email: 1,
+            cong_ty: 1,
+            sdt: 1,
+            'phieu_nhap_info.ma_cua_hang': 1,
+            'phieu_nhap_info.tong_tien': 1,
+            'phieu_nhap_info.trang_thai': 1,
+            'phieu_nhap_info.ngayLapPhieu' : 1,
+         }
+            documents = await nhaCungCapService.findLookup(filter, pro);
             return res.send(documents);
     }catch(e){
         return next(new ApiError(500, "Lỗi server trong quá trình lấy danh sách"));
@@ -94,11 +107,32 @@ exports.findALL = async (req, res, next) => {
 exports.findOne =  async (req, res, next) => {  // 
     try{
         const nhaCungCapService = new NhaCungCapService(MongoDB.client);
-        const document = await nhaCungCapService.findById(req.params.id);
-        if(!document){
+     
+        let pro = {
+            ma_nha_cung_cap: 1, // tự động
+            ten_nha_cung_cap: 1,
+            dia_chi: 1,
+            email: 1,
+            cong_ty: 1,
+            sdt: 1,
+            ghi_chu: 1,
+            'phieu_nhap_info.ma_cua_hang': 1,
+            'phieu_nhap_info.tong_tien': 1,
+            'phieu_nhap_info.trang_thai': 1,
+            'phieu_nhap_info.ngay_lap_phieu' : 1,
+            'phieu_nhap_info.ma_nhan_vien': 1,
+            'phieu_nhap_info.ma_phieu_nhap': 1,
+
+            'phieu_nhap_info.nhan_vien_info.ten_nhan_vien': 1,
+         }
+         let   document = await nhaCungCapService.findLookup({
+            ma_nha_cung_cap: req.params.id
+         }, pro);
+     
+        if(!document || (document && document.length==0)){
             return next(new ApiError(404, "Không tìm thấy data"));
         }
-        return res.send(document);
+        return res.send(document[0]);
     }catch(e){
         return next(new ApiError(500, "Lỗi server trong quá trình lấy danh sách"));
     }
@@ -133,10 +167,11 @@ exports.update = async (req,res, next) => {
          const nhaCungCapService = new NhaCungCapService(MongoDB.client);
          // nhà cung cấp đã có dữ liệu phiếu nhập không thể xoá
          const phieuNhapService = new PhieuNhapService(MongoDB.client);
-         const phieNhap = phieuNhapService.findOne({
+         const phieNhap = await phieuNhapService.findOne({
             ma_nha_cung_cap: req.params.id
          });
          if(phieNhap!=null){
+            //console.log(phieNhap);
             return next(new ApiError(401, "Nhà cung cấp đã có dữ liệu phiếu nhập không thể xoá"));
          }
          const document = await nhaCungCapService.delete(req.params.id);

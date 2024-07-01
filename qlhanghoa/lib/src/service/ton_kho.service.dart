@@ -42,14 +42,44 @@ class TonKhoService extends GetConnect {
       // ignore: non_constant_identifier_names
       {String? so_lo,
       String? maHangHoa,
+      String? soNgay,
       String? maCuaHang}) async {
     try {
       final response = await get(
         "/",
         query: {
-          'so_lo': so_lo,
-          'ma_hang_hoa': maHangHoa,
-          'ma_cua_hang': maCuaHang,
+          if (so_lo != null) 'so_lo': so_lo,
+          if (maHangHoa != null) 'ma_hang_hoa': maHangHoa,
+          if (maCuaHang != null) 'ma_cua_hang': maCuaHang,
+          if (soNgay != null && soNgay != '') 'so_ngay': soNgay
+        },
+        contentType: AppConfig.contentTypeJson,
+      );
+      return response;
+    } catch (e) {
+      // ignore: avoid_print
+      print("Error: $e");
+      return const Response(
+        statusCode: 500,
+        body: {"message": "Server Error"},
+      );
+    }
+  }
+
+  Future<Response> findTongTonKho(
+      // ignore: non_constant_identifier_names
+      {String? so_lo,
+      String? maHangHoa,
+      String? soNgay,
+      String? maCuaHang}) async {
+    try {
+      final response = await get(
+        "/tong_so_luong",
+        query: {
+          if (so_lo != null) 'so_lo': so_lo,
+          if (maHangHoa != null) 'ma_hang_hoa': maHangHoa,
+          if (maCuaHang != null) 'ma_cua_hang': maCuaHang,
+          if (soNgay != null && soNgay != '') 'so_ngay': soNgay
         },
         contentType: AppConfig.contentTypeJson,
       );
@@ -101,13 +131,35 @@ class TonKhoService extends GetConnect {
     return response;
   }
 
-  //
-  Future<Response> updateTheoSoLoMaCuaHang(
+  Future<Response> updateTheoSoLoHangHoaCuaHang(
       {required String soLo,
       required String maCuaHang,
+      required String maHangHoa,
       required TonKhoModel tonkho}) async {
     var body = tonkho.toJson();
-    final response = await put('/$soLo/$maCuaHang', body);
+    final response = await put('/update/$soLo/$maHangHoa/$maCuaHang', body);
+    return response;
+  }
+
+  //
+  Future<Response> themSoLuongTonKho(
+      {required String soLo,
+      required String maCuaHang,
+      required String maHangHoa,
+      required TonKhoModel tonkho}) async {
+    var body = tonkho.toJson();
+    final response = await put('/$soLo/$maHangHoa/$maCuaHang', body);
+    return response;
+  }
+
+  Future<Response> giamSoLuongTonKho(
+      {required String soLo,
+      required String maCuaHang,
+      required String maHangHoa,
+      required TonKhoModel tonkho}) async {
+    var body = tonkho.toJson();
+    final response =
+        await put('/giam_so_luong/$soLo/$maHangHoa/$maCuaHang', body);
     return response;
   }
 }

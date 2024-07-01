@@ -84,9 +84,14 @@ class LoginController extends GetxController {
         AuthToken auth = await AuthToken.fromJson(res.body);
 
         //và lấy thông tin user
+        // ignore: non_constant_identifier_names
         Response res_user =
             await AuthService().getInfoUser(accessToken: auth.accessToken!);
+
         if (res_user.statusCode == 200) {
+          AuthController controller = Get.find();
+          print('gọi lưu vào');
+          print(res_user.body);
           // lưu token, refresh
           await AuthUtil.setAccessToken(auth.accessToken!, auth.refreshToken);
           await AuthUtil.setName(res_user.body['ho_ten']);
@@ -99,9 +104,9 @@ class LoginController extends GetxController {
 
           await AuthUtil.setIsLogon(true);
           // lưu vào userController
-          AuthController controller = Get.find();
 
-          controller.setUpData();
+          await controller.setUpData();
+          print('gọi set up');
           Get.off(() => Home());
         } else {
           Get.dialog(
